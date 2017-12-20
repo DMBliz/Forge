@@ -6,7 +6,7 @@
 namespace Forge
 {
 
-	class WindowWin32 : public WindowImpl
+	class WindowWin32 : public Window
 	{
 	private:
 		HWND _hwnd = nullptr;
@@ -16,7 +16,6 @@ namespace Forge
 		DWORD _windowExStyle = 0;
 		DWORD _windowWindowedStyle = 0;
 		DWORD _wdindowFullScreenStyle = 0;
-		HMODULE _module = nullptr;
 		Vector2i windowedSize;
 		Vector2i windowedPos;
 

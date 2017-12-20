@@ -11,10 +11,13 @@ namespace Forge
 		{
 			float elements[9];
 			float mels[3][3];
-			Vector3 vectors[3];
 		};
 
 		Matrix3();
+		Matrix3(float m00, float m01, float m02,
+				float m10, float m11, float m12,
+				float m20, float m21, float m22);
+
 		Matrix3(const Matrix3& matrix);
 		Matrix3(const Vector3& vector);
 		Matrix3(float values[9]);
@@ -29,6 +32,7 @@ namespace Forge
 		Matrix3 operator+(const Matrix3& rhs) const;
 		Matrix3 operator-(const Matrix3& rhs) const;
 
+		Matrix3 Scaled(const Vector3& scale);
 		void SetScale(const Vector3& scale);
 		void SetScale(float scale);
 		Vector3 Scale() const;

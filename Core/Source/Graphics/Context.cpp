@@ -1,18 +1,21 @@
 #include "Context.h"
-#include "Platform/Window.h"
+#include "OpenGL/Windows/OGLWIN32Context.h"
 
 namespace Forge
 {
-
-	Context::Context()
-	{}
-
-	void Context::Init(const Window& win, unsigned int sampleCount, bool depth, bool debugRenderer)
+	Context* Context::GetInstance()
 	{
-		size = win.GetWindowSize();
-		this->sampleCount = sampleCount;
-		this->depth = depth;
-		this->debugRenderer = debugRenderer;
+		Context* ret;
+#if defined(WIN32)
+#if defined(OGL)
+		ret = new OGLWIN32Context();
+#elif defined(DIRECTX)
+#endif
+#elif defined(MACOS)
+#elif defined(LINUX)
+#elif defined(ANDROID)
+#elif defined(IOS)
+#endif
+		return ret;
 	}
-
 }

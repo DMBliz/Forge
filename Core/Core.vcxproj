@@ -83,7 +83,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)Dependecies\include;$(ProjectDir)Source</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;OGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;OGL;DBG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -124,15 +124,44 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\EventSystem\Event.h" />
+    <ClInclude Include="Source\Math\Matrix3x4.h" />
+    <ClInclude Include="Source\Graphics\Drawable.h" />
+    <ClInclude Include="Source\Graphics\Model.h" />
+    <ClInclude Include="Source\Graphics\Material.h" />
+    <ClInclude Include="Source\Containers\Iterator.h" />
+    <ClInclude Include="Source\EntityComponent\EntityManager.h" />
+    <ClInclude Include="Source\EntityComponent\ComponentManager.h" />
+    <ClInclude Include="Source\EntityComponent\Component.h" />
+    <ClInclude Include="Dependecies\include\stb_image\stb_image.h" />
+    <ClInclude Include="Source\EntityComponent\Entity.h" />
+    <ClInclude Include="Source\Graphics\Mesh.h" />
+    <ClInclude Include="MyGame.h" />
+    <ClInclude Include="Source\Game.h" />
+    <ClInclude Include="Source\Graphics\OpenGL\GLCheck.h" />
+    <ClInclude Include="Source\Graphics\OpenGL\OGLTexture2D.h" />
+    <ClInclude Include="Source\Graphics\Image.h" />
+    <ClInclude Include="Source\FileSystem\File.h" />
+    <ClInclude Include="Source\FileSystem\FileSystem.h" />
+    <ClInclude Include="Source\Graphics\OpenGL\OGLShader.h" />
+    <ClInclude Include="Source\Graphics\ShaderUniform.h" />
+    <ClInclude Include="Source\Graphics\OpenGL\OGLVertexArray.h" />
+    <ClInclude Include="Source\Graphics\BufferLayout.h" />
+    <ClInclude Include="Source\Graphics\OpenGL\OGLIndexBuffer.h" />
+    <ClInclude Include="Source\Graphics\IndexBuffer.h" />
     <ClInclude Include="Dependecies\include\glad\glad.h" />
     <ClInclude Include="Dependecies\include\glad\glad_wgl.h" />
     <ClInclude Include="Dependecies\include\KHR\khrplatform.h" />
-    <ClInclude Include="Source\Graphics\OpenGL\OGLContext.h" />
-    <ClInclude Include="Source\Graphics\Buffer.h" />
+    <ClInclude Include="Source\Graphics\OpenGL\OGLVertexBuffer.h" />
+    <ClInclude Include="Source\Graphics\VertexArray.h" />
+    <ClInclude Include="Source\Graphics\Shader.h" />
+    <ClInclude Include="Source\Graphics\OpenGL\OGLGraphicsRenderer.h" />
+    <ClInclude Include="Source\Graphics\GraphicsRenderer.h" />
     <ClInclude Include="Source\Graphics\OpenGL\Windows\OGLWIN32Context.h" />
     <ClInclude Include="Source\Defines.h" />
     <ClInclude Include="Source\Graphics\Context.h" />
     <ClInclude Include="Source\Graphics\Renderer.h" />
+    <ClInclude Include="Source\Graphics\VertexBuffer.h" />
     <ClInclude Include="Source\Math\Random.h" />
     <ClInclude Include="Source\Math\Rect.h" />
     <ClInclude Include="Source\Math\Matrix3.h" />
@@ -144,23 +173,52 @@
     <ClInclude Include="Source\Math\Vector3.h" />
     <ClInclude Include="Source\Math\Vector4.h" />
     <ClInclude Include="Source\Platform\Engine.h" />
+    <ClInclude Include="Source\Types.h" />
     <ClInclude Include="Source\Utilities\StringHash.h" />
     <ClInclude Include="Source\Containers\String.h" />
     <ClInclude Include="Source\Utilities\Utils.h" />
-    <ClInclude Include="Source\Platform\WindowImpl.h" />
+    <ClInclude Include="Source\Platform\Window.h" />
     <ClInclude Include="Source\Platform\Windows\WindowWin32.h" />
     <ClInclude Include="Source\Math\Vector2i.h" />
-    <ClInclude Include="Source\Platform\Window.h" />
-    <ClInclude Include="Source\Platform\Windows\WinEngine.h" />
+    <ClInclude Include="Source\Graphics\Texture.h" />
+    <ClInclude Include="Source\Graphics\Texture2D.h" />
+    <ClInclude Include="Source\EntityComponent\SpriteRenderer.h" />
+    <ClInclude Include="Source\EntityComponent\TransformComponent.h" />
+    <ClInclude Include="Source\Graphics\Sprite.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\EventSystem\Event.cpp" />
+    <ClCompile Include="Source\Math\Matrix3x4.cpp" />
+    <ClCompile Include="Source\Graphics\Drawable.cpp" />
+    <ClCompile Include="Source\Graphics\Model.cpp" />
+    <ClCompile Include="Source\Graphics\Material.cpp" />
+    <ClCompile Include="Source\EntityComponent\EntityManager.cpp" />
+    <ClCompile Include="Source\EntityComponent\ComponentManager.cpp" />
+    <ClCompile Include="Source\EntityComponent\Component.cpp" />
+    <ClCompile Include="Source\EntityComponent\Entity.cpp" />
+    <ClCompile Include="Source\Graphics\Mesh.cpp" />
+    <ClCompile Include="MyGame.cpp" />
+    <ClCompile Include="Source\Game.cpp" />
+    <ClCompile Include="Source\Graphics\OpenGL\OGLTexture2D.cpp" />
+    <ClCompile Include="Source\Graphics\Image.cpp" />
+    <ClCompile Include="Source\FileSystem\FileSystem.cpp" />
+    <ClCompile Include="Source\Graphics\OpenGL\OGLShader.cpp" />
+    <ClCompile Include="Source\Graphics\ShaderUniform.cpp" />
+    <ClCompile Include="Source\Graphics\OpenGL\OGLVertexArray.cpp" />
+    <ClCompile Include="Source\Graphics\BufferLayout.cpp" />
+    <ClCompile Include="Source\Graphics\OpenGL\OGLIndexBuffer.cpp" />
+    <ClCompile Include="Source\Graphics\IndexBuffer.cpp" />
     <ClCompile Include="Dependecies\src\glad.c" />
     <ClCompile Include="Dependecies\src\glad_wgl.c" />
-    <ClCompile Include="Source\Graphics\OpenGL\OGLContext.cpp" />
-    <ClCompile Include="Source\Graphics\Buffer.cpp" />
-    <ClCompile Include="Source\Graphics\OpenGL\Windows\OGLWIN32Context.cpp" />
+    <ClCompile Include="Source\Graphics\OpenGL\OGLVertexBuffer.cpp" />
+    <ClCompile Include="Source\Graphics\Shader.cpp" />
     <ClCompile Include="Source\Graphics\Context.cpp" />
+    <ClCompile Include="Source\Graphics\OpenGL\OGLGraphicsRenderer.cpp" />
+    <ClCompile Include="Source\Graphics\GraphicsRenderer.cpp" />
+    <ClCompile Include="Source\Graphics\OpenGL\Windows\OGLWIN32Context.cpp" />
     <ClCompile Include="Source\Graphics\Renderer.cpp" />
+    <ClCompile Include="Source\Graphics\VertexArray.cpp" />
+    <ClCompile Include="Source\Graphics\VertexBuffer.cpp" />
     <ClCompile Include="Source\Math\Color.cpp" />
     <ClCompile Include="Source\Math\Random.cpp" />
     <ClCompile Include="Source\Math\Rect.cpp" />
@@ -172,12 +230,23 @@
     <ClCompile Include="Source\Math\Vector3.cpp" />
     <ClCompile Include="Source\Math\Vector4.cpp" />
     <ClCompile Include="Source\Platform\Engine.cpp" />
+    <ClCompile Include="Source\Platform\Window.cpp" />
     <ClCompile Include="Source\Utilities\StringHash.cpp" />
     <ClCompile Include="Source\Containers\String.cpp" />
     <ClCompile Include="Source\Platform\Windows\WindowWin32.cpp" />
     <ClCompile Include="Source\Math\Vector2i.cpp" />
-    <ClCompile Include="Source\Platform\Window.cpp" />
-    <ClCompile Include="Source\Platform\Windows\WinEngine.cpp" />
+    <ClCompile Include="Source\Graphics\Texture.cpp" />
+    <ClCompile Include="Source\Graphics\Texture2D.cpp" />
+    <ClCompile Include="Source\EntityComponent\SpriteRenderer.cpp" />
+    <ClCompile Include="Source\EntityComponent\TransformComponent.cpp" />
+    <ClCompile Include="Source\Graphics\Sprite.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\fs.glsl" />
+    <None Include="Shaders\vs.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Shaders\SpriteShader.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

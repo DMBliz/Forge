@@ -8,6 +8,19 @@ namespace Forge
 		memset(elements, 0, 3 * 3 * sizeof(float));
 	}
 
+	Matrix3::Matrix3(float m00, float m01, float m02, float m10, float m11, float m12, float m20, float m21, float m22)
+	{
+		mels[0][0] = m00;
+		mels[0][1] = m01;
+		mels[0][2] = m02;
+		mels[1][0] = m10;
+		mels[1][1] = m11;
+		mels[1][2] = m12;
+		mels[2][0] = m20;
+		mels[2][1] = m21;
+		mels[2][2] = m22;
+	}
+
 	Matrix3::Matrix3(const Matrix3& matrix)
 	{
 		memcpy(elements, matrix.elements, 3 * 3 * sizeof(float));
@@ -114,6 +127,21 @@ namespace Forge
 		}
 
 		return Matrix3(temp);
+	}
+
+	Matrix3 Matrix3::Scaled(const Vector3& scale)
+	{
+		return Matrix3(
+			mels[0][0] * scale.x,
+			mels[0][1] * scale.y,
+			mels[0][2] * scale.z,
+			mels[1][0] * scale.x,
+			mels[1][1] * scale.y,
+			mels[1][2] * scale.z,
+			mels[2][0] * scale.x,
+			mels[2][1] * scale.y,
+			mels[2][2] * scale.z
+		);
 	}
 
 	void Matrix3::SetScale(const Vector3& scale)

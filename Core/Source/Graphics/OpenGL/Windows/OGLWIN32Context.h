@@ -1,11 +1,11 @@
 #pragma once
-#include "Graphics/OpenGL/OGLContext.h"
+#include "Graphics/Context.h"
 #include "windows.h"
 
 namespace Forge
 {
 
-	class OGLWIN32Context : public OGLContext
+	class OGLWIN32Context : public Context
 	{
 	private:
 		HDC deviceContext = 0;
@@ -14,9 +14,8 @@ namespace Forge
 		OGLWIN32Context();
 		~OGLWIN32Context();
 
-		void Init(const Window& win, unsigned int sampleCount, bool depth, bool debugRenderer) override;
-
-		void swapBuffers() override;
+		void CreateContext(const Window& win, unsigned int sampleCount, bool depth, bool debugRenderer) override;
+		void PlatformUpdate() override;
 
 	};
 

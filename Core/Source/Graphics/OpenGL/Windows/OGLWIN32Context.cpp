@@ -13,13 +13,10 @@ namespace Forge
 	OGLWIN32Context::~OGLWIN32Context()
 	{}
 
-	void OGLWIN32Context::Init(const Window& win, unsigned int sampleCount, bool depth, bool debugRenderer)
+	void OGLWIN32Context::CreateContext(const Window& win, unsigned int sampleCount, bool depth, bool debugRenderer)
 	{
-		OGLContext::Init(win, sampleCount, depth, debugRenderer);
-
-		WindowWin32* wnd = reinterpret_cast<WindowWin32*>(win.GetWindowImpl());
-
-		deviceContext = GetDC(wnd->GetNativeWindow());
+		const WindowWin32& wnd = reinterpret_cast<const WindowWin32&>(win);
+		deviceContext = GetDC(wnd.GetNativeWindow());
 
 		if (!deviceContext)
 		{
@@ -141,16 +138,18 @@ namespace Forge
 			return;
 		}
 
-		if (!gladLoadGL())
-		{
-			LOG("Failed to loat glad");
-		}
 	}
 
-	void OGLWIN32Context::swapBuffers()
+	void OGLWIN32Context::PlatformUpdate()
 	{
-		WindowWin32* winimp = static_cast<WindowWin32*>(engine->GetWindow().GetWindowImpl());
-		SwapBuffers(GetDC(winimp->GetNativeWindow()));
+		SwapBuffers(deviceContext);
+
+		MSG message;
+		while (PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE) > 0)
+		{
+			TranslateMessage(&message);
+			DispatchMessageW(&message);
+		}
 	}
 
 }

@@ -1,9 +1,10 @@
 #pragma once
 #include "Containers/String.h"
+#include "Vector4.h"
+#include "Types.h"
 
 namespace Forge
 {
-	class Vector4;
 	class Vector3;
 
 
@@ -12,13 +13,13 @@ namespace Forge
 	public:
 		union
 		{
-			unsigned int rgba;
+			uint rgba;
 			struct
 			{
-				unsigned char a;
-				unsigned char b;
-				unsigned char g;
-				unsigned char r;
+				byte a;
+				byte b;
+				byte g;
+				byte r;
 			};
 		};
 
@@ -26,7 +27,7 @@ namespace Forge
 			: rgba(0x00000000)
 		{}
 
-		Color::Color(unsigned int color)
+		Color::Color(uint color)
 			: rgba(color)
 		{}
 
@@ -34,24 +35,36 @@ namespace Forge
 			: rgba(color.rgba)
 		{}
 
-		Color::Color(int red, int green, int blue)
-			: r(red), g(green), b(blue), a(255)
+		Color::Color(int red, int green, int blue) : 
+		a(255), 
+		b(static_cast<byte>(blue)), 
+		g(static_cast<byte>(green)), 
+		r(static_cast<byte>(red))
 		{}
 
-		Color::Color(float red, float green, float blue)
-			: r(red * 255.0f), g(green * 255.0f), b(blue * 255.0f), a(255)
+		Color::Color(float red, float green, float blue) : 
+		a(255), 
+		b(static_cast<byte>(blue * 255.0f)), 
+		g(static_cast<byte>(green * 255.0f)), 
+		r(static_cast<byte>(red * 255.0f))
 		{}
 
-		Color::Color(int red, int green, int blue, int alpha)
-			: r(red), g(green), b(blue), a(alpha)
+		Color::Color(int red, int green, int blue, int alpha) :
+		a(static_cast<byte>(alpha)), 
+		b(static_cast<byte>(blue)), 
+		g(static_cast<byte>(green)),
+		r(static_cast<byte>(red))
 		{}
 
-		Color::Color(float red, float green, float blue, float alpha)
-			: r(red * 255.0f), g(green * 255.0f), b(blue * 255.0f), a(alpha * 255.0f)
+		Color::Color(float red, float green, float blue, float alpha) :
+		a(static_cast<byte>(alpha * 255.0f)), 
+		b(static_cast<byte>(blue * 255.0f)), 
+		g(static_cast<byte>(green * 255.0f)),
+		r(static_cast<byte>(red * 255.0f))
 		{}
 
 		Color(const Vector3& vec);
-		Color(const Vector3& vec, unsigned char alpha);
+		Color(const Vector3& vec, byte alpha);
 		Color(const Vector4& vec);
 
 		Color& operator=(const Color& rhs);
@@ -65,6 +78,8 @@ namespace Forge
 		inline float NormalizedG() const { return g / 255.0f; }
 		inline float NormalizedB() const { return b / 255.0f; }
 		inline float NormalizedA() const { return a / 255.0f; }
+
+		inline Vector4 GetNormalizedVector() { return Vector4(NormalizedR(), NormalizedG(), NormalizedB(), NormalizedA()); }
 
 		inline String ToString() const
 		{

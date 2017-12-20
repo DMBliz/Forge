@@ -154,7 +154,7 @@ namespace Forge
 		: length_(0), capacity_(0), charBuffer(0)
 	{
 		Resize(1);
-		for (unsigned i = 0; i < length; i++)
+		for (unsigned i = 0; i < length_; i++)
 		{
 			charBuffer[i] = value;
 		}
@@ -692,7 +692,7 @@ namespace Forge
 		if (!caseSensetive)
 			first = (char)tolower(first);
 
-		for (int i = startInd; i < length_ - str.length_; ++i)
+		for (unsigned i = startInd; i < length_ - str.length_; ++i)
 		{
 			char c = charBuffer[i];
 			if (!caseSensetive)
@@ -705,7 +705,7 @@ namespace Forge
 
 				for (unsigned j = 1; j < str.length_; ++j)
 				{
-					c = charBuffer[j + 1];
+					c = charBuffer[i + j];
 					char d = str.charBuffer[j];
 
 					if (!caseSensetive)
@@ -714,7 +714,7 @@ namespace Forge
 						d = (char)tolower(d);
 					}
 
-					if (skip = NOTFOUND && c == first)
+					if (skip == NOTFOUND && c == first)
 						skip = i + j - 1;
 
 					if (c != d)
@@ -770,7 +770,7 @@ namespace Forge
 		if (!caseSensetive)
 			first = (char)tolower(first);
 
-		for (int i = startInd; i < length_ - str.length_; --i)
+		for (unsigned i = startInd; i < length_ - str.length_; --i)
 		{
 			char c = charBuffer[i];
 			if (!caseSensetive)
@@ -1052,7 +1052,7 @@ namespace Forge
 		}
 		else
 		{
-			Resize(length + delta);
+			Resize(length_ + delta);
 		}
 
 		CopyChars(charBuffer + pos, src, srcLength);

@@ -3,6 +3,7 @@
 #include <vector>
 #include <cstdarg>
 #include <cctype>
+#include <ostream>
 
 namespace Forge
 {
@@ -10,6 +11,7 @@ namespace Forge
 
 	class String
 	{
+	public:
 		static const int CONVERSION_BUFFER_LENGTH = 128;
 		static const unsigned NOTFOUND = 0xffffffff;
 		static const unsigned MIN_CAPACITY = 8;
@@ -148,6 +150,7 @@ namespace Forge
 		bool IsEmpty() const { return length_ == 0; }
 
 		const char* CString() const { return charBuffer; }
+		char* CString() { return charBuffer; }
 		unsigned Length() const { return length_; }
 		unsigned Capacity() const { return capacity_; }
 
@@ -164,6 +167,12 @@ namespace Forge
 		String SubStringUTF8(unsigned pos, unsigned length) const;
 
 		unsigned ToHash() const;
+
+
+		friend std::ostream& operator<<(std::ostream& os, const String& obj)
+		{
+			return os << obj.charBuffer;
+		}
 
 		static const String Empty;
 

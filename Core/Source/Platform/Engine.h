@@ -1,6 +1,8 @@
 #pragma once
 #include "Window.h"
 #include "Graphics/Renderer.h"
+#include "FileSystem/FileSystem.h"
+#include "Game.h"
 
 
 namespace Forge
@@ -11,20 +13,24 @@ namespace Forge
 	protected:
 		bool active;
 		Renderer* renderer;
-		Window window;
+		Window* window;
+		FileSystem* fileSystem;
+		Game* game;
 	public:
 
 		Engine();
 
-		Window GetWindow() { return window; }
+		void OpenWindow(const Vector2i& winSize, const String& title, bool fullScreen, bool HighDPI);
+		void SetGame(Game* newGame);
 
 		virtual void Init();
+		FileSystem* GetFileSystem() { return fileSystem; }
+		Window* GetWindow() { return window; }
+		Renderer* GetRenderer() { return renderer; }
 
-		virtual void Start() = 0;
+		virtual void Start();
 
 		void Update();
-
-		virtual void PlatrformUpdate() = 0;
 	};
 
 	extern Engine* engine;

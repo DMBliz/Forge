@@ -4,16 +4,25 @@
 
 namespace Forge
 {
-	Color::Color(const Vector3& vec)
-		: r(vec.x * 255.0f), g(vec.y * 255.0f), b(vec.z * 255.0f), a(255)
+	Color::Color(const Vector3& vec) :
+	r(static_cast<byte>(vec.x * 255.0f)), 
+	g(static_cast<byte>(vec.y * 255.0f)), 
+	b(static_cast<byte>(vec.z * 255.0f)), 
+	a(255)
 	{}
 
-	Color::Color(const Vector3& vec, unsigned char alpha)
-		: r(vec.x * 255.0f), g(vec.y * 255.0f), b(vec.z * 255.0f), a(a)
+	Color::Color(const Vector3& vec, byte alpha) :
+	r(static_cast<byte>(vec.x * 255.0f)),
+	g(static_cast<byte>(vec.y * 255.0f)),
+	b(static_cast<byte>(vec.z * 255.0f)),
+	a(a)
 	{}
 
-	Color::Color(const Vector4& vec)
-		: r(vec.x * 255.0f), g(vec.y * 255.0f), b(vec.z * 255.0f), a(vec.w * 255.0f)
+	Color::Color(const Vector4& vec) :
+	r(static_cast<byte>(vec.x * 255.0f)),
+	g(static_cast<byte>(vec.y * 255.0f)),
+	b(static_cast<byte>(vec.z * 255.0f)),
+	a(static_cast<byte>(vec.w * 255.0f))
 	{}
 
 	Color& Color::operator=(const Color& rhs)
@@ -25,9 +34,9 @@ namespace Forge
 
 	Color& Color::operator=(const Vector3& rhs)
 	{
-		r = rhs.x * 255.0f;
-		g = rhs.y * 255.0f;
-		b = rhs.z * 255.0f;
+		r = static_cast<byte>(rhs.x * 255.0f);
+		g = static_cast<byte>(rhs.y * 255.0f);
+		b = static_cast<byte>(rhs.z * 255.0f);
 		a = 255;
 
 		return *this;
@@ -35,10 +44,10 @@ namespace Forge
 
 	Color& Color::operator=(const Vector4& rhs)
 	{
-		r = rhs.x * 255.0f;
-		g = rhs.y * 255.0f;
-		b = rhs.z * 255.0f;
-		a = rhs.w * 255.0f;
+		r = static_cast<byte>(rhs.x * 255.0f);
+		g = static_cast<byte>(rhs.y * 255.0f);
+		b = static_cast<byte>(rhs.z * 255.0f);
+		a = static_cast<byte>(rhs.w * 255.0f);
 
 		return *this;
 	}

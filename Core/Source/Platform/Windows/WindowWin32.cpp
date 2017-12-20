@@ -28,7 +28,6 @@ namespace Forge
 		this->exclusiveFullScreen = ExclusiveFullScreen;
 		this->highDPI = HighDPI;
 
-		_module = LoadLibraryW(L"opengl32.dll");
 		if (highDPI)
 		{
 			HMODULE shcore = LoadLibraryW(L"shcore.dll");
@@ -130,7 +129,7 @@ namespace Forge
 
 	void WindowWin32::SetSize(const Vector2i& newSize)
 	{
-		WindowImpl::SetSize(newSize);
+		Window::SetSize(newSize);
 
 		RECT rect = { 0, 0, static_cast<LONG>(newSize.x), static_cast<LONG>(newSize.y) };
 		AdjustWindowRectEx(&rect, _windowStyle, GetMenu(_hwnd) ? TRUE : FALSE, _windowExStyle);
@@ -154,12 +153,12 @@ namespace Forge
 			return;
 
 		SetWindowTextW(_hwnd, WString(windowTitle).CString());
-		WindowImpl::SetTitle(newTitle);
+		Window::SetTitle(newTitle);
 	}
 
 	void WindowWin32::SetFullScreen(bool value)
 	{
-		WindowImpl::SetFullScreen(value);
+		Window::SetFullScreen(value);
 
 		if (exclusiveFullScreen)
 		{

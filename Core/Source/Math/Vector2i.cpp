@@ -126,7 +126,7 @@ namespace Forge
 
 	float Vector2i::Length() const
 	{
-		return sqrtf(x * x + y * y);
+		return sqrtf(static_cast<float>(x * x + y * y));
 	}
 
 	String Vector2i::ToString() const
