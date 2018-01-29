@@ -37,6 +37,18 @@ namespace Forge
 		memcpy(elements, values, 3 * 3 * sizeof(float));
 	}
 
+	std::vector<float> Matrix3::Values() const
+	{
+		std::vector<float> vec(9);
+		memcpy(vec.data(), elements, 9 * sizeof(float));
+		return vec;
+	}
+
+	void Matrix3::Values(std::vector<float> values)
+	{
+		memcpy(elements, values.data(), 9 * sizeof(float));
+	}
+
 	bool Matrix3::operator==(const Matrix3& rhs) const
 	{
 		for (int i = 0; i < 9; i++)

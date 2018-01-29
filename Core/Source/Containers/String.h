@@ -183,10 +183,10 @@ namespace Forge
 		static void EncodeUTF8(char*& dest, unsigned uniChar);
 		static unsigned DecodeUTF8(const char*& src);
 
-#ifdef WIN32
+#ifdef _WIN32
 		static void EncodeUTF16(wchar_t*& dest, unsigned unicodeChar);
 		static unsigned DecodeUTF16(const wchar_t*& src);
-#endif // WIN32
+#endif
 
 		static unsigned CStringLength(const char* str);
 

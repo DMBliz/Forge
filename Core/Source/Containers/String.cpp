@@ -1058,8 +1058,6 @@ namespace Forge
 		CopyChars(charBuffer + pos, src, srcLength);
 	}
 
-
-
 	std::vector<String> String::Split(const char* str, char separator, bool keepEmptyStrings /*= false*/)
 	{
 		std::vector<String> ret;
@@ -1160,7 +1158,7 @@ namespace Forge
 				++src;
 			return '?';
 		}
-		 //TODO: test this
+		
 		auto nextByte = [](const char*& src)
 		{
 			return ((((unsigned char)*src) < 0x80) || (((unsigned char)*src) >= 0xc0)) ? ('?') : *(++src);

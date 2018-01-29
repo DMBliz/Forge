@@ -1,6 +1,6 @@
 #pragma once
-#include "Game.h"
-#include "EntityComponent/Entity.h"
+#include "Core/Game.h"
+#include "Scene/Entity.h"
 
 using namespace Forge;
 
@@ -8,6 +8,7 @@ class MyGame : public Game
 {
 private:
 	Entity* spriteTest;
+	Entity* spriteTest2;
 	EntityManager* entityManager;
 	ComponentManager* componentManager;
 public:

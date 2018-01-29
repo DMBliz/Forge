@@ -88,3 +88,17 @@ namespace Forge
 		}
 	};
 }
+
+
+#include "Serialization/Meta.h"
+
+namespace meta
+{
+	template<>
+	inline auto registerMembers<Forge::Color>()
+	{
+		return members(
+			member("rgba", &Forge::Color::rgba)
+		);
+	}
+}

@@ -16,7 +16,7 @@ namespace Forge
 		{}
 
 		T* operator ->() const { return pointer; }
-		T* operator *() const { return pointer; }
+		T& operator *() const { return *pointer; }
 
 		Iterator<T> operator++()
 		{
@@ -46,13 +46,13 @@ namespace Forge
 
 		Iterator<T> operator+=(int value)
 		{
-			ptr += value;
+			pointer += value;
 			return *this;
 		}
 
 		Iterator<T> operator-=(int value)
 		{
-			ptr -= value;
+			pointer -= value;
 			return *this;
 		}
 
@@ -79,6 +79,95 @@ namespace Forge
 		bool operator <=(const Iterator& rhs) const { return pointer <= rhs.pointer; }
 
 		bool operator >=(const Iterator& rhs) const { return pointer >= rhs.pointer; }
+	}; 
+	
+	template<class T>
+	class ConstIterator
+	{
+		T* pointer;
+	public:
+		ConstIterator()
+			: pointer(0)
+		{}
+
+		explicit ConstIterator(T* ptr)
+			: pointer(ptr)
+		{}
+
+		explicit ConstIterator(const Iterator<T>& ptr)
+			: pointer(ptr)
+		{}
+
+		ConstIterator<T>& operator=(const Iterator<T>& rhs)
+		{
+			pointer = rhs.pointer;
+			return *this;
+		}
+
+		const T* operator ->() const { return pointer; }
+		const T& operator *() const { return *pointer; }
+
+		ConstIterator<T> operator++()
+		{
+			++pointer;
+			return *this;
+		}
+
+		ConstIterator<T> operator++(int)
+		{
+			ConstIterator<T> it = *this;
+			++pointer;
+			return it;
+		}
+
+		ConstIterator<T> operator--()
+		{
+			--pointer;
+			return *this;
+		}
+
+		ConstIterator<T> operator--(int)
+		{
+			ConstIterator<T> it = *this;
+			--pointer;
+			return it;
+		}
+
+		ConstIterator<T> operator+=(int value)
+		{
+			pointer += value;
+			return *this;
+		}
+
+		ConstIterator<T> operator-=(int value)
+		{
+			pointer -= value;
+			return *this;
+		}
+
+		ConstIterator<T> operator+(int value)
+		{
+			return ConstIterator<T>(pointer + value);
+		}
+
+		ConstIterator<T> operator-(int value)
+		{
+			return ConstIterator<T>(pointer - value);
+		}
+
+		int operator -(const ConstIterator& rhs) const { return static_cast<uint>(pointer - rhs.pointer); }
+
+		bool operator ==(const ConstIterator& rhs) const { return pointer == rhs.pointer; }
+
+		bool operator !=(const ConstIterator& rhs) const { return pointer != rhs.pointer; }
+
+		bool operator <(const ConstIterator& rhs) const { return pointer < rhs.pointer; }
+
+		bool operator >(const ConstIterator& rhs) const { return pointer > rhs.pointer; }
+
+		bool operator <=(const ConstIterator& rhs) const { return pointer <= rhs.pointer; }
+
+		bool operator >=(const ConstIterator& rhs) const { return pointer >= rhs.pointer; }
 	};
 
 }

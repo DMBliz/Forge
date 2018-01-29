@@ -1,6 +1,6 @@
 #include "ShaderUniform.h"
 #include "Defines.h"
-#include "Texture2D.h"
+#include "Texture2DResource.h"
 
 namespace Forge
 {
@@ -128,13 +128,13 @@ namespace Forge
 	}
 
 	template <typename T>
-	void ShaderUniforms::SetValueToUniform(const String& uniformName, uint count, T data)
+	void ShaderUniforms::SetValueToUniform(const String& uniformName, T data)
 	{
 		LOG("Trying set wrong data type");
 	}
 
 	template <>
-	void ShaderUniforms::SetValueToUniform<int>(const String& uniformName, uint count, int data)
+	void ShaderUniforms::SetValueToUniform<int>(const String& uniformName, int data)
 	{
 		int id = FindUniformID(uniformName);
 		if (id < 0)
@@ -143,12 +143,12 @@ namespace Forge
 			return;
 		}
 
-		uniforms[id]->count = count;
+		uniforms[id]->count = 1;
 		uniforms[id]->data = new int(data);
 	}
 
 	template <>
-	void ShaderUniforms::SetValueToUniform<float>(const String& uniformName, uint count, float data)
+	void ShaderUniforms::SetValueToUniform<float>(const String& uniformName, float data)
 	{
 		int id = FindUniformID(uniformName);
 		if (id < 0)
@@ -157,12 +157,12 @@ namespace Forge
 			return;
 		}
 
-		uniforms[id]->count = count;
+		uniforms[id]->count = 1;
 		uniforms[id]->data = new float(data);
 	}
 
 	template <>
-	void ShaderUniforms::SetValueToUniform<uint>(const String& uniformName, uint count, uint data)
+	void ShaderUniforms::SetValueToUniform<uint>(const String& uniformName, uint data)
 	{
 		int id = FindUniformID(uniformName);
 		if (id < 0)
@@ -171,12 +171,12 @@ namespace Forge
 			return;
 		}
 
-		uniforms[id]->count = count;
+		uniforms[id]->count = 1;
 		uniforms[id]->data = new uint(data);
 	}
 
 	template <>
-	void ShaderUniforms::SetValueToUniform<Color>(const String& uniformName, uint count, Color data)
+	void ShaderUniforms::SetValueToUniform<Color>(const String& uniformName, Color data)
 	{
 		int id = FindUniformID(uniformName);
 		if (id < 0)
@@ -185,14 +185,34 @@ namespace Forge
 			return;
 		}
 
-		uniforms[id]->count = count;
+		uniforms[id]->count = 1;
 
 		if (uniforms[id]->data != nullptr)
 			delete[] reinterpret_cast<Color*>(uniforms[id]->data);
 
-		uniforms[id]->data = new Color[count];
-		memcpy(uniforms[id]->data, &data, count * sizeof(Color));
+		uniforms[id]->data = new Color;
+		memcpy(uniforms[id]->data, &data, sizeof(Color));
 	}
+
+	template <>
+	void ShaderUniforms::SetValueToUniform<Matrix4>(const String& uniformName, Matrix4 data)
+	{
+		int id = FindUniformID(uniformName);
+		if (id < 0)
+		{
+			LOG("Trying set unexisting uniform");
+			return;
+		}
+
+		uniforms[id]->count = 1;
+
+		if (uniforms[id]->data != nullptr)
+			delete[] reinterpret_cast<float*>(uniforms[id]->data);
+
+		uniforms[id]->data = new float[16];
+		memcpy(uniforms[id]->data, &data, 16 * sizeof(float));
+	}
+
 	template <>
 	void ShaderUniforms::SetValueToUniform<int>(const String& uniformName, uint count, int* data)
 	{

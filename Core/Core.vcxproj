@@ -70,8 +70,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)\bin\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)\bin\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)bin\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\bin\$(Configuration)\</OutDir>
@@ -83,7 +83,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(ProjectDir)Dependecies\include;$(ProjectDir)Source</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;OGL;DBG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;OGL;DBG;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -124,26 +124,34 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Scene\Scene.h" />
+    <ClInclude Include="Source\Graphics\Shader.h" />
+    <ClInclude Include="Source\Resources\Resources.h" />
+    <ClInclude Include="Source\EventSystem\Delegate.h" />
     <ClInclude Include="Source\EventSystem\Event.h" />
+    <ClInclude Include="Source\Resources\Resource.h" />
+    <ClInclude Include="Source\Resources\ResourceManager.h" />
+    <ClInclude Include="Source\Graphics\Font.h" />
+    <ClInclude Include="Source\Input\Input.h" />
     <ClInclude Include="Source\Math\Matrix3x4.h" />
     <ClInclude Include="Source\Graphics\Drawable.h" />
     <ClInclude Include="Source\Graphics\Model.h" />
     <ClInclude Include="Source\Graphics\Material.h" />
     <ClInclude Include="Source\Containers\Iterator.h" />
-    <ClInclude Include="Source\EntityComponent\EntityManager.h" />
-    <ClInclude Include="Source\EntityComponent\ComponentManager.h" />
-    <ClInclude Include="Source\EntityComponent\Component.h" />
+    <ClInclude Include="Source\Scene\EntityManager.h" />
+    <ClInclude Include="Source\Scene\ComponentManager.h" />
+    <ClInclude Include="Source\Scene\Component.h" />
     <ClInclude Include="Dependecies\include\stb_image\stb_image.h" />
-    <ClInclude Include="Source\EntityComponent\Entity.h" />
+    <ClInclude Include="Source\Scene\Entity.h" />
     <ClInclude Include="Source\Graphics\Mesh.h" />
     <ClInclude Include="MyGame.h" />
-    <ClInclude Include="Source\Game.h" />
+    <ClInclude Include="Source\Core\Game.h" />
     <ClInclude Include="Source\Graphics\OpenGL\GLCheck.h" />
-    <ClInclude Include="Source\Graphics\OpenGL\OGLTexture2D.h" />
-    <ClInclude Include="Source\Graphics\Image.h" />
+    <ClInclude Include="Source\Graphics\OpenGL\OGLTexture2DResource.h" />
+    <ClInclude Include="Source\Resources\Image.h" />
     <ClInclude Include="Source\FileSystem\File.h" />
     <ClInclude Include="Source\FileSystem\FileSystem.h" />
-    <ClInclude Include="Source\Graphics\OpenGL\OGLShader.h" />
+    <ClInclude Include="Source\Graphics\OpenGL\OGLShaderResource.h" />
     <ClInclude Include="Source\Graphics\ShaderUniform.h" />
     <ClInclude Include="Source\Graphics\OpenGL\OGLVertexArray.h" />
     <ClInclude Include="Source\Graphics\BufferLayout.h" />
@@ -154,7 +162,7 @@
     <ClInclude Include="Dependecies\include\KHR\khrplatform.h" />
     <ClInclude Include="Source\Graphics\OpenGL\OGLVertexBuffer.h" />
     <ClInclude Include="Source\Graphics\VertexArray.h" />
-    <ClInclude Include="Source\Graphics\Shader.h" />
+    <ClInclude Include="Source\Graphics\ShaderResource.h" />
     <ClInclude Include="Source\Graphics\OpenGL\OGLGraphicsRenderer.h" />
     <ClInclude Include="Source\Graphics\GraphicsRenderer.h" />
     <ClInclude Include="Source\Graphics\OpenGL\Windows\OGLWIN32Context.h" />
@@ -172,7 +180,14 @@
     <ClInclude Include="Source\Math\Vector2.h" />
     <ClInclude Include="Source\Math\Vector3.h" />
     <ClInclude Include="Source\Math\Vector4.h" />
-    <ClInclude Include="Source\Platform\Engine.h" />
+    <ClInclude Include="Source\Core\Engine.h" />
+    <ClInclude Include="Source\Serialization\detail\MetaHolder.h" />
+    <ClInclude Include="Source\Serialization\detail\template_helpers.h" />
+    <ClInclude Include="Source\Serialization\Member.h" />
+    <ClInclude Include="Source\Serialization\Meta.h" />
+    <ClInclude Include="Source\Serialization\Serializers\JSON\JsonCast.h" />
+    <ClInclude Include="Source\Serialization\Serializers\JSON\nlohmann_json\json.hpp" />
+    <ClInclude Include="Source\Serialization\Serializers\StringCast.h" />
     <ClInclude Include="Source\Types.h" />
     <ClInclude Include="Source\Utilities\StringHash.h" />
     <ClInclude Include="Source\Containers\String.h" />
@@ -180,29 +195,36 @@
     <ClInclude Include="Source\Platform\Window.h" />
     <ClInclude Include="Source\Platform\Windows\WindowWin32.h" />
     <ClInclude Include="Source\Math\Vector2i.h" />
-    <ClInclude Include="Source\Graphics\Texture.h" />
-    <ClInclude Include="Source\Graphics\Texture2D.h" />
-    <ClInclude Include="Source\EntityComponent\SpriteRenderer.h" />
-    <ClInclude Include="Source\EntityComponent\TransformComponent.h" />
+    <ClInclude Include="Source\Graphics\TextureResource.h" />
+    <ClInclude Include="Source\Graphics\Texture2DResource.h" />
+    <ClInclude Include="Source\Scene\SpriteRenderer.h" />
+    <ClInclude Include="Source\Scene\TransformComponent.h" />
     <ClInclude Include="Source\Graphics\Sprite.h" />
+    <ClInclude Include="Source\Input\Windows\WinInput.h" />
+    <ClInclude Include="Source\Utilities\Timer.h" />
+    <ClInclude Include="Source\Graphics\Texture2D.h" />
+    <ClInclude Include="Source\Graphics\Texture.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\EventSystem\Event.cpp" />
+    <ClCompile Include="Source\Scene\Scene.cpp" />
+    <ClCompile Include="Source\Graphics\Shader.cpp" />
+    <ClCompile Include="Source\Resources\Resource.cpp" />
+    <ClCompile Include="Source\Resources\ResourceManager.cpp" />
+    <ClCompile Include="Source\Graphics\Font.cpp" />
+    <ClCompile Include="Source\Input\Input.cpp" />
     <ClCompile Include="Source\Math\Matrix3x4.cpp" />
     <ClCompile Include="Source\Graphics\Drawable.cpp" />
     <ClCompile Include="Source\Graphics\Model.cpp" />
     <ClCompile Include="Source\Graphics\Material.cpp" />
-    <ClCompile Include="Source\EntityComponent\EntityManager.cpp" />
-    <ClCompile Include="Source\EntityComponent\ComponentManager.cpp" />
-    <ClCompile Include="Source\EntityComponent\Component.cpp" />
-    <ClCompile Include="Source\EntityComponent\Entity.cpp" />
+    <ClCompile Include="Source\Scene\Component.cpp" />
+    <ClCompile Include="Source\Scene\Entity.cpp" />
     <ClCompile Include="Source\Graphics\Mesh.cpp" />
     <ClCompile Include="MyGame.cpp" />
-    <ClCompile Include="Source\Game.cpp" />
-    <ClCompile Include="Source\Graphics\OpenGL\OGLTexture2D.cpp" />
-    <ClCompile Include="Source\Graphics\Image.cpp" />
+    <ClCompile Include="Source\Core\Game.cpp" />
+    <ClCompile Include="Source\Graphics\OpenGL\OGLTexture2DResource.cpp" />
+    <ClCompile Include="Source\Resources\Image.cpp" />
     <ClCompile Include="Source\FileSystem\FileSystem.cpp" />
-    <ClCompile Include="Source\Graphics\OpenGL\OGLShader.cpp" />
+    <ClCompile Include="Source\Graphics\OpenGL\OGLShaderResource.cpp" />
     <ClCompile Include="Source\Graphics\ShaderUniform.cpp" />
     <ClCompile Include="Source\Graphics\OpenGL\OGLVertexArray.cpp" />
     <ClCompile Include="Source\Graphics\BufferLayout.cpp" />
@@ -211,7 +233,7 @@
     <ClCompile Include="Dependecies\src\glad.c" />
     <ClCompile Include="Dependecies\src\glad_wgl.c" />
     <ClCompile Include="Source\Graphics\OpenGL\OGLVertexBuffer.cpp" />
-    <ClCompile Include="Source\Graphics\Shader.cpp" />
+    <ClCompile Include="Source\Graphics\ShaderResource.cpp" />
     <ClCompile Include="Source\Graphics\Context.cpp" />
     <ClCompile Include="Source\Graphics\OpenGL\OGLGraphicsRenderer.cpp" />
     <ClCompile Include="Source\Graphics\GraphicsRenderer.cpp" />
@@ -229,21 +251,31 @@
     <ClCompile Include="Source\Math\Vector2.cpp" />
     <ClCompile Include="Source\Math\Vector3.cpp" />
     <ClCompile Include="Source\Math\Vector4.cpp" />
-    <ClCompile Include="Source\Platform\Engine.cpp" />
+    <ClCompile Include="Source\Core\Engine.cpp" />
     <ClCompile Include="Source\Platform\Window.cpp" />
+    <ClCompile Include="Source\Resources\Resources.cpp" />
+    <ClCompile Include="Source\Serialization\Serializers\StringCast.cpp" />
     <ClCompile Include="Source\Utilities\StringHash.cpp" />
     <ClCompile Include="Source\Containers\String.cpp" />
     <ClCompile Include="Source\Platform\Windows\WindowWin32.cpp" />
     <ClCompile Include="Source\Math\Vector2i.cpp" />
-    <ClCompile Include="Source\Graphics\Texture.cpp" />
-    <ClCompile Include="Source\Graphics\Texture2D.cpp" />
-    <ClCompile Include="Source\EntityComponent\SpriteRenderer.cpp" />
-    <ClCompile Include="Source\EntityComponent\TransformComponent.cpp" />
+    <ClCompile Include="Source\Graphics\TextureResource.cpp" />
+    <ClCompile Include="Source\Graphics\Texture2DResource.cpp" />
+    <ClCompile Include="Source\Scene\SpriteRenderer.cpp" />
+    <ClCompile Include="Source\Scene\TransformComponent.cpp" />
     <ClCompile Include="Source\Graphics\Sprite.cpp" />
+    <ClCompile Include="Source\Input\Windows\WinInput.cpp" />
+    <ClCompile Include="Source\Utilities\Timer.cpp" />
+    <ClCompile Include="Source\Graphics\Texture2D.cpp" />
+    <ClCompile Include="Source\Graphics\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\fs.glsl" />
     <None Include="Shaders\vs.glsl" />
+    <None Include="Source\Serialization\detail\template_helpers.inl" />
+    <None Include="Source\Serialization\Member.inl" />
+    <None Include="Source\Serialization\Meta.inl" />
+    <None Include="Source\Serialization\Serializers\JSON\JsonCast.inl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Shaders\SpriteShader.glsl" />

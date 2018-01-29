@@ -22,6 +22,10 @@ namespace Forge
 		Matrix3(const Vector3& vector);
 		Matrix3(float values[9]);
 
+
+		std::vector<float> Values() const;
+		void Values(std::vector<float> values);
+
 		bool operator==(const Matrix3& rhs) const;
 		bool operator!=(const Matrix3& rhs) const;
 
@@ -44,4 +48,18 @@ namespace Forge
 		
 	};
 
+}
+
+
+#include "Serialization/Meta.h"
+
+namespace meta
+{
+	template<>
+	inline auto registerMembers<Forge::Matrix3>()
+	{
+		return members(
+			member("elements", &Forge::Matrix3::Values, &Forge::Matrix3::Values)
+		);
+	}
 }

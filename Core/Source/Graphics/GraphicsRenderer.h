@@ -3,6 +3,7 @@
 #include "Math/Color.h"
 #include "Math/Vector2i.h"
 #include "Mesh.h"
+#include "Drawable.h"
 
 namespace Forge
 {
@@ -13,8 +14,6 @@ namespace Forge
 	{
 		friend class Renderer;
 	protected:
-		ShaderUniforms* SystemUniform = nullptr;
-
 		Color clearColor;
 		float clearDepth = 1.0f;
 
@@ -27,17 +26,16 @@ namespace Forge
 		bool depth = false;
 		bool debugRenderer = false;
 
-		Context* context;
+		Matrix4 projection;
+		Matrix4 view;
 	public:
 		GraphicsRenderer();
 		virtual ~GraphicsRenderer();
 
-		void SetSystemUniforms(ShaderUniforms* uniforms);
-		virtual void Init(const Window& win, unsigned int sampleCount, bool depth, bool debugRenderer);
+		virtual void Init(const Window& win);
 
 		virtual void PreDraw() = 0;
-		virtual void Draw(Mesh* mesh, Material* material) = 0;
-		virtual void PostDraw() = 0;
+		virtual void Draw(DrawBatch* batch) = 0;
 
 		virtual void SetSize(const Vector2i& newSize) { size = newSize; }
 		const Vector2i& GetSize() { return size; }
@@ -53,6 +51,16 @@ namespace Forge
 
 		virtual void SetClearDepth(float depth) { clearDepth = depth; }
 		float GetClearDepth() { return clearDepth; }
+
+		void SetProjection(const Matrix4& matrix)
+		{
+			projection = matrix;
+		}
+
+		void SetView(const Matrix4& matrix)
+		{
+			view = matrix;
+		}
 
 		static GraphicsRenderer* Create();
 	};

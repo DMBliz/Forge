@@ -36,3 +36,18 @@ namespace Forge
 
 	};
 }
+
+
+#include "Serialization/Meta.h"
+
+namespace meta
+{
+	template<>
+	inline auto registerMembers<Forge::Rect>()
+	{
+		return members(
+			member("min", &Forge::Rect::min),
+			member("max", &Forge::Rect::max)
+		);
+	}
+}

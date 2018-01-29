@@ -18,7 +18,7 @@ namespace Forge
 		DWORD _wdindowFullScreenStyle = 0;
 		Vector2i windowedSize;
 		Vector2i windowedPos;
-
+		
 		void ProcessResize(const Vector2i& size);
 		void ProcessMove();
 		static LRESULT CALLBACK WindProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);

@@ -76,3 +76,18 @@ namespace Forge
 		String ToString() const;
 	};
 }
+
+
+#include "Serialization/Meta.h"
+
+namespace meta
+{
+	template<>
+	inline auto registerMembers<Forge::Vector2>()
+	{
+		return members(
+			member("x", &Forge::Vector2::x),
+			member("y", &Forge::Vector2::y)
+		);
+	}
+}

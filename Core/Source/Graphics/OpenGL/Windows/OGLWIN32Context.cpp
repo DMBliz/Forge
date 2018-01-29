@@ -1,6 +1,6 @@
 #include "OGLWIN32Context.h"
 #include "Platform/Windows/WindowWin32.h"
-#include "Platform/Engine.h"
+#include "Core/Engine.h"
 #include "glad/glad_wgl.h"
 
 namespace Forge

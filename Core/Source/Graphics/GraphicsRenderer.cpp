@@ -11,16 +11,9 @@ namespace Forge
 
 
 	GraphicsRenderer::~GraphicsRenderer()
-	{
-		delete context;
-	}
+	{}
 
-	void GraphicsRenderer::SetSystemUniforms(ShaderUniforms* uniforms)
-	{
-		SystemUniform = uniforms;
-	}
-
-	void GraphicsRenderer::Init(const Window& win, unsigned sampleCount, bool depth, bool debugRenderer)
+	void GraphicsRenderer::Init(const Window& win)
 	{
 		size = win.GetSize();
 		this->sampleCount = sampleCount;

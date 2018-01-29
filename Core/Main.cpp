@@ -1,9 +1,15 @@
-#include <iostream>
-#include "Math/Mathf.h"
-#include "Platform/Engine.h"
+#include "Core/Engine.h"
 #include "MyGame.h"
+#include "Serialization/Serializers/JSON/JsonCast.h"
+#include "EventSystem/Delegate.h"
+#include "Serialization/Meta.h"
+#include <fstream>
+#include <thread>
+#include "Graphics/OpenGL/OGLGraphicsRenderer.h"
+#include "Resources/Image.h"
 
 using namespace Forge;
+
 int main()
 {
 	Engine eng;
@@ -12,5 +18,6 @@ int main()
 	eng.SetGame(myGame);
 	eng.Start();
 
+	std::cin.get();
 	return 0;
 }

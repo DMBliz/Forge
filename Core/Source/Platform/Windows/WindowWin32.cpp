@@ -3,6 +3,8 @@
 #include "Math/Vector2.h"
 #include <Windowsx.h>
 #include "Defines.h"
+#include "Core/Engine.h"
+#include "Input/Windows/WinInput.h"
 
 
 namespace Forge
@@ -227,11 +229,13 @@ namespace Forge
 			{
 				if (wParam)
 				{
-					//TODO: resume engine work
+					//resume engine work
+					engine->Resume();
 				}
 				else
 				{
-					//TODO: pause engine work
+					//pause engine work
+					engine->Pause();
 				}
 				break;
 			}
@@ -262,12 +266,13 @@ namespace Forge
 
 				if (message == WM_KEYDOWN)
 				{
-					//TODO: input key down
+					static_cast<WinInput*>(engine->GetInputSystem())->SetKeyDownNative(key);
 				}
 				else if (message == WM_KEYUP)
 				{
-					//TODO: input key up
+					static_cast<WinInput*>(engine->GetInputSystem())->SetKeyUpNative(key);
 				}
+
 				break;
 			}
 			case WM_LBUTTONDOWN:
@@ -285,48 +290,46 @@ namespace Forge
 				{
 					Vector2 pos(static_cast<float>(GET_X_LPARAM(lParam)), static_cast<float>(GET_Y_LPARAM(lParam)));
 
-					//TODO: mouse buttons input
+					MouseButton button;
 					if (message == WM_LBUTTONDOWN || message == WM_LBUTTONUP)
 					{
+						button = MouseButton::Left;
 					}
 					else if (message == WM_RBUTTONDOWN || message == WM_RBUTTONUP)
 					{
+						button = MouseButton::Right;
 					}
 					else if (message == WM_MBUTTONDOWN || message == WM_MBUTTONUP)
 					{
+						button = MouseButton::Middle;
 					}
 					else if (message == WM_XBUTTONDOWN || message == WM_XBUTTONUP)
 					{
 						if (GET_XBUTTON_WPARAM(wParam) == XBUTTON1)
-						{
-
-						}
+							button = MouseButton::XButton1;
 						else if (GET_XBUTTON_WPARAM(wParam) == XBUTTON2)
-						{
-
-						}
+							button = MouseButton::XButton2;
 						else
-						{
-						}
+							break;
 					}
 					else
 					{
+						break;
 					}
 
 					if (message == WM_LBUTTONDOWN || message == WM_RBUTTONDOWN || message == WM_MBUTTONDOWN || message == WM_XBUTTONDOWN)
 					{
-						
+						WinInput* t = static_cast<WinInput*>(engine->GetInputSystem());
+						t->SetButtonDownNative(button);
+						t->SetMousePosition(pos);
 					}
 					else if (message == WM_LBUTTONUP || message == WM_RBUTTONUP || message == WM_MBUTTONUP || message == WM_XBUTTONUP)
 					{
-						
+						WinInput* t = static_cast<WinInput*>(engine->GetInputSystem());
+						t->SetButtonUpNative(button);
+						t->SetMousePosition(pos);
 					}
 
-
-					if (message == WM_XBUTTONDOWN || message == WM_XBUTTONUP)
-					{
-
-					}
 				}
 				break;
 
@@ -340,7 +343,7 @@ namespace Forge
 					Vector2 pos(static_cast<float>(GET_X_LPARAM(lParam)), static_cast<float>(GET_Y_LPARAM(lParam)));
 
 					//TODO: handle mouse move
-
+					static_cast<WinInput*>(engine->GetInputSystem())->SetMousePosition(pos);
 				}
 				break;
 			}
@@ -418,10 +421,12 @@ namespace Forge
 				switch (wParam)
 				{
 					case SIZE_MINIMIZED:
-						//TODO: Pause engine
+						//Pause engine
+						engine->Pause();
 						break;
 					case SIZE_RESTORED:
-						//TODO: Resume engine
+						//Resume engine
+						engine->Resume();
 						break;
 					case SIZE_MAXIMIZED:
 						win->ProcessResize(Vector2i(static_cast<int>(LOWORD(lParam)), static_cast<int>(HIWORD(lParam))));
@@ -458,6 +463,10 @@ namespace Forge
 			{
 				PostQuitMessage(0);
 				break;
+			}
+			case WM_CLOSE:
+			{
+				engine->ShutDown();
 			}
 		}
 		

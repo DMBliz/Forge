@@ -5,7 +5,7 @@
 
 namespace Forge
 {
-
+	//TODO: pass worldTransform to shader
 	struct DrawBatch
 	{
 		Mesh* mesh;

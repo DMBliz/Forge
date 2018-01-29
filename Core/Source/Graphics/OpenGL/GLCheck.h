@@ -7,7 +7,7 @@ static void GLCheck(const char* function, const char* file, int line)
 	GLenum error = glGetError();
 	if(error != GL_NO_ERROR)
 	{
-		LOG("OPGL error: (" + Forge::String(error) + ") at: " + Forge::String(function) + Forge::String(line) + Forge::String(file) + "\n");
+		//LOG("OPGL error: (" + Forge::String(error) + ") at: " + Forge::String(function) + Forge::String(line) + Forge::String(file) + "\n");
 	}
 }
 

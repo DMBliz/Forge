@@ -89,9 +89,21 @@ namespace Forge
 	Matrix3x4::~Matrix3x4()
 	{}
 
+	std::vector<float> Matrix3x4::Values() const
+	{
+		std::vector<float> vec(12);
+		memcpy(vec.data(), elements, 12 * sizeof(float));
+		return vec;
+	}
+
+	void Matrix3x4::Values(std::vector<float> values)
+	{
+		memcpy(elements, values.data(), 12 * sizeof(float));
+	}
+
 	Matrix3x4& Matrix3x4::operator=(const Matrix3x4& rhs)
 	{
-		memcpy(elements, rhs.elements, 12);
+		memcpy(elements, rhs.elements, 12 * sizeof(float));
 		return *this;
 	}
 

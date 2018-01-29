@@ -46,3 +46,18 @@ namespace Forge
 	};
 
 }
+
+
+#include "Serialization/Meta.h"
+
+namespace meta
+{
+	template<>
+	inline auto registerMembers<Forge::Vector2i>()
+	{
+		return members(
+			member("x", &Forge::Vector2i::x),
+			member("y", &Forge::Vector2i::y)
+		);
+	}
+}

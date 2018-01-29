@@ -1,34 +1,27 @@
 #pragma once
-#include "Containers/String.h"
-#include "ShaderUniform.h"
-#include "VertexArray.h"
+#include "Resources/Resource.h"
+#include "Graphics/ShaderResource.h"
 
 namespace Forge
 {
-	class File;
-	class Shader
+
+	class Shader : public Resource
 	{
-	protected:
-		String shaderSource;
-		String vertexShader;
-		String fragmentShader;
-
-		unsigned int programID;
-
+	private:
+		ShaderResource* shaderResource;
 	public:
 		Shader();
+		explicit Shader(String filename);
+		~Shader();
 
-		virtual void Init(const File& source) = 0;
-		virtual void Init(const String& source) = 0;
+		void Use();
+		void ResolveUniformLocations(ShaderUniforms& uniforms) const;
+		void SetSytemValueToUniform(UniformDescription& description) const;
+		void SetValueToUniform(const UniformDescription& description) const;
+		void SetValuesToUniforms(const ShaderUniforms& uniforms) const;
 
-		virtual void Compile() = 0;
-		virtual void Use() = 0;
-		virtual void SetValuesToUniforms(const ShaderUniforms& unifroms) = 0;
-		virtual void SetValueToUniform(const UniformDescription& desc) = 0;
-		virtual void SetSystemValueToUniform(UniformDescription& desc) = 0;
-		virtual void ResolveUniformLocations(ShaderUniforms& unifroms) = 0;
-
-		static Shader* Create();
+		void Load(String filename) override;
+		void UnLoad() override;
 	};
 
 }

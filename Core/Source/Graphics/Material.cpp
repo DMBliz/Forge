@@ -37,6 +37,11 @@ namespace Forge
 
 	void Material::Use()
 	{
+		if(dirty)
+		{
+			shader->ResolveUniformLocations(uniforms);
+			dirty = false;
+		}
 		shader->Use();
 		for (int i = 0; i < _textures.size(); ++i)
 		{

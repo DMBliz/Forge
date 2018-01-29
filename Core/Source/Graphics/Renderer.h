@@ -13,14 +13,12 @@ namespace Forge
 		std::vector<DrawBatch*> drawBatches;
 		GraphicsRenderer* deviceRenderer;
 	public:
-
-		static Renderer* GetRenderer()
-		{
-			Renderer* rend = new Renderer();
-			return rend;
-		}
 		
-		virtual void Init(Window* win);
+		void Init(Window* win);
+		void SetProjectionMatrix(const Matrix4& projection);
+		void SetPerspectiveProjection(float fov, float near, float far);
+		void SetOrthographicProjection(float near, float far);
+		void SetViewMatrix(const Matrix4& view);
 
 		void AddDrawBatch(DrawBatch* drawBatch)
 		{
@@ -31,15 +29,13 @@ namespace Forge
 		{
 			deviceRenderer->PreDraw();
 
-			for (int i = 0; i < drawBatches.size(); i++)
+			for (uint i = 0; i < drawBatches.size(); i++)
 			{
-				deviceRenderer->Draw(drawBatches[i]->mesh, drawBatches[i]->material);
+				deviceRenderer->Draw(drawBatches[i]);
 			}
-
-			deviceRenderer->PostDraw();
 		}
 
-		//TODO: replace with custom Vector
+		//TODO: replace with custom(own) Vector
 		bool RemoveDrawBatch(DrawBatch* drawBatch)
 		{
 			if (ContainsDrawBatch(drawBatch))
@@ -55,16 +51,6 @@ namespace Forge
 		bool ContainsDrawBatch(DrawBatch* drawBatch)
 		{
 			return std::find(drawBatches.begin(), drawBatches.end(), drawBatch) != drawBatches.end();
-		}
-
-		void SetSystemUniforms(ShaderUniforms* uniforms)
-		{
-			deviceRenderer->SetSystemUniforms(uniforms);
-		}
-
-		ShaderUniforms* GetSystemUniforms()
-		{
-			return deviceRenderer->SystemUniform;
 		}
 
 		Renderer();

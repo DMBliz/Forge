@@ -23,10 +23,9 @@ namespace Forge
 		~OGLGraphicsRenderer();
 
 		void PreDraw() override;
-		void Draw(Mesh* mesh, Material* material) override;
-		void PostDraw() override;
+		void Draw(DrawBatch* batch) override;
 
-		void Init(const Window& win, unsigned int sampleCount, bool depth, bool debugRenderer) override;
+		void Init(const Window& win) override;
 
 		void SetSize(const Vector2i& newSize) override;
 		void SetClearColorBuffer(bool value) override;

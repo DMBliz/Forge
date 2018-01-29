@@ -1,8 +1,9 @@
 #pragma once
 #include <vector>
+#include "ShaderResource.h"
+#include "BufferLayout.h"
 #include "Texture.h"
 #include "Shader.h"
-#include "BufferLayout.h"
 
 namespace Forge
 {
@@ -10,7 +11,7 @@ namespace Forge
 	{
 		Texture* texture;
 		String uniformName;
-		bool dirty;
+		bool dirty = true;
 
 
 		TextureDesc(Texture* texture, const String& uniformName)
@@ -22,9 +23,10 @@ namespace Forge
 	{
 	private:
 		std::vector<TextureDesc> _textures;
-		Shader* shader = Shader::Create();
+		Shader* shader;
 		ShaderUniforms uniforms;
 		BufferLayout layout;
+		bool dirty = false;
 	public:
 		Material();
 		~Material();
@@ -36,8 +38,8 @@ namespace Forge
 		
 		void Use();
 
-		Shader* GetShader() const { return shader; }
-		ShaderUniforms& Uniforms() { return uniforms; }
+		Shader* GetShader() const { return shader;  }
+		ShaderUniforms& Uniforms() { dirty = true; return uniforms; }
 		std::vector<TextureDesc>& Textures() { return _textures; }
 	};
 

@@ -1,18 +1,15 @@
 #include "OGLGraphicsRenderer.h"
 #include "Defines.h"
 #include <string>
-#include "Graphics/IndexBuffer.h"
 #include "Graphics/VertexBuffer.h"
 #include "Graphics/BufferLayout.h"
-#include "Graphics/VertexArray.h"
-#include "Graphics/Shader.h"
-#include "OGLShader.h"
-#include "Platform/Engine.h"
+#include "Graphics/ShaderResource.h"
+#include "Core/Engine.h"
 
 #include "FileSystem/File.h"
-#include "Graphics/Texture2D.h"
+#include "Graphics/Texture2DResource.h"
 #include "GLCheck.h"
-#include "Graphics/Image.h"
+#include "Resources/Image.h"
 #include "Graphics/Material.h"
 
 namespace Forge
@@ -26,108 +23,104 @@ namespace Forge
 	{}
 
 	Shader* sh;
-	Texture2D* tex;
-	Texture2D* tex1;
+	Texture2DResource* tex;
+	Texture2DResource* tex1;
 	Mesh mesh;
 
-	void OGLGraphicsRenderer::CreateProgram()
+//	void OGLGraphicsRenderer::CreateProgram()
+//	{
+//		float verticies[] =
+//		{
+//			 0.5f,  0.5f,  0.0f,   1.0f, 1.0f, //front-top right
+//			 0.5f, -0.5f,  0.0f,   1.0f, 0.0f, //front-bottom right
+//			-0.5f, -0.5f,  0.0f,   0.0f, 0.0f, //front-bottom left
+//			-0.5f,  0.5f,  0.0f,   0.0f, 1.0f //, //front-top left
+//
+//											 // 0.5f,  0.5f, -0.5f,   1.0f, 1.0f,  //back-top right
+//											 // 0.5f, -0.5f, -0.5f,   1.0f, 0.0f,  //back-bottom right
+//											 //-0.5f, -0.5f, -0.5f,   0.0f, 0.0f,  //back-bottom left
+//											 //-0.5f,  0.5f, -0.5f,   0.0f, 1.0f   //back-top left
+//
+//		};
+//
+//		unsigned int indicies[] =
+//		{
+//			0, 1, 3,
+//			1, 2, 3/*,
+//
+//				   4, 5, 7,
+//				   5, 6, 7*/
+//		};
+//
+//		BufferLayout bl;
+//		bl.Add<float>("position", 0, 3, false);
+//		bl.Add<float>("texCoord", 1, 2, false);
+//
+//		sh = Shader::Create();
+//		sh->Init("Shaders/basic.glsl");
+//
+//		Material* mat = new Material();
+//
+//		//UniformDescription* desc = new UniformDescription();
+//		//sh->Uniforms().AddUniform("modelColor", UniformDataType::COLOR);
+//
+//		mat->Uniforms().AddUniform("model", UniformDataType::MATRIX4);
+//		mat->Uniforms().AddUniform("view", UniformDataType::MATRIX4);
+//		mat->Uniforms().AddUniform("projection", UniformDataType::MATRIX4);
+//
+//		Matrix4 model(1.0f);
+//		Matrix4 view(1.0f);
+//		Matrix4 projection;
+//
+//		model *= Matrix4::Rotate(20.0f * DEGTORAD, Vector3(0.0f, 1.0f, 0.0f));
+//		view *= Matrix4::Translate(Vector3(0.0f, 0.0f, -1.0f));
+//		Vector2i size = engine->GetWindow()->GetSize();
+//		projection = Matrix4::Perspective(45.0f * DEGTORAD, float(size.x / size.y), 0.1f, 100.0f);
+//
+//		mat->Uniforms().SetValueToUniform<Matrix4>("model", 1, &model);
+//		mat->Uniforms().SetValueToUniform<Matrix4>("view", 1, &view);
+//		mat->Uniforms().SetValueToUniform<Matrix4>("projection", 1, &projection);
+//
+//		mat->Uniforms().AddUniform("modelTexture", UniformDataType::INTEGER);
+//		mat->Uniforms().AddUniform("modelTexture1", UniformDataType::INTEGER);
+//		mat->Uniforms().SetValueToUniform<int>("modelTexture", 0);
+//		mat->Uniforms().SetValueToUniform<int>("modelTexture1", 1);
+//
+//
+////		mat->ResolveUniformLocations();
+//
+//
+//
+//		File imgFile = engine->GetFileSystem()->ReadFile("Resources/container.jpg");
+//
+//		Image img1(imgFile);
+//
+//		TextureParametrs params;
+//
+//		tex = Texture2D::Create(img1, params);
+//
+//		imgFile = engine->GetFileSystem()->ReadFile("Resources/awesomeface.png");
+//
+//		img1.Create(imgFile);
+//		img1.FlipY();
+//		img1.FlipX();
+//
+//		tex1 = Texture2D::Create(img1, params);
+//
+//		mesh.SetVertexBuffer(verticies, sizeof(verticies), BufferUsage::STATIC);
+//		mesh.SetIndexBuffer(indicies, sizeof(indicies));
+//	/*	mesh.SetBufferLayout(bl);
+//
+//		mesh.SetShader(sh);
+//		mesh.AddTexture(tex1);
+//		mesh.AddTexture(tex);*/
+//
+//		mesh.Initialize();
+//	}
+//
+	void OGLGraphicsRenderer::Init(const Window& win)
 	{
-		float verticies[] =
-		{
-			 0.5f,  0.5f,  0.0f,   1.0f, 1.0f, //front-top right
-			 0.5f, -0.5f,  0.0f,   1.0f, 0.0f, //front-bottom right
-			-0.5f, -0.5f,  0.0f,   0.0f, 0.0f, //front-bottom left
-			-0.5f,  0.5f,  0.0f,   0.0f, 1.0f //, //front-top left
-
-											 // 0.5f,  0.5f, -0.5f,   1.0f, 1.0f,  //back-top right
-											 // 0.5f, -0.5f, -0.5f,   1.0f, 0.0f,  //back-bottom right
-											 //-0.5f, -0.5f, -0.5f,   0.0f, 0.0f,  //back-bottom left
-											 //-0.5f,  0.5f, -0.5f,   0.0f, 1.0f   //back-top left
-
-		};
-
-		unsigned int indicies[] =
-		{
-			0, 1, 3,
-			1, 2, 3/*,
-
-				   4, 5, 7,
-				   5, 6, 7*/
-		};
-
-		BufferLayout bl;
-		bl.Add<float>("position", 0, 3, false);
-		bl.Add<float>("texCoord", 1, 2, false);
-
-		sh = Shader::Create();
-		sh->Init("Shaders/basic.glsl");
-
-		Material* mat = new Material();
-
-		//UniformDescription* desc = new UniformDescription();
-		//sh->Uniforms().AddUniform("modelColor", UniformDataType::COLOR);
-
-		mat->Uniforms().AddUniform("model", UniformDataType::MATRIX4);
-		mat->Uniforms().AddUniform("view", UniformDataType::MATRIX4);
-		mat->Uniforms().AddUniform("projection", UniformDataType::MATRIX4);
-
-		Matrix4 model(1.0f);
-		Matrix4 view(1.0f);
-		Matrix4 projection;
-
-		model *= Matrix4::Rotate(20.0f * DEGTORAD, Vector3(0.0f, 1.0f, 0.0f));
-		view *= Matrix4::Translate(Vector3(0.0f, 0.0f, -1.0f));
-		Vector2i size = engine->GetWindow()->GetSize();
-		projection = Matrix4::Perspective(45.0f * DEGTORAD, float(size.x / size.y), 0.1f, 100.0f);
-
-		mat->Uniforms().SetValueToUniform<Matrix4>("model", 1, &model);
-		mat->Uniforms().SetValueToUniform<Matrix4>("view", 1, &view);
-		mat->Uniforms().SetValueToUniform<Matrix4>("projection", 1, &projection);
-
-		mat->Uniforms().AddUniform("modelTexture", UniformDataType::INTEGER);
-		mat->Uniforms().AddUniform("modelTexture1", UniformDataType::INTEGER);
-		mat->Uniforms().SetValueToUniform<int>("modelTexture", 1, 0);
-		mat->Uniforms().SetValueToUniform<int>("modelTexture1", 1, 1);
-
-
-//		mat->ResolveUniformLocations();
-
-
-
-		File imgFile = engine->GetFileSystem()->ReadFile("Resources/container.jpg");
-
-		Image img1(imgFile);
-
-		TextureParametrs params;
-
-		tex = Texture2D::Create(img1, params);
-
-		imgFile = engine->GetFileSystem()->ReadFile("Resources/awesomeface.png");
-
-		img1.Create(imgFile);
-		img1.FlipY();
-		img1.FlipX();
-
-		tex1 = Texture2D::Create(img1, params);
-
-		mesh.SetVertexBuffer(verticies, sizeof(verticies), BufferUsage::STATIC);
-		mesh.SetIndexBuffer(indicies, sizeof(indicies));
-	/*	mesh.SetBufferLayout(bl);
-
-		mesh.SetShader(sh);
-		mesh.AddTexture(tex1);
-		mesh.AddTexture(tex);*/
-
-		mesh.Initialize();
-	}
-
-	void OGLGraphicsRenderer::Init(const Window& win, unsigned int sampleCount, bool depth, bool debugRenderer)
-	{
-		GraphicsRenderer::Init(win, sampleCount, depth, debugRenderer);
-
-		context = Context::GetInstance();
-
-		context->CreateContext(win, sampleCount, depth, debugRenderer);
+		GraphicsRenderer::Init(win);
 
 
 		if (!gladLoadGL())
@@ -163,24 +156,16 @@ namespace Forge
 		glCheck(glClear(clearMask));
 	}
 
-	void OGLGraphicsRenderer::Draw(Mesh* mesh, Material* material)
+	void OGLGraphicsRenderer::Draw(DrawBatch* batch)
 	{
-		
-		material->Use();
-		if (SystemUniform != nullptr)
-		{
-			for (int i = 0; i < SystemUniform->GetSize(); ++i)
-			{
-				material->GetShader()->SetSystemValueToUniform(*SystemUniform->GetByID(i));
-			}
-		}
-		mesh->Bind();
-		glCheck(glDrawElements(GL_TRIANGLES, mesh->GetIndexBufferSize(), GL_UNSIGNED_INT, nullptr));
-	}
+		batch->material->Uniforms().SetValueToUniform<Matrix4>("projection", projection);
+		batch->material->Uniforms().SetValueToUniform<Matrix4>("view", view);
+		batch->material->Uniforms().SetValueToUniform<Matrix4>("model", batch->worldTransform->ToMatrix4());
 
-	void OGLGraphicsRenderer::PostDraw()
-	{
-		context->PlatformUpdate();
+		batch->material->Use();
+		batch->mesh->Bind();
+
+		glCheck(glDrawElements(GL_TRIANGLES, batch->mesh->GetIndexBufferSize(), GL_UNSIGNED_INT, nullptr));
 	}
 
 	void OGLGraphicsRenderer::SetSize(const Vector2i& newSize)

@@ -1,22 +1,37 @@
 #include "Texture2D.h"
-#include "OpenGL/OGLTexture2D.h"
-#include "Image.h"
+#include "Resources/Resources.h"
+#include "Resources/Image.h"
 
 namespace Forge
 {
-	Texture2D* Texture2D::Create(const Image& img, TextureParametrs params)
+
+	Texture2D::Texture2D()
+	{}
+
+
+	Texture2D::~Texture2D()
+	{}
+
+	void Texture2D::SetTexture(const byte* pixels)
 	{
-#if defined(OGL)
-		return new OGLTexture2D(img, params);
-#elif defined(DX)
-#endif
+		static_cast<Texture2DResource*>(textureResource)->SetTexture(pixels);
 	}
 
-	Texture2D* Texture2D::Create(const byte* pixels, uint width, uint height, TextureParametrs params)
+	void Texture2D::SetTexture(const Image& img)
 	{
-#if defined(OGL)
-		return new OGLTexture2D(pixels, width, height, params);
-#elif defined(DX)
-#endif
+		static_cast<Texture2DResource*>(textureResource)->SetTexture(img);
+	}
+
+	void Texture2D::Load(String filename)
+	{
+		resourceName = filename;
+		Image* img = Resources::Singleton()->LoadNowResource<Image>(filename);
+		textureResource = Texture2DResource::Create(*img, TextureParametrs());
+	}
+
+	void Texture2D::UnLoad()
+	{
+		static_cast<Texture2DResource*>(textureResource)->UnLoad();
+		delete textureResource;
 	}
 }

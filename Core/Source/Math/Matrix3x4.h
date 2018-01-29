@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 
 namespace Forge
 {
@@ -10,13 +11,14 @@ namespace Forge
 
 	class Matrix3x4
 	{
-	private:
+	public:
+
 		union
 		{
 			float elements[12];
 			float mels[3][4];
 		};
-	public:
+
 		Matrix3x4();
 		Matrix3x4(const Matrix3x4& matrix);
 		Matrix3x4(const Matrix3& matrix);
@@ -28,6 +30,9 @@ namespace Forge
 		Matrix3x4(const Vector3& positon, const Quaternion& rotation, float scale);
 		Matrix3x4(const Vector3& positon, const Quaternion& rotation, Vector3 scale);
 		~Matrix3x4();
+
+		std::vector<float> Values() const;
+		void Values(std::vector<float> values);
 
 		Matrix3x4& operator=(const Matrix3x4& rhs);
 		Matrix3x4& operator=(const Matrix3& rhs);
@@ -69,4 +74,18 @@ namespace Forge
 
 	};
 
+}
+
+
+#include "Serialization/Meta.h"
+
+namespace meta
+{
+	template<>
+	inline auto registerMembers<Forge::Matrix3x4>()
+	{
+		return members(
+			member("elements", &Forge::Matrix3x4::Values, &Forge::Matrix3x4::Values)
+		);
+	}
 }

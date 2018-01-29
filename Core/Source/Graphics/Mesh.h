@@ -1,10 +1,8 @@
 #pragma once
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
-#include <vector>
-#include "Texture.h"
-#include "Shader.h"
 #include "BufferLayout.h"
+#include "VertexArray.h"
 
 namespace Forge
 {

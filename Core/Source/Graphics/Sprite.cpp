@@ -1,5 +1,7 @@
 #include "Sprite.h"
 #include "FileSystem/FileSystem.h"
+#include "Resources/Resources.h"
+#include "Shader.h"
 
 namespace Forge
 {
@@ -11,11 +13,14 @@ namespace Forge
 		_batches[0]->material = _material;
 		_batches[0]->mesh = new Mesh;
 
-		Shader* sh = Shader::Create();
-		sh->Init(FileSystem::ReadFile("Shaders/SpriteShader.glsl"));
+		
+		Shader* sh = Resources::Singleton()->LoadNowResource<Shader>("Shaders/SpriteShader.glsl");
 
 		_material->SetShader(sh);
 		_material->AddTexture(nullptr, "spriteTexture");
+		_material->Uniforms().AddUniform("projection", UniformDataType::MATRIX4);
+		_material->Uniforms().AddUniform("view", UniformDataType::MATRIX4);
+		_material->Uniforms().AddUniform("model", UniformDataType::MATRIX4);
 		_material->Uniforms().AddUniform("spriteTexture", UniformDataType::SAMPLER2D);
 
 		float vb[] = {
@@ -55,7 +60,7 @@ namespace Forge
 
 	void Sprite::SetColor(const Color& color)
 	{
-		_material->Uniforms().SetValueToUniform<Color>("Color", 1, color);
+		_material->Uniforms().SetValueToUniform<Color>("Color", color);
 	}
 
 	void Sprite::SetPivotPosition(const Vector2& pivot)
@@ -66,5 +71,6 @@ namespace Forge
 	void Sprite::SetPosition(const Matrix3x4& position)
 	{
 		_batches[0]->worldTransform = &position;
+		_material->Uniforms().SetValueToUniform("model", position.ToMatrix4());
 	}
 }

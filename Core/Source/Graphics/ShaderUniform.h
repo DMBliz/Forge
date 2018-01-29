@@ -62,7 +62,7 @@ namespace Forge
 		void SetValueToUniform(const String& uniformName, uint count, T* data);
 
 		template<typename  T>
-		void SetValueToUniform(const String& uniformName, uint count, T data);
+		void SetValueToUniform(const String& uniformName, T data);
 
 		void SetTextureToUniform(const String& uniformName, uint textureID, uint slot);
 	};

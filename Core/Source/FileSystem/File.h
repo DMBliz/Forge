@@ -56,7 +56,7 @@ namespace Forge
 			return *this;
 		}
 
-		File& operator=(File&& newData)
+		File& operator=(File&& newData) noexcept
 		{
 			delete[] fileData;
 			fileSize = newData.GetSize();

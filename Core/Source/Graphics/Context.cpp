@@ -3,7 +3,7 @@
 
 namespace Forge
 {
-	Context* Context::GetInstance()
+	Context* Context::Create()
 	{
 		Context* ret;
 #if defined(WIN32)

@@ -2,6 +2,7 @@
 #include "Math/Vector2i.h"
 #include "Containers/String.h"
 #include <mutex>
+#include "Defines.h"
 
 namespace Forge
 {
@@ -29,6 +30,7 @@ namespace Forge
 		bool exclusiveFullScreen = false;
 		bool highDPI = true;
 
+
 		std::mutex listenerMutex;
 		Listener* listener = nullptr;
 		String windowTitle;
@@ -37,7 +39,7 @@ namespace Forge
 		static Window* GetInstance();
 
 		virtual void Create(const Vector2i& size, const String& title, bool Resizable, bool FullScreen, bool ExclusiveFullScreen, bool HighDPI, bool depth) = 0;
-		virtual void Close() {};
+		virtual void Close() {}
 
 		const Vector2i& GetSize() const { return windowSize; }
 		virtual void SetSize(const Vector2i& newSize) { windowSize = newSize; }

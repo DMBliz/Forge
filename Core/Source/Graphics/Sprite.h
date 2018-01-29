@@ -1,9 +1,9 @@
 #pragma once
-#include "Texture2D.h"
 #include "Math/Vector2.h"
 #include "Math/Color.h"
 #include "Material.h"
 #include "Drawable.h"
+#include "Texture2D.h"
 
 namespace Forge
 {

@@ -3,5 +3,5 @@
 //TODO: make normal  Log system
 namespace Forge
 {
-#define LOG(x) std::cout << "error: " << x << std::endl
+#define LOG(x) std::cout << "Error: " << x << std::endl
 }

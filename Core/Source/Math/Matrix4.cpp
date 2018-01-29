@@ -81,6 +81,18 @@ namespace Forge
 		return ToMatrix3().Scaled(invScale);
 	}
 
+	std::vector<float> Matrix4::Values() const
+	{
+		std::vector<float> vec(16);
+		memcpy(vec.data(), elements, 16 * sizeof(float));
+		return vec;
+	}
+
+	void Matrix4::Values(std::vector<float> values)
+	{
+		memcpy(elements, values.data(), 16 * sizeof(float));
+	}
+
 	void Matrix4::Decompose(Vector3& position, Quaternion& rotation, Vector3& scale)
 	{
 		position.x = mels[0][3];

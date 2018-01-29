@@ -68,3 +68,19 @@ namespace Forge
 		String ToString() const;
 	};
 }
+
+#include "Serialization/Meta.h"
+
+namespace meta
+{
+	template<>
+	inline auto registerMembers<Forge::Quaternion>()
+	{
+		return members(
+			member("x", &Forge::Quaternion::x),
+			member("y", &Forge::Quaternion::y),
+			member("z", &Forge::Quaternion::z),
+			member("w", &Forge::Quaternion::w)
+		);
+	}
+}

@@ -31,6 +31,9 @@ namespace Forge
 		Matrix3 ToMatrix3();
 		Matrix3 RotationMatrix();
 
+		std::vector<float> Values() const;
+		void Values(std::vector<float> values);
+
 		void Decompose(Vector3& position, Quaternion& rotation, Vector3& scale);
 
 		static const Matrix4 Identity;
@@ -57,4 +60,17 @@ namespace Forge
 
 		~Matrix4();
 	};
+}
+
+#include "Serialization/Meta.h"
+
+namespace meta
+{
+	template<>
+	inline auto registerMembers<Forge::Matrix4>()
+	{
+		return members(
+			member("elements", &Forge::Matrix4::Values, &Forge::Matrix4::Values)
+		);
+	}
 }
