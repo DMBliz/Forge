@@ -29,7 +29,7 @@ namespace Forge
 	void Mesh::Bind()
 	{
 		va->Bind();
-		//va->Draw(GetIndexBufferSize());
+		
 	}
 
 	void Mesh::SetVertexBuffer(float* vertexBuffer, uint size, BufferUsage usage)

@@ -1,5 +1,7 @@
 #include "WinInput.h"
 #include <map>
+#include "Core/Engine.h"
+#include "Platform/Windows/WindowWin32.h"
 
 namespace Forge
 {
@@ -150,6 +152,11 @@ namespace Forge
 		}
 	}
 
+	void WinInput::SetScrollNative(const Vector2& scroll)
+	{
+		SetScroll(scroll);
+	}
+
 	void WinInput::SetButtonStateNative(UINT key, InputState state)
 	{
 		switch(key)
@@ -174,6 +181,16 @@ namespace Forge
 
 	void WinInput::SetMousePosition(const Vector2& newPosition)
 	{
-		Input::SetMousePosition(newPosition);
+		static_cast<WindowWin32*>(engine->GetWindow())->SetCursorPosition(Vector2i(static_cast<int>(newPosition.x), static_cast<int>(newPosition.y)));
+	}
+
+	void WinInput::SetMousePositionValue(const Vector2& newPosition)
+	{
+		Input::SetMousePositionValue(newPosition);
+	}
+
+	void WinInput::SetCharacterPressed(uint character)
+	{
+		Input::SetCharacterPressed(character);
 	}
 }

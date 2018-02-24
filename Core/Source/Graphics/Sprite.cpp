@@ -2,6 +2,7 @@
 #include "FileSystem/FileSystem.h"
 #include "Resources/Resources.h"
 #include "Shader.h"
+#include "Core/Engine.h"
 
 namespace Forge
 {
@@ -14,7 +15,7 @@ namespace Forge
 		_batches[0]->mesh = new Mesh;
 
 		
-		Shader* sh = Resources::Singleton()->LoadNowResource<Shader>("Shaders/SpriteShader.glsl");
+		Shader* sh = engine->GetResources()->LoadNowResource<Shader>("Resources/Shaders/SpriteShader.glsl");
 
 		_material->SetShader(sh);
 		_material->AddTexture(nullptr, "spriteTexture");
@@ -39,8 +40,8 @@ namespace Forge
 		bl.Add<float>("pos", 0, 3, false);
 		bl.Add<float>("textureCoords", 1, 2, false);
 
-		_batches[0]->mesh->SetVertexBuffer(vb, sizeof(vb), BufferUsage::STATIC);
-		_batches[0]->mesh->SetIndexBuffer(ind, sizeof(ind));
+		_batches[0]->mesh->SetVertexBuffer(vb, 20, BufferUsage::STATIC);
+		_batches[0]->mesh->SetIndexBuffer(ind, 6);
 		_batches[0]->mesh->SetBufferLayout(bl);
 		_batches[0]->mesh->Initialize();
 	}

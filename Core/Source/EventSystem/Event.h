@@ -16,24 +16,24 @@ namespace Forge
 		template<typename R(*Function)(Args...)>
 		void Add()
 		{
-			Add(Delegate<R(Args...)>::template Create<Function>());
+			Add(Delegate<R(Args...)>::Create<Function>());
 		}
 
 		template<typename R(*Function)(Args...)>
 		void Remove()
 		{
-			Remove(Delegate<R(Args...)>::template Create<Function>());
+			Remove(Delegate<R(Args...)>::Create<Function>());
 		}
-		template<class C, typename R(*Function)(Args...)>
+		template<class C, typename R(C::*Function)(Args...)>
 		void Add(C* instance)
 		{
-			Remove(Delegate<R(Args...)>::template Create<C, Function>(instance));
+			Add(Delegate<R(Args...)>::Create<C, Function>(instance));
 		}
 
 		template<class C, typename R(*Function)(Args...)>
 		void Remove(C* instance)
 		{
-			Remove(Delegate<R(Args...)>::template Create<C, Function>(instance));
+			Remove(Delegate<R(Args...)>::Create<C, Function>(instance));
 		}
 
 		void Add(Delegate<R(Args...)> delegate)
@@ -50,24 +50,22 @@ namespace Forge
 			}
 		}
 
-		R operator()(Args... args)
+		void operator()(Args... args)
 		{
-			R ret;
 			for (auto& delegate : delegates)
 			{
-				ret = delegate.Invoke(args...);
+				delegate.Invoke(args...);
 			}
-			return ret;
+			
 		}
 
-		R Invoke(Args... args)
+		void Invoke(Args... args)
 		{
-			R ret;
 			for (auto& delegate : delegates)
 			{
-				ret = delegate.Invoke(args...);
+				delegate.Invoke(args...);
 			}
-			return ret;
+			
 		}
 	};
 

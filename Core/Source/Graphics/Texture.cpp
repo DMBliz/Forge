@@ -1,10 +1,13 @@
 #include "Texture.h"
+#include "Texture2DResource.h"
 
 namespace Forge
 {
 
 	Texture::Texture()
-	{}
+	{
+		
+	}
 
 
 	Texture::~Texture()

@@ -3,6 +3,8 @@
 #include <typeindex>
 #include "Resource.h"
 #include "Serialization/meta.h"
+#include "Graphics/Shader.h"
+#include "EventSystem/Event.h"
 
 namespace Forge
 {
@@ -14,13 +16,34 @@ namespace Forge
 		std::unordered_map<std::type_index, IResourceManager*> resources;
 		std::vector<Resource*> res;
 	public:
-		static Resources* Singleton()
+
+		void Update()
 		{
-			static Resources* singleton = new Resources();
-			return singleton;
+			for(auto& res : resources)
+			{
+				res.second->Update();
+			}
 		}
 
-		//TODO: refactor this
+		void LoadAll(const std::vector<String>& files)
+		{
+			for(const String& file : files)
+			{
+				if(file.Contains(".glsl"))
+				{
+					LoadResource<Shader>(file);
+				}
+				if (file.Contains(".jpg"))
+				{
+					LoadResource<Image>(file);
+				}
+				if (file.Contains(".png"))
+				{
+					LoadResource<Image>(file);
+				}
+			}
+		}
+		
 		template<typename T>
 		void RegisterResource()
 		{
@@ -55,6 +78,12 @@ namespace Forge
 		}
 
 		template<typename T>
+		ResourceManager<T>* GetResourceManager()
+		{
+			return static_cast<ResourceManager<T>*>(resources[typeid(T)]);
+		}
+
+		template<typename T>
 		void LoadResource(String filename)
 		{
 			ResourceManager<T>* res = static_cast<ResourceManager<T>*>(resources[typeid(T)]);
@@ -69,7 +98,7 @@ namespace Forge
 		}
 		
 		template<typename T>
-		void LoadResource(String filename, Delegate<void(T*)>& callback)
+		void LoadResource(String filename, Delegate<void(T*)>* callback)
 		{
 			ResourceManager<T>* res = static_cast<ResourceManager<T>*>(resources[typeid(T)]);
 			if (res != nullptr)

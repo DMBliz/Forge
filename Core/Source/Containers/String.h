@@ -49,9 +49,6 @@ namespace Forge
 		explicit String(char value);
 		explicit String(char value, int length);
 
-		template<class T> 
-		explicit String(const T& value);
-
 		~String();
 
 

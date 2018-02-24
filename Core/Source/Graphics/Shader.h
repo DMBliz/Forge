@@ -15,6 +15,7 @@ namespace Forge
 		~Shader();
 
 		void Use();
+		void Compile();
 		void ResolveUniformLocations(ShaderUniforms& uniforms) const;
 		void SetSytemValueToUniform(UniformDescription& description) const;
 		void SetValueToUniform(const UniformDescription& description) const;

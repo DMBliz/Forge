@@ -8,7 +8,7 @@ namespace Forge
 		T* pointer;
 	public:
 		Iterator()
-			: pointer(0)
+			: pointer(nullptr)
 		{}
 
 		explicit Iterator(T* ptr)
@@ -66,7 +66,7 @@ namespace Forge
 			return Iterator<T>(pointer - value);
 		}
 
-		int operator -(const Iterator& rhs) const { return (int)(pointer - rhs.pointer); }
+		int operator -(const Iterator& rhs) const { return static_cast<int>(pointer - rhs.pointer); }
 
 		bool operator ==(const Iterator& rhs) const { return pointer == rhs.pointer; }
 
@@ -87,7 +87,7 @@ namespace Forge
 		T* pointer;
 	public:
 		ConstIterator()
-			: pointer(0)
+			: pointer(nullptr)
 		{}
 
 		explicit ConstIterator(T* ptr)

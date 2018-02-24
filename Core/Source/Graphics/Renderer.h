@@ -1,7 +1,9 @@
 #pragma once
 #include "Context.h"
 #include "GraphicsRenderer.h"
+#include "RenderSurface.h"
 #include "Model.h"
+#include "Texture2D.h"
 
 namespace Forge
 {
@@ -11,50 +13,49 @@ namespace Forge
 	{
 	private:
 		std::vector<DrawBatch*> drawBatches;
-		GraphicsRenderer* deviceRenderer;
+		GraphicsRenderer* deviceRenderer = nullptr;
 	public:
-		
-		void Init(Window* win);
-		void SetProjectionMatrix(const Matrix4& projection);
-		void SetPerspectiveProjection(float fov, float near, float far);
-		void SetOrthographicProjection(float near, float far);
-		void SetViewMatrix(const Matrix4& view);
-
-		void AddDrawBatch(DrawBatch* drawBatch)
-		{
-			drawBatches.push_back(drawBatch);
-		}
-
-		virtual void Draw()
-		{
-			deviceRenderer->PreDraw();
-
-			for (uint i = 0; i < drawBatches.size(); i++)
-			{
-				deviceRenderer->Draw(drawBatches[i]);
-			}
-		}
-
-		//TODO: replace with custom(own) Vector
-		bool RemoveDrawBatch(DrawBatch* drawBatch)
-		{
-			if (ContainsDrawBatch(drawBatch))
-			{
-				auto it = std::find(drawBatches.begin(), drawBatches.end(), drawBatch);
-				drawBatches.erase(it);
-				return true;
-			}
-
-			return false;
-		}
-
-		bool ContainsDrawBatch(DrawBatch* drawBatch)
-		{
-			return std::find(drawBatches.begin(), drawBatches.end(), drawBatch) != drawBatches.end();
-		}
-
 		Renderer();
 		~Renderer();
+
+		void Init(const Vector2i& windowSize);
+		void SetFrustum(const Frustum& frustum);
+		const Frustum& GetFrustum() const;
+
+		void AddDrawBatch(DrawBatch* drawBatch);
+
+		virtual void Draw();
+
+		//TODO: replace with custom(own) Vector
+		bool RemoveDrawBatch(DrawBatch* drawBatch);
+
+		bool ContainsDrawBatch(DrawBatch* drawBatch);
+
+		Texture2D* GetScreenTexture() { return deviceRenderer->GetSurface()->GetColorTexture(); }
+
+		void SetSize(const Vector2i& newSize);
+
+		void SetWindowClearColor(const Color& color);
+		const Color& GetWindowClearColor();
+
+		void SetFrameBufferClearColor(const Color& color);
+		const Color& GetFrameBufferClearColor();
+
+
+		bool RenderToScreen() const
+		{
+			return deviceRenderer->RenderToScreen();
+		}
+
+		void RenderToScreen(bool value)
+		{
+			deviceRenderer->RenderToScreen(value);
+		}
+
+		void SetViewMatrix(const Matrix4& matrix) const 
+		{
+			deviceRenderer->GetCamera().SetMatrix(matrix);
+		}
 	};
 
 }

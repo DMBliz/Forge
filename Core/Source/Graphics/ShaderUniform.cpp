@@ -1,7 +1,10 @@
 #include "ShaderUniform.h"
 #include "Defines.h"
 #include "Texture2DResource.h"
-
+#include "Math/Vector2.h"
+#include "Math/Color.h"
+#include "Math/Matrix4.h"
+#include "Math/Matrix3.h"
 namespace Forge
 {
 

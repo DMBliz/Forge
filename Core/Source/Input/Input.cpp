@@ -14,9 +14,19 @@ namespace Forge
 		mouseButtons[static_cast<uint>(button)] = state;
 	}
 
-	void Input::SetMousePosition(const Vector2& newPosition)
+	void Input::SetMousePositionValue(const Vector2& newPosition)
 	{
 		cursorPosition = newPosition;
+	}
+
+	void Input::SetScroll(const Vector2& scroll)
+	{
+		wheelDelta = scroll;
+	}
+
+	void Input::SetCharacterPressed(uint character)
+	{
+		onCharacterPressed(character);
 	}
 
 	Input::Input()
@@ -65,10 +75,24 @@ namespace Forge
 		return mouseButtons[static_cast<uint>(button)];
 	}
 
+	const Vector2& Input::GetCursorPosition()
+	{
+		return cursorPosition;
+	}
+
+	const Vector2& Input::GetCursorDelta()
+	{
+		return deltaCursorPosition;
+	}
+
+	const Vector2& Input::GetMouseWheelDelta()
+	{
+		return wheelDelta;
+	}
+
 	void Input::Update()
 	{
 		uint keyCount = static_cast<uint>(KeyboardKey::KeyCount);
-
 		for (int i = 0; i < keyCount; ++i)
 		{
 			if (prevKeyboardKeys[i] == InputState::Down && keyboardKeys[i] == InputState::Down || prevKeyboardKeys[i] == InputState::Hold && keyboardKeys[i] == InputState::Hold || prevKeyboardKeys[i] == InputState::Hold && keyboardKeys[i] == InputState::Down)
@@ -77,24 +101,46 @@ namespace Forge
 			if (prevKeyboardKeys[i] == InputState::Up)
 				keyboardKeys[i] = InputState::None;
 
-			if (keyboardKeys[i] == InputState::Down)
+			if (keyboardKeys[i] != prevKeyboardKeys[i])
 			{
-				LOG(String(i) + " Is Down");
+				onKeyStateChanged(static_cast<KeyboardKey>(i), keyboardKeys[i]);
 			}
 
-			if (keyboardKeys[i] == InputState::Up)
-			{
-
-				LOG(String(i) + " Is Up");
-			}
-
-			if (keyboardKeys[i] == InputState::Hold)
-			{
-
-				LOG(String(i) + " Is hold");
-			}
 			prevKeyboardKeys[i] = keyboardKeys[i];
 		}
+
+		uint buttonCount = static_cast<uint>(MouseButton::ButtonCount);
+
+		for (int i = 0; i < buttonCount; ++i)
+		{
+			if (prevMouseButtons[i] == InputState::Down && mouseButtons[i] == InputState::Down || prevMouseButtons[i] == InputState::Hold && mouseButtons[i] == InputState::Hold || prevMouseButtons[i] == InputState::Hold && mouseButtons[i] == InputState::Down)
+				mouseButtons[i] = InputState::Hold;
+
+			if (prevMouseButtons[i] == InputState::Up)
+				mouseButtons[i] = InputState::None;
+
+			if (mouseButtons[i] != prevMouseButtons[i])
+			{
+				onMouseButtonStateChanged(static_cast<MouseButton>(i), mouseButtons[i]);
+			}
+
+			prevMouseButtons[i] = mouseButtons[i];
+		}
+
+		if (prevCursorPosition != cursorPosition)
+			onCursorMove(cursorPosition);
+		deltaCursorPosition = cursorPosition - prevCursorPosition;
+		prevCursorPosition = cursorPosition;
+
+		if (prevWheelDelta != wheelDelta)
+			onMouseWheelScroll(wheelDelta);
+		else if (prevWheelDelta == wheelDelta)
+			wheelDelta = Vector2::Zero;
+
+		prevWheelDelta = wheelDelta;
+
+		
+
 	}
 
 	Input* Input::Create()

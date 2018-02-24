@@ -7,7 +7,7 @@ namespace Forge
 	class Texture : public Resource
 	{
 	protected:
-		TextureResource* textureResource;
+		TextureResource* textureResource = nullptr;
 	public:
 		Texture();
 		~Texture();

@@ -9,7 +9,6 @@ namespace Forge
 
 	Material::~Material()
 	{
-		delete shader;
 	}
 
 	void Material::AddTexture(Texture* texture, const String& uniformName)
@@ -27,6 +26,18 @@ namespace Forge
 				_textures[i].dirty = true;
 			}
 		}
+	}
+
+	Texture* Material::GetTexture(const String& uniformName) const
+	{
+		for (int i = 0; i < _textures.size(); ++i)
+		{
+			if (_textures[i].uniformName == uniformName)
+			{
+				return _textures[i].texture;
+			}
+		}
+		return nullptr;
 	}
 
 	void Material::SetShader(Shader* newShader)
@@ -47,8 +58,11 @@ namespace Forge
 		{
 			if (_textures[i].dirty)
 			{
-				uniforms.SetTextureToUniform(_textures[i].uniformName, _textures[i].texture->GetID(), i);
-				_textures[i].dirty = false;
+				if (_textures[i].texture != nullptr)
+				{
+					uniforms.SetTextureToUniform(_textures[i].uniformName, _textures[i].texture->GetID(), i);
+					_textures[i].dirty = false;
+				}
 			}
 		}
 		shader->SetValuesToUniforms(uniforms);

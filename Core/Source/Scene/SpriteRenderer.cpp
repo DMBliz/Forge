@@ -6,7 +6,6 @@
 
 namespace Forge
 {
-
 	SpriteRenderer::SpriteRenderer()
 	{
 		sprite = new Sprite();
@@ -22,11 +21,19 @@ namespace Forge
 		sprite->SetTexture(texture);
 	}
 
+	Texture2D* SpriteRenderer::GetTexture() const
+	{
+		return sprite->GetTexture();
+	}
+
 	void SpriteRenderer::OnEnable()
 	{
 		sprite->SetActive(true);
-		
-		sprite->SetPosition(*GetOwner()->GetComponent<TransformComponent>()->GetWorldTransform());
+		TransformComponent* trn = GetOwner()->GetComponent<TransformComponent>();
+		if (trn != nullptr)
+		{
+			sprite->SetPosition(*trn->GetWorldTransform());
+		}
 	}
 
 	void SpriteRenderer::OnDisable()

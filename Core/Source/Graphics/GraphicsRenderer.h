@@ -1,19 +1,26 @@
 #pragma once
-#include "Context.h"
 #include "Math/Color.h"
 #include "Math/Vector2i.h"
-#include "Mesh.h"
 #include "Drawable.h"
+#include "Math/Frustum.h"
+#include "Camera.h"
 
 namespace Forge
 {
+	class RenderSurface;
 	class Material;
 	class Window;
+	class Mesh;
 
 	class GraphicsRenderer
 	{
 		friend class Renderer;
 	protected:
+		void SetupScreenPresenter();
+		Mesh screenMesh;
+		Material screenMaterial;
+		RenderSurface* renderSurface;
+
 		Color clearColor;
 		float clearDepth = 1.0f;
 
@@ -23,19 +30,25 @@ namespace Forge
 		Vector2i size;
 
 		unsigned int sampleCount = 1;
-		bool depth = false;
+		bool depth = true;
 		bool debugRenderer = false;
 
-		Matrix4 projection;
-		Matrix4 view;
+		bool renderToScreen = true;
+
+		Frustum frustum;
+		Camera camera;
+
 	public:
 		GraphicsRenderer();
 		virtual ~GraphicsRenderer();
 
-		virtual void Init(const Window& win);
+		virtual void Init(const Vector2i& windowSize) = 0;
 
 		virtual void PreDraw() = 0;
 		virtual void Draw(DrawBatch* batch) = 0;
+		virtual void PostDraw() = 0;
+
+		virtual void DrawToScreen() = 0;
 
 		virtual void SetSize(const Vector2i& newSize) { size = newSize; }
 		const Vector2i& GetSize() { return size; }
@@ -52,14 +65,32 @@ namespace Forge
 		virtual void SetClearDepth(float depth) { clearDepth = depth; }
 		float GetClearDepth() { return clearDepth; }
 
-		void SetProjection(const Matrix4& matrix)
+		void SetFrustum(const Frustum& newFrustum)
 		{
-			projection = matrix;
+			frustum = newFrustum;
 		}
 
-		void SetView(const Matrix4& matrix)
+		Frustum& GetFrustum()
 		{
-			view = matrix;
+			return frustum;
+		}
+
+		Camera& GetCamera()
+		{
+			return camera;
+		}
+
+		RenderSurface* GetSurface() const { return renderSurface; }
+
+
+		bool RenderToScreen() const
+		{
+			return renderToScreen;
+		}
+
+		void RenderToScreen(bool value)
+		{
+			renderToScreen = value;
 		}
 
 		static GraphicsRenderer* Create();

@@ -15,7 +15,7 @@ namespace Forge
 		~SpriteRenderer();
 
 		void SetTexture(Texture2D* texture);
-
+		Texture2D* GetTexture() const;
 		void OnEnable() override;
 		void OnDisable() override;
 	};

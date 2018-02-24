@@ -11,7 +11,7 @@ namespace Forge
 	{}
 
 	Quaternion::Quaternion(float w, float x, float y, float z)
-		: w(w), x(x), y(y), z(y)
+		: w(w), x(x), y(y), z(z)
 	{}
 
 	Quaternion::Quaternion(const Quaternion& quat)
@@ -472,5 +472,80 @@ namespace Forge
 		return "(" + String(w) + ", " + String(x) + ", " + String(y) + ", " + String(z) + ")\n";
 	}
 
+	Quaternion Quaternion::FromEuler(const Vector3& rotation)
+	{
+		float _x = rotation.x * Forge::DEGTORAD_2;
+		float _y = rotation.y * Forge::DEGTORAD_2;
+		float _z = rotation.z * Forge::DEGTORAD_2;
+
+		float sX = sinf(_x);
+		float sY = sinf(_y);
+		float sZ = sinf(_z);
+		float cX = cosf(_x);
+		float cY = cosf(_y);
+		float cZ = cosf(_z);
+
+		float w = cY * cX * cZ + sY * sX * sZ;
+		float x = cY * sX * cZ + sY * cX * sZ;
+		float y = sY * cX * cZ - cY * sX * sZ;
+		float z = cY * cX * sZ - sY * sX * cZ;
+
+		return Quaternion(w, x, y, z);
+	}
+
+	Quaternion Quaternion::FromEuler(float x, float y, float z)
+	{
+		float _x = x * Forge::DEGTORAD_2;
+		float _y = y * Forge::DEGTORAD_2;
+		float _z = z * Forge::DEGTORAD_2;
+
+		float sX = sinf(_x);
+		float sY = sinf(_y);
+		float sZ = sinf(_z);
+		float cX = cosf(_x);
+		float cY = cosf(_y);
+		float cZ = cosf(_z);
+
+		float rw = cY * cX * cZ + sY * sX * sZ;
+		float rx = cY * sX * cZ + sY * cX * sZ;
+		float ry = sY * cX * cZ - cY * sX * sZ;
+		float rz = cY * cX * sZ - sY * sX * cZ;
+
+		return Quaternion(rw, rx, ry, rz);
+	}
+
+	Vector3 Quaternion::ToEuler(const Quaternion& rotation)
+	{
+		float w = rotation.w;
+		float x = rotation.x;
+		float y = rotation.y;
+		float z = rotation.z;
+		float check = 2.0f * (-y * z + w * x);
+
+		if (check < -0.995f)
+		{
+			return Vector3(
+				-90.0f,
+				0.0f,
+				-atan2f(2.0f * (x * z - w * y), 1.0f - 2.0f * (y * y + z * z)) * RADTODEG
+			);
+		}
+		else if (check > 0.995f)
+		{
+			return Vector3(
+				90.0f,
+				0.0f,
+				atan2f(2.0f * (x * z - w * y), 1.0f - 2.0f * (y * y + z * z)) * RADTODEG
+			);
+		}
+		else
+		{
+			return Vector3(
+				asinf(check) * RADTODEG,
+				atan2f(2.0f * (x * z + w * y), 1.0f - 2.0f * (x * x + y * y)) * RADTODEG,
+				atan2f(2.0f * (x * y + w * z), 1.0f - 2.0f * (x * x + z * z)) * RADTODEG
+			);
+		}
+	}
 }
 

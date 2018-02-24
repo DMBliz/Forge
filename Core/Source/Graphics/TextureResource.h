@@ -22,26 +22,48 @@ namespace Forge
 		Nearest
 	};
 
+	enum class TextureInternalFormat
+	{
+		None,
+		RGB,
+		RGBA,
+		DepthStencil
+	};
+
 	enum class TextureFormat
 	{
 		None,
 		RGB,
-		RGBA
+		RGBA,
+		DepthStencil
+	};
+
+	enum class TextureDataType
+	{
+		Byte,
+		UnsignedInt,
+		UnsignedInt_24_8
 	};
 
 	struct TextureParametrs
 	{
 		TextureFilter filter;
 		TextureWrap wrap;
+		TextureInternalFormat internalFormat;
 		TextureFormat format;
+		TextureDataType dataType;
 
 
 		TextureParametrs()
-			: filter(TextureFilter::Linear), wrap(TextureWrap::Repeat), format(TextureFormat::RGBA)
+			: filter(TextureFilter::Linear), wrap(TextureWrap::Repeat), internalFormat(TextureInternalFormat::RGBA), format(TextureFormat::RGBA), dataType(TextureDataType::Byte)
 		{}
 
-		TextureParametrs(TextureFilter filter, TextureWrap wrap, TextureFormat format)
-			: filter(filter), wrap(wrap), format(format)
+		TextureParametrs(TextureFilter filter, TextureWrap wrap, TextureInternalFormat internalFormat, TextureFormat format)
+			: filter(filter), wrap(wrap),internalFormat(internalFormat), format(format), dataType(TextureDataType::Byte)
+		{}
+
+		TextureParametrs(TextureFilter filter, TextureWrap wrap, TextureInternalFormat internalFormat, TextureFormat format, TextureDataType dataType)
+			: filter(filter), wrap(wrap), internalFormat(internalFormat), format(format), dataType(dataType)
 		{}
 	};
 

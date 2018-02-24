@@ -3,6 +3,7 @@
 #include "Component.h"
 #include "ComponentManager.h"
 #include "Defines.h"
+#include "Serialization/meta.h"
 
 namespace Forge
 {
@@ -10,23 +11,86 @@ namespace Forge
 	class Entity
 	{
 		friend class EntityManager;
+		friend inline auto meta::registerMembers<Entity>();
 	private:
 		ComponentManager* _componentManager;
+		
+		static uint gEntityID;
 
-		static const uint GetNextID()
+		static uint GetNextID()
 		{
-			static uint ComponentID = 0;
-			return ComponentID++;
+			return gEntityID++;
 		}
-		const uint entityID = GetNextID();
+		uint entityID = GetNextID();
+
+		void SetEntityID(uint id)
+		{
+			if (gEntityID <= id)
+				gEntityID = id + 1;
+			entityID = id;
+		}
+
 		bool active = true;
+
+		void SetComponents(const std::vector<Component*>& newComponents)
+		{
+			components.clear();
+			components.push_back(*newComponents.data());
+		}
+
+		void AddChild(Entity* child)
+		{
+			auto it = std::find(childs.begin(), childs.end(), child);
+			if(it == childs.end())
+				childs.push_back(child);
+		}
+
+		String name;
+
 	protected:
+
+		void RemoveChild(Entity* child)
+		{
+			for (auto i = childs.begin(); i != childs.end(); ++i)
+			{
+				if (child->GetEntityID() == (*i)->GetEntityID())
+				{
+					childs.erase(i);
+					return;
+				}
+			}
+		}
 		std::vector<Component*> components;
+		std::vector<Entity*> childs;
+		Entity* parent;
 	public:
 		Entity()
 		{}
 		virtual ~Entity()
 		{}
+
+		uint GetEntityID() const
+		{
+			return entityID;
+		}
+
+		const String& Name() const
+		{
+			return name;
+		}
+
+		void Name(const String& newName)
+		{
+			name = newName;
+		}
+
+		virtual void SetParent(Entity* newParent)
+		{
+			if (parent != nullptr)
+				parent->RemoveChild(this);
+			parent = newParent;
+			newParent->AddChild(this);
+		}
 
 		template<class T>
 		T* AddComponent()
@@ -58,7 +122,7 @@ namespace Forge
 		}
 
 		template <class T>
-		std::vector<T*> GetComponents()
+		const std::vector<T*>& GetComponents()
 		{
 			std::vector<T*> retComps;
 			for (int i = 0; i < components.size(); i++)
@@ -70,7 +134,7 @@ namespace Forge
 			return retComps;
 		}
 
-		std::vector<Component*>& GetAllComponents()
+		const std::vector<Component*>& GetAllComponents() const
 		{
 			return components;
 		}
@@ -101,6 +165,16 @@ namespace Forge
 			}
 		}
 
+		const std::vector<Entity*>& GetAllChilds() const
+		{
+			return childs;
+		}
+
+		uint GetChildsCount() const 
+		{
+			return childs.size();
+		}
+
 		void DestroyAllComponents();
 
 		bool IsActive() const { return active; }
@@ -111,6 +185,20 @@ namespace Forge
 
 		virtual void OnCreate() {}
 		virtual void OnDestroy() {}
+
+		virtual void Update();
 	};
-	
+}
+
+
+namespace meta
+{
+	template<>
+	inline auto registerMembers<Forge::Entity>()
+	{
+		return members(
+			member("EntityID", &Forge::Entity::GetEntityID, &Forge::Entity::SetEntityID),
+			member("Components", &Forge::Entity::GetAllComponents, &Forge::Entity::SetComponents)
+		);
+	}
 }

@@ -11,9 +11,11 @@ namespace Forge
 		Texture2D();
 		~Texture2D();
 
-		virtual void SetTexture(const byte* pixels);
+		virtual void SetTexture(const byte* pixels, const Vector2i& imgSize);
 		virtual void SetTexture(const Image& img);
 
+		virtual void CreateOnGPU(uint width, uint height, TextureParametrs params, bool generateMipMaps);
+		const Vector2i& GetSize() const { return static_cast<Texture2DResource*>(textureResource)->GetSize(); }
 		void Load(String filename) override;
 		void UnLoad() override;
 	};

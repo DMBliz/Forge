@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Mathf.h"
 #include "Containers/String.h"
+#include "Math/Vector2.h"
 
 namespace Forge
 {

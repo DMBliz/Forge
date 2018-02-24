@@ -1,6 +1,8 @@
 #pragma once
 #include "Types.h"
 #include "Math/Vector2.h"
+#include "EventSystem/Delegate.h"
+#include "EventSystem/Event.h"
 
 namespace Forge
 {
@@ -120,7 +122,7 @@ namespace Forge
 
 	enum class MouseButton
 	{
-		Left,
+		Left = 0,
 		Right,
 		Middle,
 		XButton1,
@@ -137,10 +139,10 @@ namespace Forge
 		Hold
 	};
 
-	//TODO: fix input 
+	//TODO: Events call
 	class Input
 	{
-		friend Window;
+		friend class Window;
 
 	protected:
 		InputState keyboardKeys[static_cast<uint>(KeyboardKey::KeyCount)];
@@ -148,14 +150,21 @@ namespace Forge
 		InputState mouseButtons[static_cast<uint>(MouseButton::ButtonCount)];
 		InputState prevMouseButtons[static_cast<uint>(MouseButton::ButtonCount)];
 
+		Vector2 prevCursorPosition;
+		Vector2 deltaCursorPosition;
 		Vector2 cursorPosition;
+
+		Vector2 prevWheelDelta;
+		Vector2 wheelDelta;
 
 		virtual void SetKeyState(KeyboardKey key, InputState state);
 		virtual void SetButtonState(MouseButton button, InputState state);
-		virtual void SetMousePosition(const Vector2& newPosition);
+		virtual void SetMousePositionValue(const Vector2& newPosition);
+		virtual void SetScroll(const Vector2& scroll);
+		virtual void SetCharacterPressed(uint character);
 	public:
 		Input();
-		~Input();
+		virtual ~Input();
 		
 		bool KeyHold(KeyboardKey key);
 		bool KeyDown(KeyboardKey key);
@@ -167,8 +176,19 @@ namespace Forge
 
 		InputState GetKeyState(KeyboardKey key);
 		InputState GetMouseButtonState(MouseButton button);
+		const Vector2& GetCursorPosition();
+		const Vector2& GetCursorDelta();
+		const Vector2& GetMouseWheelDelta();
 
 		void Update();
+
+		Event<void(KeyboardKey, InputState)> onKeyStateChanged;
+		Event<void(MouseButton, InputState)> onMouseButtonStateChanged;
+		Event<void(const Vector2&)> onCursorMove;
+		Event<void(const Vector2&)> onMouseWheelScroll;
+		Event<void(uint character)> onCharacterPressed;
+
+		virtual void SetMousePosition(const Vector2& newPosition) = 0;
 
 		static Input* Create();
 	};

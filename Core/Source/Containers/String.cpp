@@ -8,54 +8,54 @@ namespace Forge
 	const String String::Empty;
 
 	String::String()
-		: length_(0), capacity_(0), charBuffer(0)
+		: charBuffer(nullptr), length_(0), capacity_(0)
 	{}
 
 	String::String(const String& str)
-		: length_(0), capacity_(0), charBuffer(0)
+		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		*this = str;
 	}
 
 	String::String(const char* str)
-		: length_(0), capacity_(0), charBuffer(0)
+		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		*this = str;
 	}
 
 	String::String(char* str)
-		: length_(0), capacity_(0), charBuffer(0)
+		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
-		*this = (const char*)str;
+		*this = static_cast<const char*>(str);
 	}
 
 	String::String(const char* str, unsigned length)
-		: length_(0), capacity_(0), charBuffer(0)
+		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		Resize(length);
 		CopyChars(charBuffer, str, length);
 	}
 
 	String::String(const wchar_t* str)
-		: length_(0), capacity_(0), charBuffer(0)
+		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		SetUTF8FromWChar(str);
 	}
 
 	String::String(wchar_t* str)
-		: length_(0), capacity_(0), charBuffer(0)
+		: length_(0), capacity_(0), charBuffer(nullptr)
 	{
 		SetUTF8FromWChar(str);
 	}
 
 	String::String(const WString& str)
-		: length_(0), capacity_(0), charBuffer(0)
+		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		SetUTF8FromWChar(str.CString());
 	}
 
 	String::String(int value)
-		: length_(0), capacity_(0), charBuffer(0)
+		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		char tmp[CONVERSION_BUFFER_LENGTH];
 		sprintf_s(tmp, "%d", value);
@@ -63,7 +63,7 @@ namespace Forge
 	}
 
 	String::String(short value)
-		: length_(0), capacity_(0), charBuffer(0)
+		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		char tmp[CONVERSION_BUFFER_LENGTH];
 		sprintf_s(tmp, "%d", value);
@@ -71,7 +71,7 @@ namespace Forge
 	}
 
 	String::String(long value)
-		: length_(0), capacity_(0), charBuffer(0)
+		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		char tmp[CONVERSION_BUFFER_LENGTH];
 		sprintf_s(tmp, "%ld", value);
@@ -79,7 +79,7 @@ namespace Forge
 	}
 
 	String::String(long long value)
-		: length_(0), capacity_(0), charBuffer(0)
+		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		char tmp[CONVERSION_BUFFER_LENGTH];
 		sprintf_s(tmp, "%lld", value);
@@ -87,7 +87,7 @@ namespace Forge
 	}
 
 	String::String(unsigned value)
-		: length_(0), capacity_(0), charBuffer(0)
+		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		char tmp[CONVERSION_BUFFER_LENGTH];
 		sprintf_s(tmp, "%u", value);
@@ -95,7 +95,7 @@ namespace Forge
 	}
 
 	String::String(unsigned short value)
-		: length_(0), capacity_(0), charBuffer(0)
+		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		char tmp[CONVERSION_BUFFER_LENGTH];
 		sprintf_s(tmp, "%u", value);
@@ -103,7 +103,7 @@ namespace Forge
 	}
 
 	String::String(unsigned long value)
-		: length_(0), capacity_(0), charBuffer(0)
+		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		char tmp[CONVERSION_BUFFER_LENGTH];
 		sprintf_s(tmp, "%lu", value);
@@ -111,7 +111,7 @@ namespace Forge
 	}
 
 	String::String(unsigned long long value)
-		: length_(0), capacity_(0), charBuffer(0)
+		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		char tmp[CONVERSION_BUFFER_LENGTH];
 		sprintf_s(tmp, "%llu", value);
@@ -119,7 +119,7 @@ namespace Forge
 	}
 
 	String::String(float value)
-		: length_(0), capacity_(0), charBuffer(0)
+		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		char tmp[CONVERSION_BUFFER_LENGTH];
 		sprintf_s(tmp, "%g", value);
@@ -127,7 +127,7 @@ namespace Forge
 	}
 
 	String::String(double value)
-		: length_(0), capacity_(0), charBuffer(0)
+		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		char tmp[CONVERSION_BUFFER_LENGTH];
 		sprintf_s(tmp, "%.15g", value);
@@ -135,7 +135,7 @@ namespace Forge
 	}
 
 	String::String(bool value)
-		: length_(0), capacity_(0), charBuffer(0)
+		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		if (value)
 			*this = "true";
@@ -144,27 +144,20 @@ namespace Forge
 	}
 
 	String::String(char value)
-		: length_(0), capacity_(0), charBuffer(0)
+		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		Resize(1);
 		charBuffer[0] = value;
 	}
 
 	String::String(char value, int length)
-		: length_(0), capacity_(0), charBuffer(0)
+		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		Resize(1);
 		for (unsigned i = 0; i < length_; i++)
 		{
 			charBuffer[i] = value;
 		}
-	}
-
-	template<class T>
-	Forge::String::String(const T& value)
-		: length_(0), capacity_(0), str(0)
-	{
-		*this = value.ToString();
 	}
 
 	String::~String()
@@ -319,41 +312,81 @@ namespace Forge
 
 	bool String::operator==(const String& rhs) const
 	{
+		if (rhs.charBuffer == nullptr && charBuffer == nullptr)
+			return true;
+		else if (rhs.charBuffer == nullptr || charBuffer == nullptr)
+			return false;
+
 		return strcmp(CString(), rhs.CString()) == 0;
 	}
 
 	bool String::operator!=(const String& rhs) const
 	{
+		if (rhs.charBuffer == nullptr && charBuffer == nullptr)
+			return false;
+		else if (rhs.charBuffer == nullptr || charBuffer == nullptr)
+			return true;
+
 		return strcmp(CString(), rhs.CString()) != 0;
 	}
 
 	bool String::operator<(const String& rhs) const
 	{
+		if (rhs.charBuffer == nullptr && charBuffer == nullptr)
+			return false;
+		else if (rhs.charBuffer == nullptr || charBuffer == nullptr)
+			return false;
+
 		return strcmp(CString(), rhs.CString()) < 0;
 	}
 	
 	bool String::operator>(const String& rhs) const
 	{
+		if (rhs.charBuffer == nullptr && charBuffer == nullptr)
+			return false;
+		else if (rhs.charBuffer == nullptr || charBuffer == nullptr)
+			return false;
+
 		return strcmp(CString(), rhs.CString()) > 0;
 	}
 
 	bool String::operator==(const char* rhs) const
 	{
+		if (rhs == nullptr && charBuffer == nullptr)
+			return true;
+		else if (rhs == nullptr || charBuffer == nullptr)
+			return false;
+
 		return strcmp(CString(), rhs) == 0;
 	}
 
 	bool String::operator!=(const char* rhs) const
 	{
+		if (rhs == nullptr && charBuffer == nullptr)
+			return false;
+		else if (rhs == nullptr || charBuffer == nullptr)
+			return true;
+
 		return strcmp(CString(), rhs) != 0;
 	}
 
 	bool String::operator<(const char* rhs) const
 	{
+		if (rhs == nullptr && charBuffer == nullptr)
+			return false;
+		else if (rhs == nullptr || charBuffer == nullptr)
+			return false;
+
 		return strcmp(CString(), rhs) < 0;
 	}
 
 	bool String::operator>(const char* rhs) const
 	{
+		if (rhs == nullptr && charBuffer == nullptr)
+			return false;
+		else if (rhs == nullptr || charBuffer == nullptr)
+			return false;
+
 		return strcmp(CString(), rhs) > 0;
 	}
 
@@ -393,7 +426,7 @@ namespace Forge
 		}
 		else
 		{
-			oldChar = (char)tolower(oldChar);
+			oldChar = static_cast<char>(tolower(oldChar));
 			for (unsigned i = 0; i < length_; i++)
 			{
 				if (tolower(charBuffer[i]) == oldChar)
@@ -635,7 +668,7 @@ namespace Forge
 		String ret(*this);
 
 		for (unsigned i = 0; i < ret.length_; i++)
-			ret[i] = (char)toupper(ret[i]);
+			ret[i] = static_cast<char>(toupper(ret[i]));
 
 		return ret;
 	}
@@ -645,7 +678,7 @@ namespace Forge
 		String ret(*this);
 
 		for (unsigned i = 0; i < ret.length_; i++)
-			ret[i] = (char)tolower(ret[i]);
+			ret[i] = static_cast<char>(tolower(ret[i]));
 
 		return ret;
 	}
@@ -672,7 +705,7 @@ namespace Forge
 		}
 		else
 		{
-			c = (char)tolower(c);
+			c = static_cast<char>(tolower(c));
 			for (unsigned i = startInd; i < length_; ++i)
 			{
 				if (tolower(charBuffer[i]) == c)
@@ -690,13 +723,13 @@ namespace Forge
 
 		char first = str.charBuffer[0];
 		if (!caseSensetive)
-			first = (char)tolower(first);
+			first = static_cast<char>(tolower(first));
 
-		for (unsigned i = startInd; i < length_ - str.length_; ++i)
+		for (unsigned i = startInd; i <= length_ - str.length_; ++i)
 		{
 			char c = charBuffer[i];
 			if (!caseSensetive)
-				c = (char)tolower(c);
+				c = static_cast<char>(tolower(c));
 
 			if (c == first)
 			{
@@ -710,8 +743,8 @@ namespace Forge
 
 					if (!caseSensetive)
 					{
-						c = (char)tolower(c);
-						d = (char)tolower(d);
+						c = static_cast<char>(tolower(c));
+						d = static_cast<char>(tolower(d));
 					}
 
 					if (skip == NOTFOUND && c == first)
@@ -748,7 +781,7 @@ namespace Forge
 		}
 		else
 		{
-			c = (char)tolower(c);
+			c = static_cast<char>(tolower(c));
 			for (unsigned i = startInd; i < length_; --i)
 			{
 				if (tolower(charBuffer[i]) == c)
@@ -768,13 +801,13 @@ namespace Forge
 
 		char first = str.charBuffer[0];
 		if (!caseSensetive)
-			first = (char)tolower(first);
+			first = static_cast<char>(tolower(first));
 
 		for (unsigned i = startInd; i < length_ - str.length_; --i)
 		{
 			char c = charBuffer[i];
 			if (!caseSensetive)
-				c = (char)tolower(c);
+				c = static_cast<char>(tolower(c));
 
 			if (c == first)
 			{
@@ -787,8 +820,8 @@ namespace Forge
 
 					if (!caseSensetive)
 					{
-						c = (char)tolower(c);
-						d = (char)tolower(d);
+						c = static_cast<char>(tolower(c));
+						d = static_cast<char>(tolower(d));
 					}
 
 					if (c != d)
@@ -849,7 +882,7 @@ namespace Forge
 		{
 			char* dest = temp;
 
-			EncodeUTF8(dest, (unsigned)*str++);
+			EncodeUTF8(dest, static_cast<unsigned>(*str++));
 			*dest = 0;
 			Append(temp);
 		}
@@ -924,7 +957,7 @@ namespace Forge
 
 		const char* src = charBuffer + byteOffset;
 		unsigned ret = DecodeUTF8(src);
-		byteOffset = (unsigned)(src - charBuffer);
+		byteOffset = static_cast<unsigned>(src - charBuffer);
 
 		return ret;
 	}
@@ -957,7 +990,7 @@ namespace Forge
 		EncodeUTF8(dest, uniChar);
 		*dest = 0;
 
-		Replace(begin, offset - begin, temp, (unsigned)(dest - temp));
+		Replace(begin, offset - begin, temp, static_cast<unsigned>(dest - temp));
 	}
 
 	String& String::AppendUTF8(unsigned uniChar)
@@ -1035,7 +1068,7 @@ namespace Forge
 
 	void String::Replace(unsigned pos, unsigned length, const char* src, unsigned srcLength)
 	{
-		int delta = (int)srcLength - (int)length;
+		int delta = static_cast<int>(srcLength) - static_cast<int>(length);
 
 		if (pos + length < length_)
 		{
@@ -1104,43 +1137,43 @@ namespace Forge
 			*dest++ = uniChar;
 		else if (uniChar < 0x800)
 		{
-			dest[0] = (char)(0xc0 | (uniChar >> 6) & 0x1f);
-			dest[1] = (char)(0x80 | uniChar & 0x3f);
+			dest[0] = static_cast<char>(0xc0 | (uniChar >> 6) & 0x1f);
+			dest[1] = static_cast<char>(0x80 | uniChar & 0x3f);
 			dest += 2;
 		}
 		else if (uniChar < 0x10000)
 		{
-			dest[0] = (char)(0xe0 | (uniChar >> 12) & 0xf);
-			dest[1] = (char)(0x80 | (uniChar >> 6) & 0x3f);
-			dest[2] = (char)(0x80 | uniChar & 0x3f);
+			dest[0] = static_cast<char>(0xe0 | (uniChar >> 12) & 0xf);
+			dest[1] = static_cast<char>(0x80 | (uniChar >> 6) & 0x3f);
+			dest[2] = static_cast<char>(0x80 | uniChar & 0x3f);
 			dest += 3;
 		}
 		else if (uniChar < 0x200000)
 		{
-			dest[0] = (char)(0xf0 | (uniChar >> 18) & 0x7);
-			dest[1] = (char)(0x80 | (uniChar >> 12) & 0x3f);
-			dest[2] = (char)(0x80 | (uniChar >> 6) & 0x3f);
-			dest[3] = (char)(0x80 | uniChar & 0x3f);
+			dest[0] = static_cast<char>(0xf0 | (uniChar >> 18) & 0x7);
+			dest[1] = static_cast<char>(0x80 | (uniChar >> 12) & 0x3f);
+			dest[2] = static_cast<char>(0x80 | (uniChar >> 6) & 0x3f);
+			dest[3] = static_cast<char>(0x80 | uniChar & 0x3f);
 			dest += 4;
 
 		}
 		else if (uniChar < 0x4000000)
 		{
-			dest[0] = (char)(0xf8 | (uniChar >> 24) & 0x3);
-			dest[1] = (char)(0x80 | (uniChar >> 18) & 0x3f);
-			dest[2] = (char)(0x80 | (uniChar >> 12) & 0x3f);
-			dest[3] = (char)(0x80 | (uniChar >> 6) & 0x3f);
-			dest[4] = (char)(0x80 | uniChar & 0x3f);
+			dest[0] = static_cast<char>(0xf8 | (uniChar >> 24) & 0x3);
+			dest[1] = static_cast<char>(0x80 | (uniChar >> 18) & 0x3f);
+			dest[2] = static_cast<char>(0x80 | (uniChar >> 12) & 0x3f);
+			dest[3] = static_cast<char>(0x80 | (uniChar >> 6) & 0x3f);
+			dest[4] = static_cast<char>(0x80 | uniChar & 0x3f);
 			dest += 5;
 		}
 		else
 		{
-			dest[0] = (char)(0xfc | (uniChar >> 30) & 0x1);
-			dest[1] = (char)(0x80 | (uniChar >> 24) & 0x3f);
-			dest[2] = (char)(0x80 | (uniChar >> 18) & 0x3f);
-			dest[3] = (char)(0x80 | (uniChar >> 12) & 0x3f);
-			dest[4] = (char)(0x80 | (uniChar >> 6) & 0x3f);
-			dest[5] = (char)(0x80 | uniChar & 0x3f);
+			dest[0] = static_cast<char>(0xfc | (uniChar >> 30) & 0x1);
+			dest[1] = static_cast<char>(0x80 | (uniChar >> 24) & 0x3f);
+			dest[2] = static_cast<char>(0x80 | (uniChar >> 18) & 0x3f);
+			dest[3] = static_cast<char>(0x80 | (uniChar >> 12) & 0x3f);
+			dest[4] = static_cast<char>(0x80 | (uniChar >> 6) & 0x3f);
+			dest[5] = static_cast<char>(0x80 | uniChar & 0x3f);
 			dest += 6;
 		}
 	}
@@ -1154,14 +1187,14 @@ namespace Forge
 
 		if (char1 >= 0x80 && char1 < 0xc0)
 		{
-			while ((unsigned char)*src >= 0x80 && (unsigned char)*src < 0xc0)
+			while (static_cast<unsigned char>(*src) >= 0x80 && static_cast<unsigned char>(*src) < 0xc0)
 				++src;
 			return '?';
 		}
 		
 		auto nextByte = [](const char*& src)
 		{
-			return ((((unsigned char)*src) < 0x80) || (((unsigned char)*src) >= 0xc0)) ? ('?') : *(++src);
+			return (static_cast<unsigned char>(*src) < 0x80 || static_cast<unsigned char>(*src) >= 0xc0) ? ('?') : *(++src);
 		};
 		
 		if (char1 < 0x80)
@@ -1169,20 +1202,20 @@ namespace Forge
 		else if (char1 < 0xe0)
 		{
 			unsigned char char2 = nextByte(src);
-			return (unsigned)((char2 & 0x3f) | ((char1 & 0x1f) << 6));
+			return static_cast<unsigned>((char2 & 0x3f) | ((char1 & 0x1f) << 6));
 		}
 		else if (char1 < 0xf0)
 		{
 			unsigned char char2 = nextByte(src);
 			unsigned char char3 = nextByte(src);
-			return (unsigned)((char3 & 0x3f) | ((char2 & 0x3f) << 6) | ((char1 & 0xf) << 12));
+			return static_cast<unsigned>((char3 & 0x3f) | ((char2 & 0x3f) << 6) | ((char1 & 0xf) << 12));
 		}
 		else if (char1 < 0xf8)
 		{
 			unsigned char char2 = nextByte(src);
 			unsigned char char3 = nextByte(src);
 			unsigned char char4 = nextByte(src);
-			return (unsigned)((char4 & 0x3f) | ((char3 & 0x3f) << 6) | ((char2 & 0x3f) << 12) | ((char1 & 0x7) << 18));
+			return static_cast<unsigned>((char4 & 0x3f) | ((char3 & 0x3f) << 6) | ((char2 & 0x3f) << 12) | ((char1 & 0x7) << 18));
 		}
 		else if (char1 < 0xfc)
 		{
@@ -1190,7 +1223,8 @@ namespace Forge
 			unsigned char char3 = nextByte(src);
 			unsigned char char4 = nextByte(src);
 			unsigned char char5 = nextByte(src);
-			return (unsigned)((char5 & 0x3f) | ((char4 & 0x3f) << 6) | ((char3 & 0x3f) << 12) | ((char2 & 0x3f) << 18) | ((char1 & 0x3) << 24));
+			return static_cast<unsigned>((char5 & 0x3f) | ((char4 & 0x3f) << 6) | ((char3 & 0x3f) << 12) | ((char2 & 0x3f) << 18) | (
+											(char1 & 0x3) << 24));
 		}
 		else
 		{
@@ -1199,7 +1233,8 @@ namespace Forge
 			unsigned char char4 = nextByte(src);
 			unsigned char char5 = nextByte(src);
 			unsigned char char6 = nextByte(src);
-			return (unsigned)((char6 & 0x3f) | ((char5 & 0x3f) << 6) | ((char4 & 0x3f) << 12) | ((char3 & 0x3f) << 18) | ((char2 & 0x3f) << 24) | ((char1 & 0x1) << 30));
+			return static_cast<unsigned>((char6 & 0x3f) | ((char5 & 0x3f) << 6) | ((char4 & 0x3f) << 12) | ((char3 & 0x3f) << 18) | (
+											(char2 & 0x3f) << 24) | ((char1 & 0x1) << 30));
 		}
 	}
 
@@ -1248,7 +1283,7 @@ namespace Forge
 
 	unsigned String::CStringLength(const char* str)
 	{
-		return str ? (unsigned)strlen(str) : 0;
+		return str ? static_cast<unsigned>(strlen(str)) : 0;
 	}
 
 	int String::Compare(const char* str1, const char* str2, bool caseSensetive /*= true*/)
@@ -1262,8 +1297,8 @@ namespace Forge
 		{
 			while(true)
 			{
-				char l = (char)tolower(*str1);
-				char r = (char)tolower(*str2);
+				char l = static_cast<char>(tolower(*str1));
+				char r = static_cast<char>(tolower(*str2));
 				if (!l || !r)
 					return l ? 1 : (r ? -1 : 0);
 				if (l < r)

@@ -1,13 +1,13 @@
 #pragma once
 #include "Platform/Window.h"
 #include "windows.h"
-#include "Defines.h"
 
 namespace Forge
 {
 
 	class WindowWin32 : public Window
 	{
+		friend class WinInput;
 	private:
 		HWND _hwnd = nullptr;
 		HMONITOR _monitor = nullptr;
@@ -18,6 +18,9 @@ namespace Forge
 		DWORD _wdindowFullScreenStyle = 0;
 		Vector2i windowedSize;
 		Vector2i windowedPos;
+
+		HDC deviceContext;
+		HGLRC renderContext;
 		
 		void ProcessResize(const Vector2i& size);
 		void ProcessMove();
@@ -28,6 +31,7 @@ namespace Forge
 		~WindowWin32();
 
 		void Create(const Vector2i& size, const String& title, bool Resizable, bool FullScreen, bool ExclusiveFullScreen, bool HighDPI, bool depth) override;
+		void CreateContext() override;
 
 		void SetSize(const Vector2i& newSize) override;
 
@@ -41,6 +45,12 @@ namespace Forge
 
 		HMONITOR GetMonitor() const { return _monitor; }
 
+		void PlatformUpdate() override;
+
+		void SetClipboard(const String& data) override;
+		const String& GetClipboard() override;
+	protected:
+		void SetCursorPosition(const Vector2i& newPos) override;
 	};
 
 }

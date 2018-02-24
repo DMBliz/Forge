@@ -1,5 +1,6 @@
 #pragma once
 #include "FileSystem/File.h"
+#include "Serialization/Meta.h"
 
 namespace Forge
 {
@@ -7,23 +8,37 @@ namespace Forge
 	class Component
 	{
 		friend class ComponentManager;
-
+		friend inline auto meta::registerMembers<Component>();
 	private:
-		static const uint GetNextID()
+		static uint gComponentID;
+
+		static uint GetNextID()
 		{
-			static uint ComponentID = 0;
-			return ComponentID++;
+			return gComponentID++;
 		}
+
+		void SetComponentID(uint id)
+		{
+			if (gComponentID <= id)
+				gComponentID = id + 1;
+			componentID = id;
+		}
+
 		bool active = true;
 		Entity* owner = nullptr;
 	protected:
-		const uint componentID = GetNextID();
+		uint componentID = GetNextID();
 	public:
 		Component()
 		{}
 
 		~Component()
 		{}
+
+		uint GetComponentID() const
+		{
+			return componentID;
+		}
 
 		bool IsActive() const { return active; }
 		void SetActive(bool state);
@@ -44,9 +59,22 @@ namespace Forge
 			return componentID != rhs.componentID;
 		}
 
+		virtual void Update(){}
+
 		uint GetComponentID() { return componentID; }
 
 		Entity* GetOwner() const { return owner; }
 	};
 
+}
+
+namespace meta
+{
+	template<>
+	inline auto registerMembers<Forge::Component>()
+	{
+		return members(
+			member("Component", &Forge::Component::GetComponentID, &Forge::Component::SetComponentID)
+		);
+	}
 }

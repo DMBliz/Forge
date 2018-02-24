@@ -4,7 +4,7 @@
 
 namespace Forge
 {
-
+	uint Entity::gEntityID;
 	void Entity::SetActive(bool state)
 	{
 		if (active == state)
@@ -22,13 +22,14 @@ namespace Forge
 		active = state;
 	}
 
-	
+	void Entity::Update()
+	{
+		for(Component* component : components)
+		{
+			component->Update();
+		}
+	}
 
-	
-
-	
-
-	
 
 	void Entity::DestroyAllComponents()
 	{

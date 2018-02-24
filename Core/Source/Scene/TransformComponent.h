@@ -35,7 +35,13 @@ namespace Forge
 		void Rotation(const Quaternion& quaternion);
 		void Scale(const Vector3& vector);
 
-		void SetParent(TransformComponent* parent);
+		Vector3 Up() const { return rotation * Vector3::Up; }
+		Vector3 Right() const { return rotation * Vector3::Right; }
+		Vector3 Forward() const { return rotation * Vector3::Forward; }
+
+		void Parent(TransformComponent* parent);
+		TransformComponent* Parent() const;
+
 		Matrix3x4 GetTransform() const;
 		Quaternion GetRotation() const;
 		const Matrix3x4* GetWorldTransform() const;

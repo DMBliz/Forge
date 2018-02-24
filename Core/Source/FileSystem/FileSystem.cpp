@@ -2,6 +2,7 @@
 #include <fstream>
 #include "Defines.h"
 #include <sstream>
+#include "Windows/WINFileSystem.h"
 
 namespace Forge
 {
@@ -57,5 +58,18 @@ namespace Forge
 		bool exist = static_cast<bool>(file);
 		file.close();
 		return exist;
+	}
+
+	FileSystem* FileSystem::Create()
+	{
+		FileSystem* ret;
+#if defined(WIN32)
+		ret = new WINFileSystem();
+#elif defined(MACOS)
+#elif defined(LINUX)
+#elif defined(ANDROID)
+#elif defined(IOS)
+#endif
+		return ret;
 	}
 }

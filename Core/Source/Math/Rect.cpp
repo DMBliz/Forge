@@ -1,4 +1,5 @@
 #include "Rect.h"
+#include "Vector4.h"
 
 namespace Forge
 {

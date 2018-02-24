@@ -43,7 +43,7 @@ namespace Forge
 		return referenceCount;
 	}
 
-	String Resource::GetResourceName() const
+	const String& Resource::GetResourceName() const
 	{
 		return resourceName;
 	}

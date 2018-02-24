@@ -1,4 +1,7 @@
 ﻿#include "Vector3.h"
+
+#include "Vector2.h"
+#include "Vector4.h"
 #include "Mathf.h"
 
 namespace Forge
@@ -91,7 +94,7 @@ namespace Forge
 
 	bool Vector3::operator!=(const Vector3& rhs) const
 	{
-		return x != rhs.x && y != rhs.y && z != rhs.z;
+		return x != rhs.x || y != rhs.y || z != rhs.z;
 	}
 
 	Vector3 Vector3::operator-() const
@@ -156,7 +159,7 @@ namespace Forge
 	Vector3 Vector3::Normalized() const
 	{
 		float lensq = LengthSquared();
-		if (Equals(lensq, 1.0f) && lensq > 0.0f)
+		if (!Equals(lensq, 1.0f) && lensq > 0.0f)
 		{
 			float invLen = 1.0f / sqrtf(lensq);
 			return *this * invLen;
@@ -168,7 +171,7 @@ namespace Forge
 	void Vector3::Normalize()
 	{
 		float lensq = LengthSquared();
-		if (Equals(lensq, 1.0f) && lensq > 0.0f)
+		if (!Equals(lensq, 1.0f) && lensq > 0.0f)
 		{
 			float invLen = 1.0f / sqrtf(lensq);
 			x *= invLen;

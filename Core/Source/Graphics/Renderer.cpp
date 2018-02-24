@@ -6,8 +6,10 @@
 namespace Forge
 {
 
-	void Renderer::Init(Window* win)
+	void Renderer::Init(const Vector2i& windowSize)
 	{
+		if (deviceRenderer != nullptr)
+			delete deviceRenderer;
 #if defined(WIN32)
 #if defined(OGL)
 		deviceRenderer = GraphicsRenderer::Create();
@@ -17,29 +19,47 @@ namespace Forge
 #elif defined(ANDROID)
 #elif defined(IOS)
 #endif
-		deviceRenderer->Init(*win);
+		deviceRenderer->Init(windowSize);
 	}
 
-	void Renderer::SetProjectionMatrix(const Matrix4& projection)
+	void Renderer::AddDrawBatch(DrawBatch* drawBatch)
 	{
-		deviceRenderer->SetProjection(projection);
+		drawBatches.push_back(drawBatch);
 	}
 
-	void Renderer::SetPerspectiveProjection(float fov, float nearf, float farf)
+	void Renderer::Draw()
 	{
-		const Vector2i wsize = engine->GetWindow()->GetSize();
-		SetProjectionMatrix(Matrix4::Perspective(fov, wsize.x / wsize.y, nearf, farf));
+		deviceRenderer->PreDraw();
+
+		for (uint i = 0; i < drawBatches.size(); i++)
+		{
+			deviceRenderer->Draw(drawBatches[i]);
+		}
+		deviceRenderer->PostDraw();
+
+		deviceRenderer->DrawToScreen();
 	}
 
-	void Renderer::SetOrthographicProjection(float nearf, float farf)
+	bool Renderer::RemoveDrawBatch(DrawBatch* drawBatch)
 	{
-		const Vector2i wsize = engine->GetWindow()->GetSize();
-		SetProjectionMatrix(Matrix4::Orthographic(0, wsize.x, 0, wsize.y, nearf, farf));
+		if (ContainsDrawBatch(drawBatch))
+		{
+			auto it = std::find(drawBatches.begin(), drawBatches.end(), drawBatch);
+			drawBatches.erase(it);
+			return true;
+		}
+
+		return false;
 	}
 
-	void Renderer::SetViewMatrix(const Matrix4& view)
+	bool Renderer::ContainsDrawBatch(DrawBatch* drawBatch)
 	{
-		deviceRenderer->SetView(view);
+		return std::find(drawBatches.begin(), drawBatches.end(), drawBatch) != drawBatches.end();
+	}
+
+	void Renderer::SetSize(const Vector2i& newSize)
+	{
+		deviceRenderer->SetSize(newSize);
 	}
 
 	Renderer::Renderer()
@@ -53,4 +73,33 @@ namespace Forge
 		}
 	}
 
+	void Renderer::SetFrustum(const Frustum& frustum)
+	{
+		deviceRenderer->SetFrustum(frustum);
+	}
+
+	const Frustum& Renderer::GetFrustum() const
+	{
+		return deviceRenderer->GetFrustum();
+	}
+
+	void Renderer::SetWindowClearColor(const Color& color)
+	{
+		deviceRenderer->SetClearColor(color);
+	}
+
+	const Color& Renderer::GetWindowClearColor()
+	{
+		return deviceRenderer->GetClearColor();
+	}
+
+	void Renderer::SetFrameBufferClearColor(const Color& color)
+	{
+		deviceRenderer->GetSurface()->SetClearColor(color);
+	}
+
+	const Color& Renderer::GetFrameBufferClearColor()
+	{
+		return deviceRenderer->GetSurface()->GetClearColor();
+	}
 }

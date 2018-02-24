@@ -26,7 +26,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
@@ -70,8 +70,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)bin\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\$(ProjectName)\</OutDir>
+    <IntDir>$(SolutionDir)bin\$(Configuration)\$(ProjectName)\Intermediate</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\bin\$(Configuration)\</OutDir>
@@ -124,6 +124,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Graphics\Camera.h" />
+    <ClInclude Include="Source\Scene\CameraComponent.h" />
+    <ClInclude Include="Source\FileSystem\Windows\WINFileSystem.h" />
+    <ClInclude Include="Source\Math\Frustum.h" />
+    <ClInclude Include="Source\Graphics\OpenGL\GLRenderSurface.h" />
+    <ClInclude Include="Source\Graphics\RenderSurface.h" />
+    <ClInclude Include="Source\Scene\ScriptComponent.h" />
+    <ClInclude Include="Source\Scene\Script.h" />
     <ClInclude Include="Source\Scene\Scene.h" />
     <ClInclude Include="Source\Graphics\Shader.h" />
     <ClInclude Include="Source\Resources\Resources.h" />
@@ -147,23 +155,23 @@
     <ClInclude Include="MyGame.h" />
     <ClInclude Include="Source\Core\Game.h" />
     <ClInclude Include="Source\Graphics\OpenGL\GLCheck.h" />
-    <ClInclude Include="Source\Graphics\OpenGL\OGLTexture2DResource.h" />
+    <ClInclude Include="Source\Graphics\OpenGL\GLTexture2DResource.h" />
     <ClInclude Include="Source\Resources\Image.h" />
     <ClInclude Include="Source\FileSystem\File.h" />
     <ClInclude Include="Source\FileSystem\FileSystem.h" />
-    <ClInclude Include="Source\Graphics\OpenGL\OGLShaderResource.h" />
+    <ClInclude Include="Source\Graphics\OpenGL\GLShaderResource.h" />
     <ClInclude Include="Source\Graphics\ShaderUniform.h" />
-    <ClInclude Include="Source\Graphics\OpenGL\OGLVertexArray.h" />
+    <ClInclude Include="Source\Graphics\OpenGL\GLVertexArray.h" />
     <ClInclude Include="Source\Graphics\BufferLayout.h" />
-    <ClInclude Include="Source\Graphics\OpenGL\OGLIndexBuffer.h" />
+    <ClInclude Include="Source\Graphics\OpenGL\GLIndexBuffer.h" />
     <ClInclude Include="Source\Graphics\IndexBuffer.h" />
     <ClInclude Include="Dependecies\include\glad\glad.h" />
     <ClInclude Include="Dependecies\include\glad\glad_wgl.h" />
     <ClInclude Include="Dependecies\include\KHR\khrplatform.h" />
-    <ClInclude Include="Source\Graphics\OpenGL\OGLVertexBuffer.h" />
+    <ClInclude Include="Source\Graphics\OpenGL\GLVertexBuffer.h" />
     <ClInclude Include="Source\Graphics\VertexArray.h" />
     <ClInclude Include="Source\Graphics\ShaderResource.h" />
-    <ClInclude Include="Source\Graphics\OpenGL\OGLGraphicsRenderer.h" />
+    <ClInclude Include="Source\Graphics\OpenGL\GLGraphicsRenderer.h" />
     <ClInclude Include="Source\Graphics\GraphicsRenderer.h" />
     <ClInclude Include="Source\Graphics\OpenGL\Windows\OGLWIN32Context.h" />
     <ClInclude Include="Source\Defines.h" />
@@ -206,6 +214,14 @@
     <ClInclude Include="Source\Graphics\Texture.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Graphics\Camera.cpp" />
+    <ClCompile Include="Source\Scene\CameraComponent.cpp" />
+    <ClCompile Include="Source\FileSystem\Windows\WINFileSystem.cpp" />
+    <ClCompile Include="Source\Math\Frustum.cpp" />
+    <ClCompile Include="Source\Graphics\OpenGL\GLRenderSurface.cpp" />
+    <ClCompile Include="Source\Graphics\RenderSurface.cpp" />
+    <ClCompile Include="Source\Scene\ScriptComponent.cpp" />
+    <ClCompile Include="Source\Scene\Script.cpp" />
     <ClCompile Include="Source\Scene\Scene.cpp" />
     <ClCompile Include="Source\Graphics\Shader.cpp" />
     <ClCompile Include="Source\Resources\Resource.cpp" />
@@ -221,21 +237,21 @@
     <ClCompile Include="Source\Graphics\Mesh.cpp" />
     <ClCompile Include="MyGame.cpp" />
     <ClCompile Include="Source\Core\Game.cpp" />
-    <ClCompile Include="Source\Graphics\OpenGL\OGLTexture2DResource.cpp" />
+    <ClCompile Include="Source\Graphics\OpenGL\GLTexture2DResource.cpp" />
     <ClCompile Include="Source\Resources\Image.cpp" />
     <ClCompile Include="Source\FileSystem\FileSystem.cpp" />
-    <ClCompile Include="Source\Graphics\OpenGL\OGLShaderResource.cpp" />
+    <ClCompile Include="Source\Graphics\OpenGL\GLShaderResource.cpp" />
     <ClCompile Include="Source\Graphics\ShaderUniform.cpp" />
-    <ClCompile Include="Source\Graphics\OpenGL\OGLVertexArray.cpp" />
+    <ClCompile Include="Source\Graphics\OpenGL\GLVertexArray.cpp" />
     <ClCompile Include="Source\Graphics\BufferLayout.cpp" />
-    <ClCompile Include="Source\Graphics\OpenGL\OGLIndexBuffer.cpp" />
+    <ClCompile Include="Source\Graphics\OpenGL\GLIndexBuffer.cpp" />
     <ClCompile Include="Source\Graphics\IndexBuffer.cpp" />
     <ClCompile Include="Dependecies\src\glad.c" />
     <ClCompile Include="Dependecies\src\glad_wgl.c" />
-    <ClCompile Include="Source\Graphics\OpenGL\OGLVertexBuffer.cpp" />
+    <ClCompile Include="Source\Graphics\OpenGL\GLVertexBuffer.cpp" />
     <ClCompile Include="Source\Graphics\ShaderResource.cpp" />
     <ClCompile Include="Source\Graphics\Context.cpp" />
-    <ClCompile Include="Source\Graphics\OpenGL\OGLGraphicsRenderer.cpp" />
+    <ClCompile Include="Source\Graphics\OpenGL\GLGraphicsRenderer.cpp" />
     <ClCompile Include="Source\Graphics\GraphicsRenderer.cpp" />
     <ClCompile Include="Source\Graphics\OpenGL\Windows\OGLWIN32Context.cpp" />
     <ClCompile Include="Source\Graphics\Renderer.cpp" />
@@ -259,7 +275,6 @@
     <ClCompile Include="Source\Containers\String.cpp" />
     <ClCompile Include="Source\Platform\Windows\WindowWin32.cpp" />
     <ClCompile Include="Source\Math\Vector2i.cpp" />
-    <ClCompile Include="Source\Graphics\TextureResource.cpp" />
     <ClCompile Include="Source\Graphics\Texture2DResource.cpp" />
     <ClCompile Include="Source\Scene\SpriteRenderer.cpp" />
     <ClCompile Include="Source\Scene\TransformComponent.cpp" />
@@ -271,6 +286,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\fs.glsl" />
+    <None Include="Shaders\ScreenShader.glsl" />
     <None Include="Shaders\vs.glsl" />
     <None Include="Source\Serialization\detail\template_helpers.inl" />
     <None Include="Source\Serialization\Member.inl" />

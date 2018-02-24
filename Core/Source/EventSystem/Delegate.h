@@ -19,16 +19,16 @@ namespace Forge
 			return (Function)(args...);
 		}
 
-		template<class C, R(*Function)(Args...)>
+		template<class C, R(C::*Function)(Args...)>
 		static R ClassMethodStub(InstancePtr instance, Args... args)
 		{
-			return (static_cast<C*>(instance)->Function)();
+			return (static_cast<C*>(instance)->*Function)(args...);
 		}
 
 	private:
 		Stub stub;
 		Delegate(void* instance, InternalFunction callbackFunction)
-			:stub(instance, callbackFunction)
+			:stub{ instance, callbackFunction }
 		{}
 	public:
 		Delegate()
@@ -52,7 +52,7 @@ namespace Forge
 			stub.second = &FunctionStub<Function>;
 		}
 
-		template<class C, R(*Function)(Args...)>
+		template<class C, R(C::*Function)(Args...)>
 		void Bind(C* instance)
 		{
 			stub.first = instance;
@@ -68,6 +68,12 @@ namespace Forge
 		static Delegate Create()
 		{
 			return Delegate{ nullptr, &FunctionStub<Function> };
+		}
+
+		template<class C, R(C::*Function)(Args...)>
+		static Delegate Create(C* instance)
+		{
+			return Delegate{ instance, &ClassMethodStub<C, Function> };
 		}
 
 	};

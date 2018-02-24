@@ -1,0 +1,179 @@
+
+
+## Widgets #
+
+## Layout #
+
+## Popups & Modal windows #
+
+## Columns #
+> Basic
+    Without border: 
+    --------------------------------
+    Item 0 Item 1 Item 2
+    Item 3 Item 4 Item 5
+    Item 6 Item 7 Item 8
+    Item 9 Item 10 Item 11
+    Item 12 Item 13 
+    --------------------------------
+    With border: 
+    --------------------------------
+    ID Name Path Hovered 
+    --------------------------------
+    0000 One /path/one 0
+    0001 Two /path/two 0
+    0002 Three /path/three 0 
+    --------------------------------
+> Mixed items 
+    --------------------------------
+    Hello
+    Banana ImGui
+    Apple
+    1.000 - + red
+    An extra line here. Sailor
+    Corniflower
+    1.000 - + blue
+    
+    ## Category A # 
+    ## Category B # 
+    ## Category C # 
+    --------------------------------
+> Word-wrapping 
+    --------------------------------
+    The quick brown fox jumps over the lazy dog.
+    Hello Left The quick brown fox jumps over the lazy dog.
+    Hello Right 
+    --------------------------------
+> Borders
+    [x] horizontal [x] vertical 
+    --------------------------------
+    aaa
+    Width 122.25
+    Offset 21.00 bbb
+    Width 122.25
+    Offset 143.25 ccc
+    Width 122.25
+    Offset 265.50 ddd
+    Width 122.25
+    Offset 387.75 
+    --------------------------------
+    eee
+    Width 122.25
+    Offset 21.00 fff
+    Width 122.25
+    Offset 143.25 ggg
+    Width 122.25
+    Offset 265.50 hhh
+    Width 122.25
+    Offset 387.75 
+    --------------------------------
+    iii
+    Width 122.25
+    Offset 21.00 jjj
+    Width 122.25
+    Offset 143.25 kkk
+    Width 122.25
+    Offset 265.50 lll
+    Width 122.25
+    Offset 387.75 
+    --------------------------------
+> Horizontal Scrolling
+> Tree within single cell (?) 
+    --------------------------------
+    > Hello
+        Sailor > Bonjour
+        Marin 
+    --------------------------------
+
+## Filtering #
+Filter usage:
+  ""         display all lines
+  "xxx"      display lines containing "xxx"
+  "xxx,yyy"  display lines containing "xxx" or "yyy"
+  "-xxx"     hide lines containing "xxx" Filter (inc,-exc)
+aaa1.c
+bbb1.c
+ccc1.c
+aaa2.cpp
+bbb2.cpp
+ccc2.cpp
+abc.h
+hello, world
+
+## Inputs & Focus #
+[ ] io.MouseDrawCursor (?)
+WantCaptureMouse: 1
+WantCaptureKeyboard: 1
+WantTextInput: 0
+WantMoveMouse: 0
+> Keyboard & Mouse State
+    Mouse pos: (860, 516)
+    Mouse down:
+    Mouse clicked:
+    Mouse dbl-clicked:
+    Mouse released: b0
+    Mouse wheel: 0.0
+    Keys down:
+    Keys pressed:
+    Keys release:
+    Keys mods: 
+    Hovering me sets the
+    keyboard capture flag Holding me clears the
+    the keyboard capture flag
+> Tabbing
+    Use TAB/SHIFT+TAB to cycle through keyboard editable fields.
+    dummy 1
+    dummy 2
+    dummy 3
+    dummy 4 (tab skip)
+    dummy 5
+> Focus from code
+    Focus on 1 Focus on 2 Focus on 3
+    click on a button to set focus 1
+    click on a button to set focus 2
+    click on a button to set focus 3 (tab skip)
+    Item with focus: <none>
+    Cursor & selection are preserved when refocusing last used item in code.
+> Focused & Hovered Test
+    [ ] Embed everything inside a child window (for additional testing)
+    IsWindowFocused() = 1
+    IsWindowFocused(_ChildWindows) = 1
+    IsWindowFocused(_ChildWindows|_RootWindow) = 1
+    IsWindowFocused(_RootWindow) = 1
+    IsWindowHovered() = 1
+    IsWindowHovered(_AllowWhenBlockedByPopup) = 1
+    IsWindowHovered(_AllowWhenBlockedByActiveItem) = 1
+    IsWindowHovered(_ChildWindows) = 1
+    IsWindowHovered(_ChildWindows|_RootWindow) = 1
+    IsWindowHovered(_RootWindow) = 1
+    ITEM
+    IsItemHovered() = 0
+    IsItemHovered(_AllowWhenBlockedByPopup) = 0
+    IsItemHovered(_AllowWhenBlockedByActiveItem) = 0
+    IsItemHovered(_AllowWhenOverlapped) = 0
+    IsItemhovered(_RectOnly) = 0
+> Dragging
+    You can use ImGui::GetMouseDragDelta(0) to query for the dragged amount on any widget.
+    IsMouseDragging(0):
+      w/ default threshold: 0,
+      w/ zero threshold: 0
+      w/ large threshold: 0
+    IsMouseDragging(1):
+      w/ default threshold: 0,
+      w/ zero threshold: 0
+      w/ large threshold: 0
+    IsMouseDragging(2):
+      w/ default threshold: 0,
+      w/ zero threshold: 0
+      w/ large threshold: 0
+    Drag Me
+> Mouse cursors
+    Current mouse cursor = 0: Arrow
+    Hover to see mouse cursors: (?)
+    Mouse cursor 0: Arrow
+    Mouse cursor 1: TextInput
+    Mouse cursor 2: Move
+    Mouse cursor 3: ResizeNS
+    Mouse cursor 4: ResizeEW
+    Mouse cursor 5: ResizeNESW
+    Mouse cursor 6: ResizeNWSE

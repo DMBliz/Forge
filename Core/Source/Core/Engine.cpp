@@ -8,43 +8,50 @@ namespace Forge
 	Engine::Engine()
 	{
 		engine = this;
-		fileSystem = new FileSystem();
-		renderer = new Renderer();
-		context = Context::Create();
-		input = Input::Create();
+		scene = new Scene();
 	}
 
 	void Engine::Init()
 	{
+		fileSystem = FileSystem::Create();
+		renderer = new Renderer();
+		resources = new Resources();
+		input = Input::Create();
+		window = Window::GetInstance();
+
 		active = true;
 		paused = false;
-		context->CreateContext(*window, 1, false, false);
-		renderer->Init(window);
-		
+
+		window->CreateContext();
+		renderer->Init(Vector2i(800, 600));
+		Timer::StartTime();
 	}
 
 	void Engine::Start()
 	{
-		Init();
-		Timer::StartTime();
-		game->Initialize();
-		Update();
+		//Init();
+		MainLoop();
+	}
+
+	void Engine::MainLoop()
+	{
+		while (active)
+		{
+			Update();
+		}
 	}
 
 	void Engine::Update()
 	{
-		while (active)
+		window->PlatformUpdate();
+		if (!paused)
 		{
-			context->PlatformUpdate();
-			if (!paused)
-			{
-				Timer::BeginFrame();
-				input->Update();
-				game->Update();
-				renderer->Draw();
-				Timer::EndFrame();
-				
-			}
+			Timer::BeginFrame();
+			input->Update();
+			scene->Update();
+			renderer->Draw();
+			resources->Update();
+			Timer::EndFrame();
 		}
 	}
 
@@ -58,15 +65,15 @@ namespace Forge
 		//paused = false;
 	}
 
-	void Engine::OpenWindow(const Vector2i& winSize, const String& title, bool fullScreen, bool HighDPI)
+	bool Engine::IsActive()
 	{
-		window = Window::GetInstance();
-		window->Create(winSize, title, true, fullScreen, fullScreen, HighDPI, true);
+		return active;
 	}
 
-	void Engine::SetGame(Game* newGame)
+	void Engine::OpenWindow(const Vector2i& winSize, const String& title, bool fullScreen, bool HighDPI)
 	{
-		game = newGame;
+		window->Create(winSize, title, true, fullScreen, fullScreen, HighDPI, true);
+		renderer->Init(winSize);
 	}
 }
 

@@ -1,4 +1,6 @@
 #include "Matrix4.h"
+#include "Matrix3.h"
+#include "Quaternion.h"
 #include "Mathf.h"
 
 namespace Forge 
@@ -348,7 +350,7 @@ namespace Forge
 	{
 		Matrix4 res(1.0f);
 
-		float q = 1.0f / (float)tan(fov);
+		float q = 1.0f / static_cast<float>(tan(fov * DEGTORAD_2));
 		float a = q / aspectRetio;
 
 		res.mels[0][0] = a;

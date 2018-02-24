@@ -1,12 +1,12 @@
 #include "IndexBuffer.h"
-#include "OpenGL/OGLIndexBuffer.h"
+#include "OpenGL/GLIndexBuffer.h"
 
 namespace Forge
 {
 	IndexBuffer* IndexBuffer::Create(uint* data, uint count)
 	{
 #if defined(OGL)
-		return new OGLIndexBuffer(data, count);
+		return new GLIndexBuffer(data, count);
 #elif defined(DX)
 #endif
 	}

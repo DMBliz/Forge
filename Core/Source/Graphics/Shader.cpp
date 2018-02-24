@@ -13,12 +13,17 @@ namespace Forge
 
 	Shader::~Shader()
 	{
-		UnLoad();
+		
 	}
 
 	void Shader::Use()
 	{
 		shaderResource->Use();
+	}
+
+	void Shader::Compile()
+	{
+		shaderResource->Compile();
 	}
 
 	void Shader::ResolveUniformLocations(ShaderUniforms& uniforms) const
@@ -43,6 +48,7 @@ namespace Forge
 
 	void Shader::Load(String filename)
 	{
+		resourceName = filename;
 		shaderResource = ShaderResource::Create();
 		shaderResource->LoadShader(filename);
 	}

@@ -14,9 +14,13 @@ namespace Forge
 		FileSystem();
 		~FileSystem();
 		
-		static File ReadFile(const String& filename);
-		static void WriteFile(const String& filename, const String& str);
-		static bool FileExists(const String& filename);
+		virtual File ReadFile(const String& filename);
+		virtual void WriteFile(const String& filename, const String& str);
+		virtual bool FileExists(const String& filename);
+
+		virtual std::vector<String> GetFilesFromDirectory(String path) = 0;
+
+		static FileSystem* Create();
 	};
 
 }

@@ -1,19 +1,12 @@
 #pragma once
 
-#include "Vector2.h"
-#include "Vector2i.h"
-#include "Vector3.h"
-#include "Vector4.h"
-#include "Rect.h"
-#include "Quaternion.h"
-#include "Matrix3.h"
-#include "Matrix4.h"
-#include "Color.h"
+
 #include "Random.h"
 #include <math.h>
 
 namespace Forge
 { 
+	
 	static const float PI = 3.14159265358979323846264338327950288f;
 	static const float HALF_PI = PI * 0.5f;
 

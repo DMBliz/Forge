@@ -1,6 +1,7 @@
 #pragma once
 #include "Containers/String.h"
 #include "Serialization/Meta.h"
+#include "Types.h"
 
 namespace Forge
 {
@@ -23,7 +24,7 @@ namespace Forge
 		virtual void UnLoad();
 
 		int GetReferenceCount() const;
-		String GetResourceName() const;
+		const String& GetResourceName() const;
 	};	
 }
 

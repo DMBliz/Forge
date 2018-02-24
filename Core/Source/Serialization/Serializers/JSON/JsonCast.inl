@@ -67,6 +67,19 @@ json serialize_basic(const std::vector<T>& obj)
     return value;
 }
 
+template <typename T>
+json serialize_basic(const std::vector<T*>& obj)
+{
+	json value;
+	int i = 0;
+	for (auto& elem : obj)
+	{
+		value[i] = *elem;
+		++i;
+	}
+	return value;
+}
+
 // specialization for std::unordered_map
 template <typename K, typename V>
 json serialize_basic(const std::unordered_map<K, V>& obj)

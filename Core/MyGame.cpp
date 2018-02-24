@@ -20,30 +20,26 @@ void MyGame::Initialize()
 {
 	Game::Initialize();
 	engine->GetRenderer()->SetViewMatrix(Matrix4::Identity);
-	engine->GetRenderer()->SetPerspectiveProjection(45.0f * DEGTORAD, 0.1f, 100.0f);
-	/*Resources::RegisterResource<Texture2D>();
-	Resources::RegisterResource<Image>();
-	Resources::RegisterResource<Shader>();*/
 
 	componentManager = new ComponentManager();
 	entityManager = new EntityManager();
 	
-	entityManager->_componentManager = componentManager;
+	entityManager->_componentManager = *componentManager;
 	
 	spriteTest = entityManager->CreateEntity<Entity>();
 	spriteTest2 = entityManager->CreateEntity<Entity>();
 	spriteTest->AddComponent<TransformComponent>();
 	spriteTest2->AddComponent<TransformComponent>();
-	//TODO: make this work
+	
 	SpriteRenderer* rend = spriteTest->AddComponent<SpriteRenderer>();
-	Texture2D* tex = Resources::Singleton()->LoadNowResource<Texture2D>("Resources/awesomeface.png");
+	Texture2D* tex = engine->GetResources()->LoadNowResource<Texture2D>("Resources/awesomeface.png");
 	rend->SetTexture(tex);
 
 	spriteTest->SetActive(true);
 	rend->SetActive(true);
 
 	tex = nullptr;
-	tex = Resources::Singleton()->GetResource<Texture2D>("Resources/awesomeface.png");
+	tex = engine->GetResources()->GetResource<Texture2D>("Resources/awesomeface.png");
 	rend = spriteTest2->AddComponent<SpriteRenderer>();
 	rend->SetTexture(tex);
 

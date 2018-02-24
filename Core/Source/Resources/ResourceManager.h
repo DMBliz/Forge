@@ -8,11 +8,15 @@
 #include <mutex>
 #include <queue>
 #include "Resource.h"
+#include "Containers/String.h"
+#include "Resources/Image.h"
+#include "Graphics/Shader.h"
 
 namespace Forge
 {
 	class IResourceManager
 	{
+	public:
 		virtual uint Count() const = 0;
 
 		virtual void Update() = 0;
@@ -22,10 +26,13 @@ namespace Forge
 	class ResourceManager : public IResourceManager
 	{
 	private:
-		std::queue<std::pair<T*, Delegate<void(T*)>&>> addQueue;
+		std::queue<std::pair<T*, Delegate<void(T*)>*>> addQueue;
 		std::mutex queueLock;
 		std::unordered_map<std::string, T*> resources;
 		
+		static std::thread workers[10];
+		static bool IsEnd[10];
+
 
 		T* Load(String filename)
 		{
@@ -44,8 +51,6 @@ namespace Forge
 			T* res = new T();
 			res->Load(filename);
 
-			res->IncReferences();
-
 			return res;
 		}
 	public:
@@ -61,12 +66,18 @@ namespace Forge
 		{
 			while(addQueue.size() >= 1)
 			{
-				auto add = addQueue.back();
-				//resources.insert(std::make_pair(add.first->GetResourceName(), add.first));
-				/*if (add.second != nullptr)
-					(*add.second)(add.first);*/
+				auto& add = addQueue.front();
+				
+				resources.insert(std::make_pair(add.first->GetResourceName().CString(), add.first));
+				if (add.second != nullptr)
+					(*add.second)(add.first);
 				addQueue.pop();
 			}
+		}
+
+		std::unordered_map<std::string, T*>* GetAll()
+		{
+			return &resources;
 		}
 
 		T* GetLoaded(String filename)
@@ -80,29 +91,35 @@ namespace Forge
 			return nullptr;
 		}
 
-		void LoadAsync(String filename, Delegate<void(T*)>& onLoaded)
+		void LoadAsync(String filename, Delegate<void(T*)>* onLoaded)
 		{
-			std::thread thread(&LoadMethod, filename, onLoaded);
+			std::thread thread(&ResourceManager<T>::LoadMethod, this, filename, onLoaded);
+			thread.join();
 		}
 
-		void LoadMethod(String filename, Delegate<void(T*)>& onLoaded)
+		void LoadMethod(String filename, Delegate<void(T*)>* onLoaded)
 		{
 			T* ret = Load(filename);
 
-			std::unique_lock<std::mutex> lc(queueLock);
+			queueLock.lock();
 
-			lc.unlock();
+			addQueue.push(std::pair<T*, Delegate<void(T*)>*>(ret, onLoaded));
 
-			addQueue.push(std::make_pair(ret, onLoaded));
-
-			lc.lock();
+			queueLock.unlock();
 		}
 
 		T* LoadResource(String filename)
 		{
-			T* res = Load(filename);
-			resources.insert_or_assign(filename.CString(), res);
-			return res;
+			auto* fn = resources[filename.CString()];
+			if (fn == nullptr)
+			{
+				T* res = Load(filename);
+				resources.insert_or_assign(filename.CString(), res);
+				return res;
+			}else
+			{
+				return fn;
+			}
 		}
 
 		bool Unload(String filename)

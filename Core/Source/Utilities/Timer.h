@@ -7,7 +7,7 @@ namespace Forge
 	class Timer
 	{
 	private:
-		friend Engine;
+		friend class Engine;
 		static void Start();
 		static void Reset();
 		static void BeginFrame();

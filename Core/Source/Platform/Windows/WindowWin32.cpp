@@ -5,23 +5,27 @@
 #include "Defines.h"
 #include "Core/Engine.h"
 #include "Input/Windows/WinInput.h"
+#include "glad/glad_wgl.h"
 
 
 namespace Forge
 {
 	const wchar_t* classname = L"ForgeWindow";
-	
 
+	
+	//TODO: refactor this creating full window for presenting
 	WindowWin32::WindowWin32()
 	{
+		context = Context::Create();
 	}
 
 	WindowWin32::~WindowWin32()
 	{
-		//TOD
+		
 	}
 
-	void WindowWin32::Create(const Vector2i& size, const String& title, bool Resizable, bool FullScreen, bool ExclusiveFullScreen, bool HighDPI, bool depth)
+	void WindowWin32::Create(const Vector2i& size, const String& title, bool Resizable, bool FullScreen, 
+							 bool ExclusiveFullScreen, bool HighDPI, bool depth)
 	{
 		this->windowSize = size;
 		this->windowTitle = title;
@@ -101,6 +105,7 @@ namespace Forge
 		_hwnd = CreateWindowExW(_windowExStyle, classname, titleBuff, _windowStyle, 
 								x, y, width, height, nullptr, nullptr, instance, nullptr);
 
+		
 		if (!_hwnd)
 		{
 			//TODO fatal error 
@@ -114,19 +119,26 @@ namespace Forge
 			SetFullScreen(fullScreen);
 
 		GetClientRect(_hwnd, &windowRect);
-
-		windowSize.x = width;
-		windowSize.y = height;
+		
+		windowSize.x = windowRect.right - windowRect.left;
+		windowSize.y = windowRect.bottom - windowRect.top;
+		framebufferSize.Set(static_cast<int>(windowRect.right), static_cast<int>(windowRect.bottom));
 		windowResolution = windowSize;
 
 		if (!RegisterTouchWindow(_hwnd, SW_SHOW))
 		{
-			//TOOD warning
+			//TODO: warning
 			LOG("cant register touch window");
 		}
 		ShowWindow(_hwnd, SW_SHOW);
-		SetWindowLongPtr(_hwnd, GWL_USERDATA, (LONG_PTR)this);
 
+		SetWindowLongPtr(_hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
+		context->CreateContext(*this, 0, 0);
+	}
+
+	void WindowWin32::CreateContext()
+	{
+		context->CreateContext(0, 0);
 	}
 
 	void WindowWin32::SetSize(const Vector2i& newSize)
@@ -143,10 +155,7 @@ namespace Forge
 
 		windowResolution = windowSize;
 
-		if (listener)
-		{
-			listener->onResolutionChange(windowResolution);
-		}
+		onSizeChanged(windowSize);
 	}
 
 	void WindowWin32::SetTitle(const String& newTitle)
@@ -177,15 +186,13 @@ namespace Forge
 				GetWindowRect(_hwnd, &rect);
 
 				windowedPos.Set(static_cast<int>(rect.left), static_cast<int>(rect.top));
-				windowedSize.Set(static_cast<int>(rect.right - rect.left), static_cast<int>(rect.bottom - rect.top));
-				
+				windowedSize.Set(static_cast<int>(rect.right), static_cast<int>(rect.bottom));
+				framebufferSize.Set(static_cast<int>(rect.right - rect.left), static_cast<int>(rect.bottom - rect.top));
+
 				windowResolution = windowSize;
 
-				std::unique_lock<std::mutex> lock(listenerMutex);
-				if (listener)
-				{
-					listener->onResolutionChange(windowResolution);
-				}
+
+				onSizeChanged(windowSize);
 			}
 		}
 	}
@@ -195,19 +202,48 @@ namespace Forge
 		SendMessage(_hwnd, WM_CLOSE, 0, 0);
 	}
 
+	void WindowWin32::PlatformUpdate()
+	{
+		context->PlatformUpdate();
+	}
+
+	void WindowWin32::SetClipboard(const String& data)
+	{
+		if (!OpenClipboard(_hwnd))
+			return;
+		if (!EmptyClipboard())
+			return;
+
+		HGLOBAL hgl = GlobalAlloc(GMEM_FIXED, data.Length() + 1);
+		char* buffer = static_cast<char*>(GlobalLock(hgl));
+		memcpy(buffer, data.CString(), data.Length());
+
+		GlobalUnlock(hgl);
+
+		SetClipboardData(CF_TEXT, buffer);
+
+		CloseClipboard();
+	}
+
+	const String& WindowWin32::GetClipboard()
+	{
+		return static_cast<char*>(GetClipboardData(CF_TEXT));
+	}
+
+	void WindowWin32::SetCursorPosition(const Vector2i& newPos)
+	{
+		POINT pos = { newPos.x, newPos.y };
+		ClientToScreen(_hwnd, &pos);
+		SetCursorPos(pos.x, pos.y);
+	}
+
 	void WindowWin32::ProcessResize(const Vector2i& size)
 	{
 		_monitor = MonitorFromWindow(_hwnd, MONITOR_DEFAULTTONEAREST);
 
 		windowSize = size;
-		windowResolution = size;
 
-		std::unique_lock<std::mutex> lock(listenerMutex);
-		if (listener)
-		{
-			listener->onSizeChange(windowSize);
-			listener->onSizeChange(windowResolution);
-		}
+		onSizeChanged.Invoke(windowSize);
 	}
 
 	void WindowWin32::ProcessMove()
@@ -231,13 +267,25 @@ namespace Forge
 				{
 					//resume engine work
 					engine->Resume();
+					
+					win->hasFocus = true;
 				}
 				else
 				{
 					//pause engine work
 					engine->Pause();
+					win->hasFocus = false;
 				}
 				break;
+			}
+			case WM_CHAR:
+			case WM_SYSCHAR:
+			case WM_UNICHAR:
+			{
+				bool plain = (message != WM_SYSCHAR);
+
+				static_cast<WinInput*>(engine->GetInputSystem())->SetCharacterPressed(static_cast<uint>(wParam));
+				return 0;
 			}
 			case WM_KEYUP:
 			case WM_KEYDOWN:
@@ -321,13 +369,13 @@ namespace Forge
 					{
 						WinInput* t = static_cast<WinInput*>(engine->GetInputSystem());
 						t->SetButtonDownNative(button);
-						t->SetMousePosition(pos);
+						t->SetMousePositionValue(pos);
 					}
 					else if (message == WM_LBUTTONUP || message == WM_RBUTTONUP || message == WM_MBUTTONUP || message == WM_XBUTTONUP)
 					{
 						WinInput* t = static_cast<WinInput*>(engine->GetInputSystem());
 						t->SetButtonUpNative(button);
-						t->SetMousePosition(pos);
+						t->SetMousePositionValue(pos);
 					}
 
 				}
@@ -343,7 +391,7 @@ namespace Forge
 					Vector2 pos(static_cast<float>(GET_X_LPARAM(lParam)), static_cast<float>(GET_Y_LPARAM(lParam)));
 
 					//TODO: handle mouse move
-					static_cast<WinInput*>(engine->GetInputSystem())->SetMousePosition(pos);
+					static_cast<WinInput*>(engine->GetInputSystem())->SetMousePositionValue(pos);
 				}
 				break;
 			}
@@ -355,11 +403,15 @@ namespace Forge
 				if (message == WM_MOUSEWHEEL)
 				{
 					short param = static_cast<short>(HIWORD(wParam));
+					static_cast<WinInput*>(engine->GetInputSystem())->SetScrollNative(
+						Vector2(0.0f, static_cast<float>(param) / static_cast<float>(WHEEL_DELTA)));
 					//TODO: handle mouse wheel
 				}
 				else if (message == WM_MOUSEHWHEEL)
 				{
 					short param = static_cast<short>(HIWORD(wParam));
+					static_cast<WinInput*>(engine->GetInputSystem())->SetScrollNative(
+						Vector2(static_cast<float>(param) / static_cast<float>(WHEEL_DELTA), 0.0f));
 					//TODO: handle mouse wheel
 				}
 
@@ -418,6 +470,7 @@ namespace Forge
 			}
 			case WM_SIZE:
 			{
+					
 				switch (wParam)
 				{
 					case SIZE_MINIMIZED:
@@ -431,7 +484,9 @@ namespace Forge
 					case SIZE_MAXIMIZED:
 						win->ProcessResize(Vector2i(static_cast<int>(LOWORD(lParam)), static_cast<int>(HIWORD(lParam))));
 						break;
+						
 				}
+				win->ProcessResize(Vector2i(static_cast<int>(LOWORD(lParam)), static_cast<int>(HIWORD(lParam))));
 				break;
 			}
 			case WM_MOVE:

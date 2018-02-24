@@ -1,4 +1,6 @@
 ﻿#include "Vector2.h"
+#include "Vector3.h"
+#include "Vector4.h"
 #include "Mathf.h"
 
 namespace Forge 
@@ -80,7 +82,7 @@ namespace Forge
 
 	bool Vector2::operator!=(const Vector2& rhs) const
 	{
-		return x != rhs.x && y != rhs.y;
+		return x != rhs.x || y != rhs.y;
 	}
 
 	Vector2 Vector2::operator-() const

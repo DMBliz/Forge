@@ -33,6 +33,7 @@ namespace Forge
 
 		void AddTexture(Texture* texture, const String& uniformName);
 		void SetTexture(Texture* texture, const String& uniformName);
+		Texture* GetTexture(const String& uniformName) const;
 
 		void SetShader(Shader* newShader);
 		

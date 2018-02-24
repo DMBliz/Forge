@@ -7,6 +7,7 @@
 #include "stb_image/stb_image_write.h"
 #include "Resources.h"
 #include "FileSystem/FileSystem.h"
+#include "Core/Engine.h"
 
 namespace Forge
 {
@@ -94,7 +95,8 @@ namespace Forge
 
 	void Image::Load(String filename)
 	{
-		File file = FileSystem::ReadFile(filename);
+		resourceName = filename;
+		File file = engine->GetFileSystem()->ReadFile(filename);
 		byte* pixels = stbi_load_from_memory(file.GetData(), file.GetSize(), &_size.x, &_size.y, &fileChannels, 4);
 		_pixels.resize(_size.x * _size.x * 4);
 

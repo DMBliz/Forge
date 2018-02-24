@@ -9,7 +9,13 @@ namespace Forge
 	class EntityManager final
 	{
 	private:
-		class IEntityContainer {};
+		class IEntityContainer
+		{
+		public:
+			virtual void Destroy(uint id) = 0;
+			virtual void Clear() = 0;
+			virtual bool ContainsEntity(uint id) = 0;
+		};
 		template<class T>
 		class EntityContainer : public IEntityContainer
 		{
@@ -41,17 +47,17 @@ namespace Forge
 				}
 			}
 
-			void Destroy(uint id)
+			void Destroy(uint id) override
 			{
 				if (content[id] != nullptr)
 				{
 					content[id]->OnDestroy();
 					delete content[id];
-					content.erase(content.begin() + id);
+					content.erase(id);
 				}
 			}
 
-			void Clear()
+			void Clear() override
 			{
 				for (uint i = 0; i < content.size(); i++)
 				{
@@ -62,12 +68,20 @@ namespace Forge
 
 				content.clear();
 			}
+
+			bool ContainsEntity(uint id)
+			{
+				if (content[id] != nullptr)
+					return true;
+				else
+					return false;
+			}
 		};
 
 		std::unordered_map<std::type_index, IEntityContainer*> componentRegistry;
 
 	public:
-		ComponentManager* _componentManager;
+		ComponentManager _componentManager;
 		EntityManager()
 		{}
 		~EntityManager()
@@ -93,7 +107,7 @@ namespace Forge
 		T* CreateEntity()
 		{
 			Entity* t = new T();
-			t->_componentManager = _componentManager;
+			t->_componentManager = &_componentManager;
 			t->OnCreate();
 
 			EntityContainer<T>* cc = GetEntityContainer<T>();
@@ -111,11 +125,23 @@ namespace Forge
 		}
 
 		template<class T>
-		void DestroyEntity(T* component)
+		void DestroyEntity(T* entity)
 		{
 			EntityContainer<T>* cc = GetEntityContainer<T>();
 
-			cc->Destroy(component);
+			cc->Destroy(entity);
+		}
+
+		void DestroyEntity(Entity* entity)
+		{
+			for (auto it = componentRegistry.begin(); it != componentRegistry.end(); ++it)
+			{
+				if(it._Ptr->_Myval.second->ContainsEntity(entity->GetEntityID()))
+				{
+					it._Ptr->_Myval.second->Destroy(entity->GetEntityID());
+					return;
+				}
+			}
 		}
 
 		template<class T>

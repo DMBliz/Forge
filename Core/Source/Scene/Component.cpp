@@ -2,6 +2,8 @@
 
 namespace Forge
 {
+
+	uint Component::gComponentID;
 	void Component::SetActive(bool state)
 	{
 		if (active == state)

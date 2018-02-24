@@ -1,6 +1,6 @@
 #include "ShaderResource.h"
 #include <fstream>
-#include "OpenGL/OGLShaderResource.h"
+#include "OpenGL/GLShaderResource.h"
 
 namespace Forge
 {
@@ -8,7 +8,7 @@ namespace Forge
 	ShaderResource* ShaderResource::Create()
 	{
 #if defined(OGL)
-		return new OGLShaderResource();
+		return new GLShaderResource();
 #elif defined(DX) //TODO: Returen shader for DX
 		return null;
 #endif

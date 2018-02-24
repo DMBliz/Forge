@@ -76,10 +76,15 @@ namespace Forge
 		UpdateWorldTransform();
 	}
 
-	void TransformComponent::SetParent(TransformComponent* parent)
+	void TransformComponent::Parent(TransformComponent* parent)
 	{
 		_parent = parent;
 		UpdateWorldTransform();
+	}
+
+	TransformComponent* TransformComponent::Parent() const
+	{
+		return _parent;
 	}
 	
 	Matrix3x4 TransformComponent::GetTransform() const
