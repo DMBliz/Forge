@@ -1,5 +1,4 @@
 #include "Core/Engine.h"
-#include "MyGame.h"
 #include "Serialization/Serializers/JSON/JsonCast.h"
 #include "EventSystem/Delegate.h"
 #include "Serialization/Meta.h"

@@ -2,7 +2,6 @@
 #include "Platform/Window.h"
 #include "Graphics/Renderer.h"
 #include "FileSystem/FileSystem.h"
-#include "Game.h"
 #include "Input/Input.h"
 #include "Scene/Scene.h"
 #include "Resources/Resources.h"

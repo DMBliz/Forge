@@ -152,8 +152,6 @@
     <ClInclude Include="Dependecies\include\stb_image\stb_image.h" />
     <ClInclude Include="Source\Scene\Entity.h" />
     <ClInclude Include="Source\Graphics\Mesh.h" />
-    <ClInclude Include="MyGame.h" />
-    <ClInclude Include="Source\Core\Game.h" />
     <ClInclude Include="Source\Graphics\OpenGL\GLCheck.h" />
     <ClInclude Include="Source\Graphics\OpenGL\GLTexture2DResource.h" />
     <ClInclude Include="Source\Resources\Image.h" />
@@ -235,8 +233,6 @@
     <ClCompile Include="Source\Scene\Component.cpp" />
     <ClCompile Include="Source\Scene\Entity.cpp" />
     <ClCompile Include="Source\Graphics\Mesh.cpp" />
-    <ClCompile Include="MyGame.cpp" />
-    <ClCompile Include="Source\Core\Game.cpp" />
     <ClCompile Include="Source\Graphics\OpenGL\GLTexture2DResource.cpp" />
     <ClCompile Include="Source\Resources\Image.cpp" />
     <ClCompile Include="Source\FileSystem\FileSystem.cpp" />

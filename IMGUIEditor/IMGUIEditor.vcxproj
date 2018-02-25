@@ -84,7 +84,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -129,10 +129,7 @@
     <ClCompile Include="Dependecies\imgui\imgui.cpp" />
     <ClCompile Include="Dependecies\imgui\imgui_demo.cpp" />
     <ClCompile Include="Dependecies\imgui\imgui_draw.cpp" />
-    <ClCompile Include="Dependecies\include\GL\gl3w.c" />
-    <ClCompile Include="Dependecies\usynergy\uSynergy.c" />
     <ClCompile Include="Source\imgui_impl.cpp" />
-    <ClCompile Include="Source\imgui_impl_old.cpp" />
     <ClCompile Include="Source\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -142,11 +139,6 @@
     <ClInclude Include="Dependecies\imgui\stb_rect_pack.h" />
     <ClInclude Include="Dependecies\imgui\stb_textedit.h" />
     <ClInclude Include="Dependecies\imgui\stb_truetype.h" />
-    <ClInclude Include="Dependecies\include\GLFW\glfw3.h" />
-    <ClInclude Include="Dependecies\include\GLFW\glfw3native.h" />
-    <ClInclude Include="Dependecies\include\GL\gl3w.h" />
-    <ClInclude Include="Dependecies\include\GL\glcorearb.h" />
-    <ClInclude Include="Dependecies\usynergy\uSynergy.h" />
     <ClInclude Include="Source\Controls\GUICamera.h" />
     <ClInclude Include="Source\Controls\GUIEditor.h" />
     <ClInclude Include="Source\Controls\GUIResources.h" />
@@ -154,7 +146,6 @@
     <ClInclude Include="Source\Controls\GUIProperties.h" />
     <ClInclude Include="Source\Controls\GUIScene.h" />
     <ClInclude Include="Source\imgui_impl.h" />
-    <ClInclude Include="Source\imgui_impl_old.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
