@@ -9,10 +9,8 @@ namespace Forge
 
 	Sprite::Sprite()
 	{
-		_batches.push_back(new DrawBatch);
-		_material = new Material;
-		_batches[0]->material = _material;
-		_batches[0]->mesh = new Mesh;
+		_mesh = new Mesh();
+		_material = new Material();
 
 		
 		Shader* sh = engine->GetResources()->LoadNowResource<Shader>("Resources/Shaders/SpriteShader.glsl");
@@ -24,26 +22,31 @@ namespace Forge
 		_material->Uniforms().AddUniform("model", UniformDataType::MATRIX4);
 		_material->Uniforms().AddUniform("spriteTexture", UniformDataType::SAMPLER2D);
 
-		float vb[] = {
-			 0.5f,  0.5f,  0.0f,   1.0f, 1.0f,
-			 0.5f, -0.5f,  0.0f,   1.0f, 0.0f,
-			-0.5f, -0.5f,  0.0f,   0.0f, 0.0f,
-			-0.5f,  0.5f,  0.0f,   0.0f, 1.0f
-		};
+		
 
-		uint ind[] = {
-			0, 1, 3,
-			1, 2, 3
-		};
+        _mesh->GetVertecies().push_back(Vector3(0.5f, 0.5f, 0.0f));
+        _mesh->GetVertecies().push_back(Vector3(0.5f, -0.5f, 0.0f));
+        _mesh->GetVertecies().push_back(Vector3(-0.5f, -0.5f, 0.0f));
+        _mesh->GetVertecies().push_back(Vector3(-0.5f, 0.5f, 0.0f));
+
+        _mesh->GetUV().push_back(Vector2(1.0f, 1.0f));
+        _mesh->GetUV().push_back(Vector2(1.0f, 0.0f));
+        _mesh->GetUV().push_back(Vector2(0.0f, 0.0f));
+        _mesh->GetUV().push_back(Vector2(0.0f, 1.0f));
+
+		
+        _mesh->GetIndicies().push_back(0);
+        _mesh->GetIndicies().push_back(1);
+        _mesh->GetIndicies().push_back(3);
+        _mesh->GetIndicies().push_back(1);
+        _mesh->GetIndicies().push_back(2);
+        _mesh->GetIndicies().push_back(3);
 
 		BufferLayout bl;
-		bl.Add<float>("pos", 0, 3, false);
-		bl.Add<float>("textureCoords", 1, 2, false);
-
-		_batches[0]->mesh->SetVertexBuffer(vb, 20, BufferUsage::STATIC);
-		_batches[0]->mesh->SetIndexBuffer(ind, 6);
-		_batches[0]->mesh->SetBufferLayout(bl);
-		_batches[0]->mesh->Initialize();
+		bl.Add<Vector3>("pos", 0, BufferElementType::Position);
+		bl.Add<Vector2>("textureCoords", 1, BufferElementType::UV);
+		_mesh->SetBufferLayout(bl);
+		_mesh->Initialize();
 	}
 
 	Sprite::~Sprite()
@@ -67,11 +70,5 @@ namespace Forge
 	void Sprite::SetPivotPosition(const Vector2& pivot)
 	{
 		_pivot = pivot;
-	}
-
-	void Sprite::SetPosition(const Matrix3x4& position)
-	{
-		_batches[0]->worldTransform = &position;
-		_material->Uniforms().SetValueToUniform("model", position.ToMatrix4());
 	}
 }

@@ -46,7 +46,7 @@ namespace Forge
 		shaderResource->SetValuesToUniforms(uniforms);
 	}
 
-	void Shader::Load(String filename)
+	void Shader::Load(const String& filename)
 	{
 		resourceName = filename;
 		shaderResource = ShaderResource::Create();

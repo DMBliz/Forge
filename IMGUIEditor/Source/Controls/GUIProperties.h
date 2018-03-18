@@ -6,14 +6,56 @@
 #include "Scene/SpriteRenderer.h"
 #include "imgui/imgui.h"
 #include "GUIResources.h"
+#include "Scene/ModelRenderer.h"
 
 namespace ForgeEditor
 {
-	std::vector<Forge::String> componentNames = { "Transform", "Sprite" };
-
-	inline void DrawComponent(Forge::Component* component)
+	inline void DrawComponent(Forge::ModelRenderer* component)
 	{
-		
+		Forge::String butName;
+		Forge::Model* mdl = component->GetModel();
+		if (mdl != nullptr)
+		{
+			if (mdl->GetResourceName() != Forge::String::Empty)
+			{
+				butName = mdl->GetResourceName();
+			}
+			else
+			{
+				butName = "NotSet";
+			}
+		}
+		else
+		{
+			butName = "NotSet";
+		}
+		ImGui::Text("Model");
+		ImGui::SameLine();
+		if (ImGui::Button(butName.CString()))
+		{
+			ImGui::OpenPopup("Model");
+		}
+		Forge::String selectedRes = Forge::String::Empty;
+		if (ImGui::BeginPopup("Model"))
+		{
+			for (const Forge::String& resourceName : ress)
+			{
+				if (resourceName.Contains(".obj") || resourceName.Contains(".fbx") || resourceName.Contains(".blend"))
+				{
+					if (ImGui::Button(resourceName.CString()))
+					{
+						selectedRes = resourceName;
+						ImGui::CloseCurrentPopup();
+					}
+				}
+			}
+			ImGui::EndPopup();
+		}
+
+		if (selectedRes != Forge::String::Empty)
+		{
+			component->SetModel(Forge::engine->GetResources()->LoadNowResource<Forge::Model>(selectedRes));
+		}
 	}
 
 	inline void DrawComponent(Forge::TransformComponent* component)
@@ -59,7 +101,6 @@ namespace ForgeEditor
 		{
 			butName = "NotSet";
 		}
-		//TODO: this and add here shader
 		ImGui::Text("Texture");
 		ImGui::SameLine();
 		if(ImGui::Button(butName.CString()))
@@ -109,6 +150,15 @@ namespace ForgeEditor
 				DrawComponent(rend);
 			}
 		}
+
+		if (typeid(*component) == typeid(Forge::ModelRenderer))
+		{
+			if (ImGui::CollapsingHeader("Model Renderer"))
+			{
+				Forge::ModelRenderer* rend = static_cast<Forge::ModelRenderer*>(component);
+				DrawComponent(rend);
+			}
+		}
 	}
 
 	inline void DrawProperties(bool& draw, Forge::Entity* entity)
@@ -129,21 +179,24 @@ namespace ForgeEditor
 
 			if(ImGui::BeginPopup("component"))
 			{
-				for(const Forge::String& componentName : componentNames)
+				if(ImGui::Button("Transform"))
 				{
-					if(ImGui::Button(componentName.CString()))
-					{
-						if(componentName == "Transform")
-						{
-							entity->AddComponent<Forge::TransformComponent>();
-						}
-						if(componentName == "Sprite")
-						{
-							entity->AddComponent<Forge::SpriteRenderer>();
-						}
-						ImGui::CloseCurrentPopup();
-					}
+					entity->AddComponent<Forge::TransformComponent>();
+					ImGui::CloseCurrentPopup();
 				}
+
+				if (ImGui::Button("Sprite"))
+				{
+					entity->AddComponent<Forge::SpriteRenderer>();
+					ImGui::CloseCurrentPopup();
+				}
+
+				if (ImGui::Button("Model"))
+				{
+					entity->AddComponent<Forge::ModelRenderer>();
+					ImGui::CloseCurrentPopup();
+				}
+				
 				ImGui::EndPopup();
 			}
 		}

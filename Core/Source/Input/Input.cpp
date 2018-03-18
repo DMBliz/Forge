@@ -30,7 +30,19 @@ namespace Forge
 	}
 
 	Input::Input()
-	{}
+	{
+		for(int i = 0; i < static_cast<int>(MouseButton::ButtonCount); i++)
+		{
+			mouseButtons[i] = InputState::None;
+			prevMouseButtons[i] = InputState::None;
+		}
+
+		for (int i = 0; i < static_cast<int>(KeyboardKey::KeyCount); i++)
+		{
+			keyboardKeys[i] = InputState::None;
+			prevKeyboardKeys[i] = InputState::None;
+		}
+	}
 
 	Input::~Input()
 	{}

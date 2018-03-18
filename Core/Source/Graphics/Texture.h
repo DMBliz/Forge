@@ -18,7 +18,7 @@ namespace Forge
 		virtual void UnBind(uint slot = 0) const;
 		virtual void SetParameters(TextureParametrs params);
 
-		void Load(String filename) override = 0;
+		void Load(const String& filename) override = 0;
 		void UnLoad() override = 0;
 	};
 

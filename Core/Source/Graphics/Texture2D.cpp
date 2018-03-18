@@ -29,11 +29,11 @@ namespace Forge
 		static_cast<Texture2DResource*>(textureResource)->CreateOnGPU(width, height, params, generateMipMaps);
 	}
 
-	void Texture2D::Load(String filename)
+	void Texture2D::Load(const String& filename)
 	{
 		resourceName = filename;
 		Image* img = engine->GetResources()->LoadNowResource<Image>(filename);
-		textureResource = Texture2DResource::Create(*img, TextureParametrs());
+		textureResource = Texture2DResource::Create(*img, TextureParametrs(TextureFilter::Nearest));
 	}
 
 	void Texture2D::UnLoad()

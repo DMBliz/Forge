@@ -11,7 +11,6 @@ namespace Forge
 	class Sprite : public Drawable
 	{
 	private:
-		Material* _material;
 		Vector2 _pivot;
 		Color _color;
 	public:
@@ -22,7 +21,6 @@ namespace Forge
 		void SetMaterial(Material* material);
 		void SetColor(const Color& color);
 		void SetPivotPosition(const Vector2& pivot);
-		void SetPosition(const Matrix3x4& position);
 
 		Texture2D* GetTexture() const { return static_cast<Texture2D*>(_material->GetTexture("spriteTexture")); }
 	};

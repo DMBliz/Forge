@@ -5,8 +5,9 @@ namespace Forge
 {
 
 	Drawable::Drawable()
-	{}
-
+		: _material(new Material()), _mesh(new Mesh())
+	{
+	}
 
 	Drawable::~Drawable()
 	{}
@@ -14,21 +15,35 @@ namespace Forge
 	void Drawable::OnActivate()
 	{
 		Renderer* rend = engine->GetRenderer();
-		for (int i = 0; i < _batches.size(); ++i)
-		{
-			if (!rend->ContainsDrawBatch(_batches[i]))
-				engine->GetRenderer()->AddDrawBatch(_batches[i]);
-		}
+		if (!rend->ContainsDrawable(this))
+			rend->AddDrawable(this);
 	}
 
 	void Drawable::OnDeactivate()
 	{
 		Renderer* rend = engine->GetRenderer();
-		for (int i = 0; i < _batches.size(); ++i)
-		{
-			if (rend->ContainsDrawBatch(_batches[i]))
-				engine->GetRenderer()->RemoveDrawBatch(_batches[i]);
-		}
+		if (rend->ContainsDrawable(this))
+			rend->RemoveDrawable(this);
+	}
+
+    const Matrix3x4* Drawable::GetWorldPosition() const
+    {
+        return worldTransform;
+    }
+
+	Material& Drawable::GetMaterial() const
+	{
+		return *_material;
+	}
+
+	Mesh& Drawable::GetMesh() const
+	{
+		return *_mesh;
+	}
+
+	void Drawable::SetWorldPosition(const Matrix3x4& newPosition)
+	{
+		worldTransform = &newPosition;
 	}
 
 	void Drawable::SetActive(bool state)

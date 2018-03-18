@@ -85,7 +85,7 @@ namespace Forge
 				return i;
 		}
 
-		return 0;
+		return -1;
 	}
 
 	void ShaderUniforms::AddUniform(UniformDescription* uniform)

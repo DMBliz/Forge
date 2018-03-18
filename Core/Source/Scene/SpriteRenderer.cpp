@@ -32,7 +32,7 @@ namespace Forge
 		TransformComponent* trn = GetOwner()->GetComponent<TransformComponent>();
 		if (trn != nullptr)
 		{
-			sprite->SetPosition(*trn->GetWorldTransform());
+			sprite->SetWorldPosition(*trn->GetWorldTransform());
 		}
 	}
 

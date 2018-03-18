@@ -10,7 +10,7 @@ namespace Forge
 	{
 		if (deviceRenderer != nullptr)
 			delete deviceRenderer;
-#if defined(WIN32)
+#if defined(_WIN32)
 #if defined(OGL)
 		deviceRenderer = GraphicsRenderer::Create();
 #elif defined(DX)
@@ -22,39 +22,39 @@ namespace Forge
 		deviceRenderer->Init(windowSize);
 	}
 
-	void Renderer::AddDrawBatch(DrawBatch* drawBatch)
+	void Renderer::AddDrawable(Drawable* drawable)
 	{
-		drawBatches.push_back(drawBatch);
+		drawables.push_back(drawable);
 	}
 
 	void Renderer::Draw()
 	{
 		deviceRenderer->PreDraw();
 
-		for (uint i = 0; i < drawBatches.size(); i++)
+		for (uint i = 0; i < drawables.size(); i++)
 		{
-			deviceRenderer->Draw(drawBatches[i]);
+			deviceRenderer->Draw(drawables[i]);
 		}
 		deviceRenderer->PostDraw();
 
 		deviceRenderer->DrawToScreen();
 	}
 
-	bool Renderer::RemoveDrawBatch(DrawBatch* drawBatch)
+	bool Renderer::RemoveDrawable(Drawable* drawable)
 	{
-		if (ContainsDrawBatch(drawBatch))
+		if (ContainsDrawable(drawable))
 		{
-			auto it = std::find(drawBatches.begin(), drawBatches.end(), drawBatch);
-			drawBatches.erase(it);
+			auto it = std::find(drawables.begin(), drawables.end(), drawable);
+			drawables.erase(it);
 			return true;
 		}
 
 		return false;
 	}
 
-	bool Renderer::ContainsDrawBatch(DrawBatch* drawBatch)
+	bool Renderer::ContainsDrawable(Drawable* drawable)
 	{
-		return std::find(drawBatches.begin(), drawBatches.end(), drawBatch) != drawBatches.end();
+		return std::find(drawables.begin(), drawables.end(), drawable) != drawables.end();
 	}
 
 	void Renderer::SetSize(const Vector2i& newSize)
@@ -67,9 +67,9 @@ namespace Forge
 
 	Renderer::~Renderer()
 	{
-		for(uint i = 0; i < drawBatches.size(); i++)
+		for(uint i = 0; i < drawables.size(); i++)
 		{
-			delete drawBatches[i];
+			delete drawables[i];
 		}
 	}
 

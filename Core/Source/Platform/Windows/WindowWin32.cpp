@@ -13,7 +13,6 @@ namespace Forge
 	const wchar_t* classname = L"ForgeWindow";
 
 	
-	//TODO: refactor this creating full window for presenting
 	WindowWin32::WindowWin32()
 	{
 		context = Context::Create();

@@ -33,7 +33,7 @@ namespace Forge
 		void FlipX();
 		void FlipY();
 
-		void Load(String filename) override;
+		void Load(const String& filename) override;
 		void UnLoad() override;
 	};
 

@@ -769,7 +769,7 @@ namespace Forge
 	unsigned String::FindLast(char c, unsigned startInd, bool caseSensetive /*= true*/) const
 	{
 		if (startInd >= length_)
-			startInd = length_ + 1;
+			startInd = length_ - 1;
 
 		if (caseSensetive)
 		{

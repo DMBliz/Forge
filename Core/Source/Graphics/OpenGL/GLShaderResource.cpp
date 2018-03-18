@@ -123,8 +123,6 @@ namespace Forge
 
 		glCheck(glDeleteShader(vs));
 		glCheck(glDeleteShader(fs));
-
-
 	}
 
 	void GLShaderResource::Use()

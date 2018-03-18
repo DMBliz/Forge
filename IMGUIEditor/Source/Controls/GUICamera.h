@@ -19,21 +19,28 @@ namespace ForgeEditor
 
 	inline Forge::Matrix4 GetViewMatrix()
 	{
-		
 		Forge::Matrix4 ret = Forge::Matrix4::Identity;
 
-		ret.mels[0][0] = cameraRight.x;
-		ret.mels[1][0] = cameraRight.y;
-		ret.mels[2][0] = cameraRight.z;
-		ret.mels[0][1] = cameraUp.x;
-		ret.mels[1][1] = cameraUp.y;
-		ret.mels[2][1] = cameraUp.z;
-		ret.mels[0][2] = -cameraFront.x;
-		ret.mels[1][2] = -cameraFront.y;
-		ret.mels[2][2] = -cameraFront.z;
-		ret.mels[0][3] = -cameraRight.Dot(cameraPosition);
-		ret.mels[1][3] = -cameraUp.Dot(cameraPosition);
-		ret.mels[2][3] = -cameraFront.Dot(cameraPosition);
+		Forge::Vector3 eye = cameraPosition;
+		Forge::Vector3 target = eye + cameraFront;
+
+		Forge::Vector3 zaxis = (target - eye).Normalized();
+		Forge::Vector3 xaxis = zaxis.Cross(cameraUp).Normalized();
+		Forge::Vector3 yaxis = xaxis.Cross(zaxis).Normalized();
+
+		ret.mels[0][0] = xaxis.x;
+		ret.mels[0][1] = xaxis.y;
+		ret.mels[0][2] = xaxis.z;
+		ret.mels[1][0] = yaxis.x;
+		ret.mels[1][1] = yaxis.y;
+		ret.mels[1][2] = yaxis.z;
+		ret.mels[2][0] = zaxis.x;
+		ret.mels[2][1] = zaxis.y;
+		ret.mels[2][2] = zaxis.z;
+
+		ret.mels[0][3] = -xaxis.Dot(eye);
+		ret.mels[1][3] = -yaxis.Dot(eye);
+		ret.mels[2][3] = -zaxis.Dot(eye);
 
 		return ret;
 	}
@@ -85,8 +92,8 @@ namespace ForgeEditor
 		}
 		if (Forge::engine->GetInputSystem()->GetCursorDelta() != Forge::Vector2::Zero && Forge::engine->GetInputSystem()->GetMouseButtonState(Forge::MouseButton::Right) == Forge::InputState::Hold)
 		{
-			cameraRotation.x += Forge::engine->GetInputSystem()->GetCursorDelta().x * cameraMouseSensitivity;
-			cameraRotation.y += Forge::engine->GetInputSystem()->GetCursorDelta().y * cameraMouseSensitivity;
+			cameraRotation.x -= Forge::engine->GetInputSystem()->GetCursorDelta().x * cameraMouseSensitivity;
+			cameraRotation.y -= Forge::engine->GetInputSystem()->GetCursorDelta().y * cameraMouseSensitivity;
 
 			if(cameraRotation.y > 89.0f)
 			{

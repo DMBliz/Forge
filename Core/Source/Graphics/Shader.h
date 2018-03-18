@@ -21,7 +21,7 @@ namespace Forge
 		void SetValueToUniform(const UniformDescription& description) const;
 		void SetValuesToUniforms(const ShaderUniforms& uniforms) const;
 
-		void Load(String filename) override;
+		void Load(const String& filename) override;
 		void UnLoad() override;
 	};
 

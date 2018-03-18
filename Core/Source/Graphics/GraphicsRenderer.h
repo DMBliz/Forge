@@ -45,7 +45,7 @@ namespace Forge
 		virtual void Init(const Vector2i& windowSize) = 0;
 
 		virtual void PreDraw() = 0;
-		virtual void Draw(DrawBatch* batch) = 0;
+		virtual void Draw(Drawable* drawable) = 0;
 		virtual void PostDraw() = 0;
 
 		virtual void DrawToScreen() = 0;

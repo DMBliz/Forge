@@ -4,6 +4,7 @@
 #include "Resource.h"
 #include "Serialization/meta.h"
 #include "Graphics/Shader.h"
+#include "Graphics/Texture2D.h"
 #include "EventSystem/Event.h"
 
 namespace Forge
@@ -29,18 +30,23 @@ namespace Forge
 		{
 			for(const String& file : files)
 			{
-				if(file.Contains(".glsl"))
-				{
-					LoadResource<Shader>(file);
-				}
-				if (file.Contains(".jpg"))
-				{
-					LoadResource<Image>(file);
-				}
-				if (file.Contains(".png"))
-				{
-					LoadResource<Image>(file);
-				}
+				LoadFile(file);
+			}
+		}
+
+		void LoadFile(const String& filepath)
+		{
+			if (filepath.Contains(".glsl"))
+			{
+				LoadResource<Shader>(filepath);
+			}
+			if (filepath.Contains(".jpg"))
+			{
+				LoadResource<Image>(filepath);
+			}
+			if (filepath.Contains(".png"))
+			{
+				LoadResource<Image>(filepath);
 			}
 		}
 		

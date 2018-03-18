@@ -17,7 +17,7 @@ namespace Forge
 		~GLGraphicsRenderer();
 
 		void PreDraw() override;
-		void Draw(DrawBatch* batch) override;
+		void Draw(Drawable* drawable) override;
 		void PostDraw() override;
 
 		void DrawToScreen() override;

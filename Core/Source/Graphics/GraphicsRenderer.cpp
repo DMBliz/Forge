@@ -33,8 +33,8 @@ namespace Forge
 		screenMesh.SetVertexBuffer(tmp, 16, BufferUsage::STATIC);
 		screenMesh.SetIndexBuffer(ib, 6);
 		BufferLayout bf;
-		bf.Add<float>("pos", 0, 2, false);
-		bf.Add<float>("TxtrCoord", 1, 2, false);
+		bf.Add<float>("pos", 0, 2, BufferElementType::Position);
+		bf.Add<float>("TxtrCoord", 1, 2, BufferElementType::UV);
 		screenMesh.SetBufferLayout(bf);
 		screenMesh.Initialize();
 	}

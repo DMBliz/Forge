@@ -20,7 +20,7 @@ namespace Forge
 		Resource();
 		virtual ~Resource();
 
-		virtual void Load(String filename);
+		virtual void Load(const String& filename);
 		virtual void UnLoad();
 
 		int GetReferenceCount() const;

@@ -22,6 +22,16 @@ namespace Forge
 	void OGLWIN32Context::CreateContext(const Window& win, unsigned int sampleCount, bool debugRenderer)
 	{
 		const WindowWin32& wnd = reinterpret_cast<const WindowWin32&>(win);
+
+        if(!gladLoadWGL(deviceContext))
+        {
+            CreateContext(sampleCount, debugRenderer);
+            if(!gladLoadWGL(deviceContext))
+            {
+                LOG("Failed to load wgl");
+            }
+        }
+
 		deviceContext = GetDC(wnd.GetNativeWindow());
 
 		if (!deviceContext)
@@ -88,7 +98,7 @@ namespace Forge
 		{
 			pixelFormat = ChoosePixelFormat(deviceContext, &pixelFormatDesc);
 		}
-
+        
 		if (!pixelFormat)
 		{
 			LOG("Failed to choose pixel fromat");

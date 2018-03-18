@@ -11,7 +11,7 @@
 
 namespace Forge
 {
-	//TODO: write custom Vector and replace with him all std::vector usages
+	
 	Image::Image()
 	{}
 
@@ -93,12 +93,12 @@ namespace Forge
 		}
 	}
 
-	void Image::Load(String filename)
+	void Image::Load(const String& filename)
 	{
 		resourceName = filename;
 		File file = engine->GetFileSystem()->ReadFile(filename);
 		byte* pixels = stbi_load_from_memory(file.GetData(), file.GetSize(), &_size.x, &_size.y, &fileChannels, 4);
-		_pixels.resize(_size.x * _size.x * 4);
+		_pixels.resize(_size.x * _size.y * 4);
 
 		memcpy(_pixels.data(), pixels, _pixels.size() * sizeof(byte));
 		delete[] pixels;
@@ -106,7 +106,7 @@ namespace Forge
 
 	void Image::UnLoad()
 	{
-
+		_pixels.clear();
 	}
 
 	void Image::SwapColors(byte* color1, byte* color2, uint count)

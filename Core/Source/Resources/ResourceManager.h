@@ -116,7 +116,8 @@ namespace Forge
 				T* res = Load(filename);
 				resources.insert_or_assign(filename.CString(), res);
 				return res;
-			}else
+			}
+			else
 			{
 				return fn;
 			}

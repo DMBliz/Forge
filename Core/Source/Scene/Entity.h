@@ -4,6 +4,7 @@
 #include "ComponentManager.h"
 #include "Defines.h"
 #include "Serialization/meta.h"
+#include "TransformComponent.h"
 
 namespace Forge
 {
@@ -43,6 +44,14 @@ namespace Forge
 			auto it = std::find(childs.begin(), childs.end(), child);
 			if(it == childs.end())
 				childs.push_back(child);
+
+            TransformComponent* childTransform = child->GetComponent<TransformComponent>();
+            TransformComponent* transform = GetComponent<TransformComponent>();
+
+            if (childTransform != nullptr && transform != nullptr)
+            {
+                childTransform->Parent(transform);
+            }
 		}
 
 		String name;
@@ -56,13 +65,21 @@ namespace Forge
 				if (child->GetEntityID() == (*i)->GetEntityID())
 				{
 					childs.erase(i);
+
+                    TransformComponent* childTransform = child->GetComponent<TransformComponent>();
+                    TransformComponent* transform = GetComponent<TransformComponent>();
+
+                    if (childTransform != nullptr && transform != nullptr)
+                    {
+                        childTransform->Parent(nullptr);
+                    }
 					return;
 				}
 			}
 		}
 		std::vector<Component*> components;
 		std::vector<Entity*> childs;
-		Entity* parent;
+		Entity* parent = nullptr;
 	public:
 		Entity()
 		{}
@@ -100,6 +117,16 @@ namespace Forge
 			if (c)
 			{
 				components.push_back(c);
+
+                if(typeid(T) == typeid(TransformComponent) && parent != nullptr)
+                {
+                    TransformComponent* ptr = parent->GetComponent<TransformComponent>();
+                    if(ptr != nullptr)
+                    {
+                        static_cast<TransformComponent*>(c)->Parent(ptr);
+                    }
+                }
+
 				return static_cast<T*>(c);
 			}
 			else

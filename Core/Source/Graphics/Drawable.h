@@ -5,23 +5,23 @@
 
 namespace Forge
 {
-	//TODO: pass worldTransform to shader
-	struct DrawBatch
-	{
-		Mesh* mesh;
-		Material* material;
-
-		const Matrix3x4* worldTransform;
-	};
-
 	class Drawable
 	{
 	protected:
-		std::vector<DrawBatch*> _batches;
-		bool active;
+		Mesh* _mesh;
+		Material* _material;
+		const Matrix3x4* worldTransform;
+
+        bool active = false;
 	public:
 		Drawable();
 		~Drawable();
+
+		const Matrix3x4* GetWorldPosition() const;
+		Material& GetMaterial() const;
+		Mesh& GetMesh() const;
+
+		void SetWorldPosition(const Matrix3x4& newPosition);
 
 		virtual void OnActivate();
 		virtual void OnDeactivate();

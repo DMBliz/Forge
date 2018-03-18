@@ -23,7 +23,7 @@ namespace Forge
 	Resource::~Resource()
 	{}
 
-	void Resource::Load(String filename)
+	void Resource::Load(const String& filename)
 	{
 		if (filename.IsEmpty())
 			LOG("filename cannot be empty");

@@ -1,7 +1,6 @@
 #pragma once
 #include "Vector4.h"
 
-//TODO: refactor this
 namespace Forge 
 {
 	class Quaternion;

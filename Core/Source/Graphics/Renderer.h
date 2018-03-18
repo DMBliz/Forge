@@ -12,7 +12,7 @@ namespace Forge
 	class Renderer
 	{
 	private:
-		std::vector<DrawBatch*> drawBatches;
+		std::vector<Drawable*> drawables;
 		GraphicsRenderer* deviceRenderer = nullptr;
 	public:
 		Renderer();
@@ -22,14 +22,14 @@ namespace Forge
 		void SetFrustum(const Frustum& frustum);
 		const Frustum& GetFrustum() const;
 
-		void AddDrawBatch(DrawBatch* drawBatch);
+		void AddDrawable(Drawable* drawable);
 
 		virtual void Draw();
 
 		//TODO: replace with custom(own) Vector
-		bool RemoveDrawBatch(DrawBatch* drawBatch);
+		bool RemoveDrawable(Drawable* drawable);
 
-		bool ContainsDrawBatch(DrawBatch* drawBatch);
+		bool ContainsDrawable(Drawable* drawable);
 
 		Texture2D* GetScreenTexture() { return deviceRenderer->GetSurface()->GetColorTexture(); }
 

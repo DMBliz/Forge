@@ -9,7 +9,7 @@ namespace Forge
 
 	Matrix3x4::Matrix3x4()
 	{
-		memset(elements, 0, 12);
+		memset(elements, 0, 12 * sizeof(float));
 		mels[0][0] = 1;
 		mels[1][1] = 1;
 		mels[2][2] = 1;
@@ -17,7 +17,7 @@ namespace Forge
 
 	Matrix3x4::Matrix3x4(const Matrix3x4& matrix)
 	{
-		memcpy(elements, matrix.elements, 12);
+		memcpy(elements, matrix.elements, 12 * sizeof(float));
 	}
 
 	Matrix3x4::Matrix3x4(const Matrix3& matrix)

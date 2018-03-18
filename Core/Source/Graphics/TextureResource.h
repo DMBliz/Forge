@@ -53,16 +53,9 @@ namespace Forge
 		TextureFormat format;
 		TextureDataType dataType;
 
-
-		TextureParametrs()
-			: filter(TextureFilter::Linear), wrap(TextureWrap::Repeat), internalFormat(TextureInternalFormat::RGBA), format(TextureFormat::RGBA), dataType(TextureDataType::Byte)
-		{}
-
-		TextureParametrs(TextureFilter filter, TextureWrap wrap, TextureInternalFormat internalFormat, TextureFormat format)
-			: filter(filter), wrap(wrap),internalFormat(internalFormat), format(format), dataType(TextureDataType::Byte)
-		{}
-
-		TextureParametrs(TextureFilter filter, TextureWrap wrap, TextureInternalFormat internalFormat, TextureFormat format, TextureDataType dataType)
+		TextureParametrs(TextureFilter filter = TextureFilter::Nearest, TextureWrap wrap = TextureWrap::Repeat,
+						 TextureInternalFormat internalFormat = TextureInternalFormat::RGBA,
+						 TextureFormat format = TextureFormat::RGBA, TextureDataType dataType = TextureDataType::Byte)
 			: filter(filter), wrap(wrap), internalFormat(internalFormat), format(format), dataType(dataType)
 		{}
 	};

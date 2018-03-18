@@ -4,15 +4,26 @@
 
 namespace Forge
 {
-	//TODO: rework buffers pipline buffer layout has all data for each layout
+	enum class BufferElementType
+	{
+		Custom,
+		Position,
+		UV,
+		Normal,
+		Tangent,
+		Bitangent
+
+	};
 	struct BufferElement
 	{
 		String name;
 		uint id;
-		uint type;
-		uint size;
-		uint count;
+		uint type;//element type
+		uint size;//size of 1 element in bytes
+		uint count;//count of numbers
 		uint offset;
+		BufferElementType elementType;
+		uint customID;
 		bool normalized;
 	};
 
@@ -22,13 +33,19 @@ namespace Forge
 		uint layoutSize;
 		std::vector<BufferElement> layout;
 
-		void Add(const String& name, uint id, uint type, uint size, uint count, bool normalized);
+		void Add(const String& name, uint id, uint type, uint size, uint count, 
+				 BufferElementType elemType = BufferElementType::Custom, uint customID = 0, bool normalized = false);
 	public:
 
 		BufferLayout();
 
 		template<typename T>
-		void Add(const String& name, uint id, uint count, bool normalized);
+		void Add(const String& name, uint id, uint count,
+				 BufferElementType elemType = BufferElementType::Custom, uint customID = 0, bool normalized = false);
+
+		template<typename T>
+		void Add(const String& name, uint id, 
+				 BufferElementType elemType = BufferElementType::Custom, uint customID = 0, bool normalized = false);
 
 		BufferLayout& operator=(const BufferLayout& right);
 
@@ -36,4 +53,6 @@ namespace Forge
 		inline uint GetStride() const { return layoutSize; }
 
 	};
+
+	
 }

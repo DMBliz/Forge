@@ -11,7 +11,7 @@ namespace Forge
 				projection = Matrix4::Orthographic(0, size.x, 0, size.y, nearf, farf);
 				break;
 			case FrustumProjection::Perspective: 
-				projection = Matrix4::Perspective(fov, size.x / size.y, nearf, farf);
+				projection = Matrix4::Perspective(fov, static_cast<float>(size.x) / static_cast<float>(size.y), nearf, farf);
 				break;
 		}
 	}

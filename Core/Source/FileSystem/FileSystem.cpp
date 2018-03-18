@@ -16,17 +16,6 @@ namespace Forge
 
 	File FileSystem::ReadFile(const String& filename)
 	{
-		/*std::ifstream file(filename.CString());
-		std::streamsize size = file.tellg();
-		file.seekg(0, std::ios::beg);
-
-		std::vector<char> buffer(size);
-		String res;
-		res.Resize(size);
-		if (!file.read(res.CString(), size))
-		{
-			LOG("File read error");
-		}*/
 
 		if (!FileExists(filename))
 			LOG("File don't exist");
@@ -37,13 +26,6 @@ namespace Forge
 		ss << file.rdbuf();
 
 		std::string tmp(ss.str());
-		/*
-		std::ifstream file(filename.CString(), std::ios::binary);
-		String res;
-
-		std::string temp{ std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>() };
-		res = temp.c_str();*/
-
 		return File(tmp.data(), tmp.size());
 	}
 
@@ -63,7 +45,7 @@ namespace Forge
 	FileSystem* FileSystem::Create()
 	{
 		FileSystem* ret;
-#if defined(WIN32)
+#if defined(_WIN32)
 		ret = new WINFileSystem();
 #elif defined(MACOS)
 #elif defined(LINUX)
