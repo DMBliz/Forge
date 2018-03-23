@@ -10,16 +10,14 @@ namespace Forge
 
 	GLTexture2DResource::GLTexture2DResource(const Image& img, TextureParametrs params)
 	{
-		parametrs = params;
 		size = img.GetSize();
-		LoadToGpu(img.GetPixels(), size.x, size.y);
+        CreateOnGPU(img, true, params);
 	}
 
 	GLTexture2DResource::GLTexture2DResource(const byte* pixels, uint width, uint height, TextureParametrs params)
 	{
-		parametrs = params;
 		size = Vector2i(width, height);
-		LoadToGpu(pixels, width, height);
+		CreateOnGPU(pixels, width, height, true, params);
 	}
 
 	GLTexture2DResource::~GLTexture2DResource()
@@ -27,21 +25,6 @@ namespace Forge
 		UnLoad();
 	}
 
-	void GLTexture2DResource::LoadToGpu(const byte* pixels, uint width, uint height)
-	{
-		glCheck(glGenTextures(1, &textureID));
-		glCheck(glBindTexture(GL_TEXTURE_2D, textureID));
-		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, ConvertToOGL(parametrs.filter)));
-		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, ConvertToOGL(parametrs.filter)));
-		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, ConvertToOGL(parametrs.wrap)));
-		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, ConvertToOGL(parametrs.wrap)));
-
-		glCheck(glTexImage2D(GL_TEXTURE_2D, 0, ConvertToOGL(parametrs.internalFormat), width, height, 0, 
-				ConvertToOGL(parametrs.format), ConvertToOGL(parametrs.dataType), pixels));
-
-		glCheck(glGenerateMipmap(GL_TEXTURE_2D));
-		glCheck(glBindTexture(GL_TEXTURE_2D, 0));
-	}
 
 	uint GLTexture2DResource::ConvertToOGL(TextureInternalFormat internalFormat)
 	{
@@ -135,9 +118,9 @@ namespace Forge
 		glCheck(glBindTexture(GL_TEXTURE_2D, 0));
 	}
 
-	void GLTexture2DResource::CreateOnGPU(uint width, uint height, TextureParametrs params, bool generateMipMaps)
+	void GLTexture2DResource::CreateOnGPU(uint width, uint height, bool generateMipMaps, TextureParametrs params)
 	{
-		Texture2DResource::CreateOnGPU(width, height, params, generateMipMaps);
+        SetParameters(params);
 		glCheck(glGenTextures(1, &textureID));
 		glCheck(glBindTexture(GL_TEXTURE_2D, textureID));
 		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, ConvertToOGL(parametrs.filter)));
@@ -153,15 +136,52 @@ namespace Forge
 		glCheck(glBindTexture(GL_TEXTURE_2D, 0));
 	}
 
+    void GLTexture2DResource::CreateOnGPU(const byte* pixels, uint width, uint height, bool generateMipMaps, TextureParametrs params)
+    {
+        SetParameters(params);
+        glCheck(glGenTextures(1, &textureID));
+        glCheck(glBindTexture(GL_TEXTURE_2D, textureID));
+        glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, ConvertToOGL(parametrs.filter)));
+        glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, ConvertToOGL(parametrs.filter)));
+        glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, ConvertToOGL(parametrs.wrap)));
+        glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, ConvertToOGL(parametrs.wrap)));
+
+        glCheck(glTexImage2D(GL_TEXTURE_2D, 0, ConvertToOGL(parametrs.internalFormat), width, height, 0,
+                ConvertToOGL(parametrs.format), ConvertToOGL(parametrs.dataType), pixels));
+
+        if (generateMipMaps)
+            glCheck(glGenerateMipmap(GL_TEXTURE_2D));
+        glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+    }
+
+    void GLTexture2DResource::CreateOnGPU(const Image& image, bool generateMipMaps, TextureParametrs params)
+    {
+        SetParameters(params);
+        glCheck(glGenTextures(1, &textureID));
+        glCheck(glBindTexture(GL_TEXTURE_2D, textureID));
+        glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, ConvertToOGL(parametrs.filter)));
+        glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, ConvertToOGL(parametrs.filter)));
+        glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, ConvertToOGL(parametrs.wrap)));
+        glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, ConvertToOGL(parametrs.wrap)));
+
+        glCheck(glTexImage2D(GL_TEXTURE_2D, 0, ConvertToOGL(parametrs.internalFormat), image.GetSize().x, image.GetSize().y, 0,
+                ConvertToOGL(parametrs.format), ConvertToOGL(parametrs.dataType), image.GetPixels()));
+
+        if (generateMipMaps)
+            glCheck(glGenerateMipmap(GL_TEXTURE_2D));
+        glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+    }
+
 	void GLTexture2DResource::Load(Image image)
 	{
-		LoadToGpu(image.GetPixels(), image.GetSize().x, image.GetSize().y);
+        size = image.GetSize();
+        CreateOnGPU(image, true, TextureParametrs());
 	}
 
 	void GLTexture2DResource::Load(Image image, TextureParametrs params)
 	{
-		parametrs = params;
-		LoadToGpu(image.GetPixels(), image.GetSize().x, image.GetSize().y);
+        size = image.GetSize();
+        CreateOnGPU(image, true, params);
 	}
 
 	void GLTexture2DResource::UnLoad()

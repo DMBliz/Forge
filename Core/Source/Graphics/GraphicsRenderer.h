@@ -34,10 +34,6 @@ namespace Forge
 		bool debugRenderer = false;
 
 		bool renderToScreen = true;
-
-		Frustum frustum;
-		Camera camera;
-
 	public:
 		GraphicsRenderer();
 		virtual ~GraphicsRenderer();
@@ -45,7 +41,7 @@ namespace Forge
 		virtual void Init(const Vector2i& windowSize) = 0;
 
 		virtual void PreDraw() = 0;
-		virtual void Draw(Drawable* drawable) = 0;
+		virtual void Draw(uint count) = 0;
 		virtual void PostDraw() = 0;
 
 		virtual void DrawToScreen() = 0;
@@ -64,21 +60,6 @@ namespace Forge
 
 		virtual void SetClearDepth(float depth) { clearDepth = depth; }
 		float GetClearDepth() { return clearDepth; }
-
-		void SetFrustum(const Frustum& newFrustum)
-		{
-			frustum = newFrustum;
-		}
-
-		Frustum& GetFrustum()
-		{
-			return frustum;
-		}
-
-		Camera& GetCamera()
-		{
-			return camera;
-		}
 
 		RenderSurface* GetSurface() const { return renderSurface; }
 

@@ -14,7 +14,7 @@ namespace Forge
 	{
 	private:
 		FrustumProjection projectionType;
-		Matrix4 projection;
+		mutable Matrix4 projection;
 		Vector2i size;
 		float nearf;
 		float farf;
@@ -32,8 +32,8 @@ namespace Forge
 
 		void SetProjectionType(FrustumProjection newProjection);
 
-		void CalculateMatrix();
+		void CalculateMatrix() const ;
 
-		const Matrix4& GetMatrix() { CalculateMatrix(); return projection; }
+		const Matrix4& GetMatrix() const { CalculateMatrix(); return projection; }
 	};
 }

@@ -22,7 +22,11 @@ namespace Forge
 		virtual void Load(Image image) = 0;
 		virtual void Load(Image image, TextureParametrs parametrs) = 0;
 		virtual void UnLoad() = 0;
-		virtual void CreateOnGPU(uint width, uint height, TextureParametrs params, bool generateMipMaps);
+
+        virtual void CreateOnGPU(uint width, uint height, bool generateMipMaps, TextureParametrs params) = 0;
+        virtual void CreateOnGPU(const byte* pixels, uint width, uint height, bool generateMipMaps, TextureParametrs params) = 0;
+        virtual void CreateOnGPU(const Image& image, bool generateMipMaps, TextureParametrs params) = 0;
+
 		const Vector2i& GetSize() const { return size; }
 		static Texture2DResource* Create();
 		static Texture2DResource* Create(const Image& img, TextureParametrs params);

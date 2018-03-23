@@ -25,7 +25,6 @@ namespace Forge
 		std::vector<TextureDesc> _textures;
 		Shader* shader;
 		ShaderUniforms uniforms;
-		BufferLayout layout;
 		bool dirty = false;
 	public:
 		Material();

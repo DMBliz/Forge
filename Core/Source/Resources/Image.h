@@ -22,6 +22,8 @@ namespace Forge
 		Image();
 		~Image();
 
+        void Create(const Vector2i& size, Color color);
+
 		void Save(String filename);
 
 		void SetPixel(uint x, uint y, const Color& color);

@@ -5,12 +5,6 @@
 namespace Forge
 {
 
-	void Texture2DResource::CreateOnGPU(uint width, uint height, TextureParametrs params, bool generateMipMaps)
-	{
-		parametrs = params;
-		size.Set(width, height);
-	}
-
 	Texture2DResource* Texture2DResource::Create()
 	{
 #if defined(OGL)

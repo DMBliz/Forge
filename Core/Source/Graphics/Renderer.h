@@ -4,16 +4,31 @@
 #include "RenderSurface.h"
 #include "Model.h"
 #include "Texture2D.h"
+#include "PointLight.h"
+#include "SpotLight.h"
+#include "DirectionalLight.h"
 
 namespace Forge
 {
 	class Window;
 
+    struct DrawCommand
+    {
+        Mesh* _mesh;
+        Material* _material;
+
+    };
+
 	class Renderer
 	{
 	private:
-		std::vector<Drawable*> drawables;
-		GraphicsRenderer* deviceRenderer = nullptr;
+		std::vector<DrawCommand> _drawBuffer;
+        std::vector<DirectionalLight*> _dirLights;
+        std::vector<PointLight*> _pointLights;
+        std::vector<SpotLight*> _spotLights;
+        Frustum _frustum;
+        Camera _camera;
+		GraphicsRenderer* _deviceRenderer = nullptr;
 	public:
 		Renderer();
 		~Renderer();
@@ -22,16 +37,22 @@ namespace Forge
 		void SetFrustum(const Frustum& frustum);
 		const Frustum& GetFrustum() const;
 
-		void AddDrawable(Drawable* drawable);
+		void PushCommand(DrawCommand command);
+
+        void AddLight(DirectionalLight* light);
+        void AddLight(PointLight* light);
+        void AddLight(SpotLight* light);
+        void RemoveLight(DirectionalLight* light);
+        void RemoveLight(PointLight* light);
+        void RemoveLight(SpotLight* light);
 
 		virtual void Draw();
 
-		//TODO: replace with custom(own) Vector
-		bool RemoveDrawable(Drawable* drawable);
+        const std::vector<DirectionalLight*>& GetDirLights() const;
+        const std::vector<PointLight*>& GetPointLights() const;
+        const std::vector<SpotLight*>& GetSpotLights() const;
 
-		bool ContainsDrawable(Drawable* drawable);
-
-		Texture2D* GetScreenTexture() { return deviceRenderer->GetSurface()->GetColorTexture(); }
+		Texture2D* GetScreenTexture() { return _deviceRenderer->GetSurface()->GetColorTexture(); }
 
 		void SetSize(const Vector2i& newSize);
 
@@ -44,17 +65,22 @@ namespace Forge
 
 		bool RenderToScreen() const
 		{
-			return deviceRenderer->RenderToScreen();
+			return _deviceRenderer->RenderToScreen();
 		}
 
 		void RenderToScreen(bool value)
 		{
-			deviceRenderer->RenderToScreen(value);
+			_deviceRenderer->RenderToScreen(value);
 		}
 
-		void SetViewMatrix(const Matrix4& matrix) const 
+		void SetViewMatrix(const Matrix4& matrix) 
 		{
-			deviceRenderer->GetCamera().SetMatrix(matrix);
+			_camera.SetMatrix(matrix);
+		}
+
+        const Camera& GetCamera() const
+		{
+            return _camera;
 		}
 	};
 

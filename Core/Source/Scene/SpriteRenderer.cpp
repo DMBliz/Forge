@@ -26,7 +26,12 @@ namespace Forge
 		return sprite->GetTexture();
 	}
 
-	void SpriteRenderer::OnEnable()
+    void SpriteRenderer::Update()
+    {
+        sprite->Draw();
+    }
+
+    void SpriteRenderer::OnEnable()
 	{
 		sprite->SetActive(true);
 		TransformComponent* trn = GetOwner()->GetComponent<TransformComponent>();

@@ -12,20 +12,6 @@ namespace Forge
 	Drawable::~Drawable()
 	{}
 
-	void Drawable::OnActivate()
-	{
-		Renderer* rend = engine->GetRenderer();
-		if (!rend->ContainsDrawable(this))
-			rend->AddDrawable(this);
-	}
-
-	void Drawable::OnDeactivate()
-	{
-		Renderer* rend = engine->GetRenderer();
-		if (rend->ContainsDrawable(this))
-			rend->RemoveDrawable(this);
-	}
-
     const Matrix3x4* Drawable::GetWorldPosition() const
     {
         return worldTransform;
@@ -46,19 +32,28 @@ namespace Forge
 		worldTransform = &newPosition;
 	}
 
-	void Drawable::SetActive(bool state)
+    void Drawable::Draw() const
+    {
+        if (active)
+        {
+            DrawCommand command;
+            command._mesh = _mesh;
+            command._material = _material;
+            engine->GetRenderer()->PushCommand(command);
+        }
+    }
+
+    void Drawable::SetActive(bool state)
 	{
 		if (state == active)
 			return;
 
 		if(state)
 		{
-			OnActivate();
 			active = state;
 		}
 		else
 		{
-			OnDeactivate();
 			active = state;
 		}
 	}

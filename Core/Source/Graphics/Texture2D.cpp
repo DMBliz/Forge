@@ -26,10 +26,15 @@ namespace Forge
 
 	void Texture2D::CreateOnGPU(uint width, uint height, TextureParametrs params, bool generateMipMaps)
 	{
-		static_cast<Texture2DResource*>(textureResource)->CreateOnGPU(width, height, params, generateMipMaps);
+		static_cast<Texture2DResource*>(textureResource)->CreateOnGPU(width, height, generateMipMaps, params);
 	}
 
-	void Texture2D::Load(const String& filename)
+    void Texture2D::CreateOnGPU(const Image& img, TextureParametrs params, bool generateMipMaps)
+    {
+        static_cast<Texture2DResource*>(textureResource)->Load(img, params);
+    }
+
+    void Texture2D::Load(const String& filename)
 	{
 		resourceName = filename;
 		Image* img = engine->GetResources()->LoadNowResource<Image>(filename);

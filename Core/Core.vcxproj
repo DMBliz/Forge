@@ -180,6 +180,11 @@
     <ClInclude Include="Dependecies\include\assimp\vector2.h" />
     <ClInclude Include="Dependecies\include\assimp\vector3.h" />
     <ClInclude Include="Dependecies\include\assimp\version.h" />
+    <ClInclude Include="Source\Utilities\ISwitchable.h" />
+    <ClInclude Include="Source\Scene\DirectionalLightComponent.h" />
+    <ClInclude Include="Source\Graphics\DirectionalLight.h" />
+    <ClInclude Include="Source\Scene\PointLightComponent.h" />
+    <ClInclude Include="Source\Graphics\PointLight.h" />
     <ClInclude Include="Source\Scene\ModelRenderer.h" />
     <ClInclude Include="Source\Graphics\Camera.h" />
     <ClInclude Include="Source\Scene\CameraComponent.h" />
@@ -267,10 +272,17 @@
     <ClInclude Include="Source\Utilities\Timer.h" />
     <ClInclude Include="Source\Graphics\Texture2D.h" />
     <ClInclude Include="Source\Graphics\Texture.h" />
+    <ClInclude Include="Source\Graphics\SpotLight.h" />
+    <ClInclude Include="Source\Scene\SpotLightComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dependecies\src\glad\glad.c" />
     <ClCompile Include="Dependecies\src\glad\glad_wgl.c" />
+    <ClCompile Include="Source\Utilities\ISwitchable.cpp" />
+    <ClCompile Include="Source\Scene\DirectionalLightComponent.cpp" />
+    <ClCompile Include="Source\Graphics\DirectionalLight.cpp" />
+    <ClCompile Include="Source\Scene\PointLightComponent.cpp" />
+    <ClCompile Include="Source\Graphics\PointLight.cpp" />
     <ClCompile Include="Source\Scene\ModelRenderer.cpp" />
     <ClCompile Include="Source\Graphics\Camera.cpp" />
     <ClCompile Include="Source\Scene\CameraComponent.cpp" />
@@ -337,6 +349,8 @@
     <ClCompile Include="Source\Utilities\Timer.cpp" />
     <ClCompile Include="Source\Graphics\Texture2D.cpp" />
     <ClCompile Include="Source\Graphics\Texture.cpp" />
+    <ClCompile Include="Source\Graphics\SpotLight.cpp" />
+    <ClCompile Include="Source\Scene\SpotLightComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependecies\include\assimp\color4.inl" />

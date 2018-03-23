@@ -20,7 +20,19 @@ namespace Forge
 		_pixels.clear();
 	}
 
-	void Image::Save(String filename)
+    void Image::Create(const Vector2i& size, Color color)
+    {
+        _pixels.resize(size.x * size.y * 4);
+        for(int i = 0; i < size.x; i++)
+        {
+            for(int j = 0; j < size.y; j++)
+            {
+                SetPixel(i, j, color);
+            }
+        }
+    }
+
+    void Image::Save(String filename)
 	{
 		stbi_write_png(filename.CString(), _size.x, _size.y, 4, _pixels.data(), 0);
 	}
@@ -32,7 +44,7 @@ namespace Forge
 
 	void Image::SetPixel(uint x, uint y, const Color& color)
 	{
-		if (_pixels.size() < x * y * 4)
+		if (_pixels.size() < (x + y * _size.x) * 4)
 			return;
 
 		byte* pixel = &_pixels[(x + y * _size.x) * 4];

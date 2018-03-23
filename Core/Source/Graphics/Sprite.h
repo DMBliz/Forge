@@ -22,6 +22,8 @@ namespace Forge
 		void SetColor(const Color& color);
 		void SetPivotPosition(const Vector2& pivot);
 
+        void Draw() const override;
+
 		Texture2D* GetTexture() const { return static_cast<Texture2D*>(_material->GetTexture("spriteTexture")); }
 	};
 

@@ -6,7 +6,9 @@ namespace Forge
 {
 
 	ModelRenderer::ModelRenderer()
-	{}
+	{
+        model = new Model();
+	}
 
 	ModelRenderer::~ModelRenderer()
 	{}
@@ -26,6 +28,11 @@ namespace Forge
 	{
 		return model;
 	}
+
+    void ModelRenderer::Update()
+    {
+        model->Draw();
+    }
 
     void ModelRenderer::OnEnable()
     {

@@ -79,7 +79,7 @@ namespace Forge
 		inline float NormalizedB() const { return b / 255.0f; }
 		inline float NormalizedA() const { return a / 255.0f; }
 
-		inline Vector4 GetNormalizedVector() { return Vector4(NormalizedR(), NormalizedG(), NormalizedB(), NormalizedA()); }
+		inline Vector4 GetNormalizedVector() const { return Vector4(NormalizedR(), NormalizedG(), NormalizedB(), NormalizedA()); }
 
 		inline String ToString() const
 		{

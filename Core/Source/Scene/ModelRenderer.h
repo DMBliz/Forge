@@ -16,6 +16,8 @@ namespace Forge
 		void SetModel(Model* model);
 		Model* GetModel() const;
 
+        void Update() override;
+
         void OnEnable() override;
         void OnDisable() override;
 	};

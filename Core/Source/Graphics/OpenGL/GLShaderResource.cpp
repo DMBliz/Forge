@@ -275,7 +275,6 @@ namespace Forge
 
 				glCheck(glUniform4fv(desc.location, desc.count, reinterpret_cast<float*>(vecs)));
 
-				delete[] cols;
 				delete[] vecs;
 
 				break;

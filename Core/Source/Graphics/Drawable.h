@@ -23,8 +23,8 @@ namespace Forge
 
 		void SetWorldPosition(const Matrix3x4& newPosition);
 
-		virtual void OnActivate();
-		virtual void OnDeactivate();
+        virtual void Draw() const;
+
 		virtual void SetActive(bool state);
 		bool IsActive() const { return active; }
 	};

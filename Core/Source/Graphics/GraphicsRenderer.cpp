@@ -47,8 +47,6 @@ namespace Forge
 
 	void GraphicsRenderer::Init(const Vector2i& windowSize)
 	{
-		frustum.SetSize(windowSize);
-		frustum.CalculateMatrix();
 		size = windowSize;
 	}
 

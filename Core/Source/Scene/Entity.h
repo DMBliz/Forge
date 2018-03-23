@@ -117,7 +117,7 @@ namespace Forge
 			if (c)
 			{
 				components.push_back(c);
-
+                
                 if(typeid(T) == typeid(TransformComponent) && parent != nullptr)
                 {
                     TransformComponent* ptr = parent->GetComponent<TransformComponent>();
@@ -211,7 +211,7 @@ namespace Forge
 		virtual void OnDisable() {}
 
 		virtual void OnCreate() {}
-		virtual void OnDestroy() {}
+        virtual void OnDestroy();
 
 		virtual void Update();
 	};

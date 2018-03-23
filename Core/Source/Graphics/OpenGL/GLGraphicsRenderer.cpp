@@ -55,16 +55,9 @@ namespace Forge
 		glCheck(glClear(clearMask));
 	}
 
-	void GLGraphicsRenderer::Draw(Drawable* drawable)
+	void GLGraphicsRenderer::Draw(uint count)
 	{
-		drawable->GetMaterial().Uniforms().SetValueToUniform<Matrix4>("projection", frustum.GetMatrix());
-		drawable->GetMaterial().Uniforms().SetValueToUniform<Matrix4>("view", camera.GetViewMatrix());
-		drawable->GetMaterial().Uniforms().SetValueToUniform<Matrix4>("model", drawable->GetWorldPosition()->ToMatrix4());
-
-		drawable->GetMaterial().Use();
-        drawable->GetMesh().Bind();
-        glCheck(glDrawElements(GL_TRIANGLES, drawable->GetMesh().GetIndexBufferSize(), GL_UNSIGNED_INT, nullptr));
-		
+        glCheck(glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr));
 	}
 
 	void GLGraphicsRenderer::PostDraw()
@@ -91,8 +84,6 @@ namespace Forge
 		GraphicsRenderer::SetSize(newSize);
 		SetViewport(0, 0, newSize.x, newSize.y);
 		renderSurface->Resize(newSize);
-		frustum.SetSize(newSize);
-		frustum.CalculateMatrix();
 	}
 
 	void GLGraphicsRenderer::SetClearColorBuffer(bool value)

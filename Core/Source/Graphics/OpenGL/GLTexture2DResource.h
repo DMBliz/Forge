@@ -8,7 +8,6 @@ namespace Forge
 	class GLTexture2DResource : public Texture2DResource
 	{
 	private:
-		void LoadToGpu(const byte* pixels, uint width, uint height);
 		uint ConvertToOGL(TextureInternalFormat internalFormat);
 		uint ConvertToOGL(TextureFormat format);
 		uint ConvertToOGL(TextureFilter filter);
@@ -27,7 +26,10 @@ namespace Forge
 		void Bind(uint slot = 0) const override;
 		void UnBind(uint slot = 0) const override;
 
-		void CreateOnGPU(uint width, uint height, TextureParametrs params, bool generateMipMaps) override;
+		void CreateOnGPU(uint width, uint height, bool generateMipMaps, TextureParametrs params) override;
+        void CreateOnGPU(const byte* pixels, uint width, uint height, bool generateMipMaps, TextureParametrs params) override;
+        void CreateOnGPU(const Image& image, bool generateMipMaps, TextureParametrs params) override;
+
 		void Load(Image image) override;
 		void Load(Image image, TextureParametrs parametrs) override;
 		void UnLoad() override;

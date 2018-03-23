@@ -41,7 +41,8 @@ namespace Forge
 			{
 				if (content[value->entityID] != nullptr)
 				{
-					value->OnDestroy();
+                    value->OnDisable();
+                    value->OnDestroy();
 					delete value;
 					content.erase(value->entityID);
 				}

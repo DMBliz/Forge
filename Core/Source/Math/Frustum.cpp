@@ -3,7 +3,7 @@
 
 namespace Forge
 {
-	void Frustum::CalculateMatrix()
+	void Frustum::CalculateMatrix() const
 	{
 		switch (projectionType)
 		{

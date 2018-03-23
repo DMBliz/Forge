@@ -3,6 +3,7 @@
 #include "Resources/Resources.h"
 #include "Shader.h"
 #include "Core/Engine.h"
+#include "Math/Frustum.h"
 
 namespace Forge
 {
@@ -64,11 +65,25 @@ namespace Forge
 
 	void Sprite::SetColor(const Color& color)
 	{
-		_material->Uniforms().SetValueToUniform<Color>("Color", color);
+        Image img;
+        img.Create(Vector2i(1, 1), color);
+        Texture2D* texture = new Texture2D();
+        texture->CreateOnGPU(img, TextureParametrs(), false);
+        
+		_material->SetTexture(texture, "spriteTexture");
 	}
 
 	void Sprite::SetPivotPosition(const Vector2& pivot)
 	{
 		_pivot = pivot;
 	}
+
+    void Sprite::Draw() const 
+    {
+        Renderer* renderer = engine->GetRenderer();
+        _material->Uniforms().SetValueToUniform<Matrix4>("projection", renderer->GetFrustum().GetMatrix());
+        _material->Uniforms().SetValueToUniform<Matrix4>("view", renderer->GetCamera().GetViewMatrix());
+        _material->Uniforms().SetValueToUniform<Matrix4>("model", worldTransform->ToMatrix4());
+        Drawable::Draw();
+    }
 }

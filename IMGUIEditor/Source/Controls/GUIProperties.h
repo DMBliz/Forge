@@ -7,6 +7,9 @@
 #include "imgui/imgui.h"
 #include "GUIResources.h"
 #include "Scene/ModelRenderer.h"
+#include "Scene/PointLightComponent.h"
+#include "Scene/SpotLightComponent.h"
+#include "Scene/DirectionalLightComponent.h"
 
 namespace ForgeEditor
 {
@@ -57,7 +60,7 @@ namespace ForgeEditor
 			component->SetModel(Forge::engine->GetResources()->LoadNowResource<Forge::Model>(selectedRes));
 		}
 	}
-
+    
 	inline void DrawComponent(Forge::TransformComponent* component)
 	{
 
@@ -131,6 +134,103 @@ namespace ForgeEditor
 		
 	}
 
+    inline void DrawComponent(Forge::PointLightComponent* component)
+    {
+        Forge::PointLight* light = component->GetLight();
+        Forge::Vector4 color = light->GetColor().GetNormalizedVector();
+        
+
+        float colorf[4] = { color.x, color.y, color.z, color.w };
+        float linear = light->Linear();
+        float quadratic = light->Quadratic();
+
+        ImGui::ColorEdit4("Light color", colorf);
+        ImGui::DragFloat("Linear", &linear);
+        ImGui::DragFloat("Quadratic", &quadratic);
+
+        if (color.x != colorf[0] || color.y != colorf[1] || color.z != colorf[2] || color.w != colorf[3])
+        {
+            light->SetColor(Forge::Color(colorf[0], colorf[1], colorf[2], colorf[3]));
+        }
+
+        if (linear != light->Linear())
+        {
+            light->Linear(linear);
+        }
+
+        if (quadratic != light->Quadratic())
+        {
+            light->Quadratic(quadratic);
+        }
+    }
+
+    inline void DrawComponent(Forge::SpotLightComponent* component)
+    {
+        Forge::SpotLight* light = component->GetLight();
+        Forge::Vector4 color = light->GetColor().GetNormalizedVector();
+
+
+        float colorf[4] = { color.x, color.y, color.z, color.w };
+        float cutOff = light->CutOff();
+        float outerCutOff = light->OuterCutOff();
+        float linear = light->Linear();
+        float quadratic = light->Quadratic();
+
+        ImGui::ColorEdit4("Light color", colorf);
+        ImGui::DragFloat("Linear", &linear);
+        ImGui::DragFloat("Quadratic", &quadratic);
+        ImGui::DragFloat("CutOff", &cutOff);
+        ImGui::DragFloat("Outer CutOff", &outerCutOff);
+
+        if (color.x != colorf[0] || color.y != colorf[1] || color.z != colorf[2] || color.w != colorf[3])
+        {
+            light->SetColor(Forge::Color(colorf[0], colorf[1], colorf[2], colorf[3]));
+        }
+
+        if (linear != light->Linear())
+        {
+            light->Linear(linear);
+        }
+
+        if (quadratic != light->Quadratic())
+        {
+            light->Quadratic(quadratic);
+        }
+
+        if (cutOff != light->CutOff())
+        {
+            light->CutOff(cutOff);
+        }
+
+        if (outerCutOff != light->OuterCutOff())
+        {
+            light->OuterCutOff(outerCutOff);
+        }
+    }
+
+    inline void DrawComponent(Forge::DirectionalLightComponent* component)
+    {
+        Forge::DirectionalLight* light = component->GetLight();
+        Forge::Vector4 color = light->GetColor().GetNormalizedVector();
+        Forge::Vector3 direction = light->Direction();
+
+        float colorf[4] = { color.x, color.y, color.z, color.w };
+        float dir[3] = { direction.x, direction.y, direction.z };
+
+        ImGui::ColorEdit4("Light color", colorf);
+        ImGui::DragFloat3("Direction", dir);
+
+        if (color.x != colorf[0] || color.y != colorf[1] || color.z != colorf[2] || color.w != colorf[3])
+        {
+            light->SetColor(Forge::Color(colorf[0], colorf[1], colorf[2], colorf[3]));
+        }
+
+        if (direction.x != dir[0] || direction.y != dir[1] || direction.z != dir[2])
+        {
+            light->Direction(Forge::Vector3(dir[0], dir[1], dir[2]));
+        }
+    }
+
 	inline void Resolve(Forge::Component* component)
 	{
 		if(typeid(*component) == typeid(Forge::TransformComponent))
@@ -151,14 +251,41 @@ namespace ForgeEditor
 			}
 		}
 
-		if (typeid(*component) == typeid(Forge::ModelRenderer))
-		{
-			if (ImGui::CollapsingHeader("Model Renderer"))
-			{
-				Forge::ModelRenderer* rend = static_cast<Forge::ModelRenderer*>(component);
-				DrawComponent(rend);
-			}
-		}
+        if (typeid(*component) == typeid(Forge::ModelRenderer))
+        {
+            if (ImGui::CollapsingHeader("Model Renderer"))
+            {
+                Forge::ModelRenderer* rend = static_cast<Forge::ModelRenderer*>(component);
+                DrawComponent(rend);
+            }
+        }
+
+        if (typeid(*component) == typeid(Forge::PointLightComponent))
+        {
+            if (ImGui::CollapsingHeader("Light Component"))
+            {
+                Forge::PointLightComponent* rend = static_cast<Forge::PointLightComponent*>(component);
+                DrawComponent(rend);
+            }
+        }
+
+        if (typeid(*component) == typeid(Forge::SpotLightComponent))
+        {
+            if (ImGui::CollapsingHeader("Light Component"))
+            {
+                Forge::SpotLightComponent* rend = static_cast<Forge::SpotLightComponent*>(component);
+                DrawComponent(rend);
+            }
+        }
+
+        if (typeid(*component) == typeid(Forge::DirectionalLightComponent))
+        {
+            if (ImGui::CollapsingHeader("Light Component"))
+            {
+                Forge::DirectionalLightComponent* rend = static_cast<Forge::DirectionalLightComponent*>(component);
+                DrawComponent(rend);
+            }
+        }
 	}
 
 	inline void DrawProperties(bool& draw, Forge::Entity* entity)
@@ -191,11 +318,29 @@ namespace ForgeEditor
 					ImGui::CloseCurrentPopup();
 				}
 
-				if (ImGui::Button("Model"))
-				{
-					entity->AddComponent<Forge::ModelRenderer>();
-					ImGui::CloseCurrentPopup();
-				}
+                if (ImGui::Button("Model"))
+                {
+                    entity->AddComponent<Forge::ModelRenderer>();
+                    ImGui::CloseCurrentPopup();
+                }
+
+                if (ImGui::Button("Point Light"))
+                {
+                    entity->AddComponent<Forge::PointLightComponent>();
+                    ImGui::CloseCurrentPopup();
+                }
+
+                if (ImGui::Button("Spot Light"))
+                {
+                    entity->AddComponent<Forge::SpotLightComponent>();
+                    ImGui::CloseCurrentPopup();
+                }
+
+                if (ImGui::Button("Directional Light"))
+                {
+                    entity->AddComponent<Forge::DirectionalLightComponent>();
+                    ImGui::CloseCurrentPopup();
+                }
 				
 				ImGui::EndPopup();
 			}

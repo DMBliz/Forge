@@ -36,8 +36,6 @@ namespace Forge
 		}
 
 	private:
-		using varType = void;
-
 		void DeleteData();
 	};
 

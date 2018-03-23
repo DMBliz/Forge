@@ -178,24 +178,119 @@ namespace Forge
 		uniforms[id]->data = new uint(data);
 	}
 
-	template <>
-	void ShaderUniforms::SetValueToUniform<Color>(const String& uniformName, Color data)
-	{
-		int id = FindUniformID(uniformName);
-		if (id < 0)
-		{
-			LOG("Trying set unexisting uniform");
-			return;
-		}
+    template <>
+    void ShaderUniforms::SetValueToUniform<Vector2>(const String& uniformName, Vector2 data)
+    {
+        int id = FindUniformID(uniformName);
+        if (id < 0)
+        {
+            LOG("Trying set unexisting uniform");
+            return;
+        }
 
-		uniforms[id]->count = 1;
+        uniforms[id]->count = 1;
 
-		if (uniforms[id]->data != nullptr)
-			delete[] reinterpret_cast<Color*>(uniforms[id]->data);
+        if (uniforms[id]->data != nullptr)
+            delete[] reinterpret_cast<float*>(uniforms[id]->data);
 
-		uniforms[id]->data = new Color;
-		memcpy(uniforms[id]->data, &data, sizeof(Color));
-	}
+        uniforms[id]->data = new float[2];
+        memcpy(uniforms[id]->data, &data, 2 * sizeof(float));
+    }
+
+    template <>
+    void ShaderUniforms::SetValueToUniform<Vector2i>(const String& uniformName, Vector2i data)
+    {
+        int id = FindUniformID(uniformName);
+        if (id < 0)
+        {
+            LOG("Trying set unexisting uniform");
+            return;
+        }
+
+        uniforms[id]->count = 1;
+
+        if (uniforms[id]->data != nullptr)
+            delete[] reinterpret_cast<int*>(uniforms[id]->data);
+
+        uniforms[id]->data = new int[2];
+        memcpy(uniforms[id]->data, &data, 2 * sizeof(int));
+    }
+
+    template <>
+    void ShaderUniforms::SetValueToUniform<Vector3>(const String& uniformName, Vector3 data)
+    {
+        int id = FindUniformID(uniformName);
+        if (id < 0)
+        {
+            LOG("Trying set unexisting uniform");
+            return;
+        }
+
+        uniforms[id]->count = 1;
+
+        if (uniforms[id]->data != nullptr)
+            delete[] reinterpret_cast<float*>(uniforms[id]->data);
+
+        uniforms[id]->data = new float[3];
+        memcpy(uniforms[id]->data, &data, 3 * sizeof(float));
+    }
+
+    template <>
+    void ShaderUniforms::SetValueToUniform<Vector4>(const String& uniformName, Vector4 data)
+    {
+        int id = FindUniformID(uniformName);
+        if (id < 0)
+        {
+            LOG("Trying set unexisting uniform");
+            return;
+        }
+
+        uniforms[id]->count = 1;
+
+        if (uniforms[id]->data != nullptr)
+            delete[] reinterpret_cast<float*>(uniforms[id]->data);
+
+        uniforms[id]->data = new float[4];
+        memcpy(uniforms[id]->data, &data, 4 * sizeof(float));
+    }
+
+    template <>
+    void ShaderUniforms::SetValueToUniform<Color>(const String& uniformName, Color data)
+    {
+        int id = FindUniformID(uniformName);
+        if (id < 0)
+        {
+            LOG("Trying set unexisting uniform");
+            return;
+        }
+
+        uniforms[id]->count = 1;
+
+        if (uniforms[id]->data != nullptr)
+            delete[] reinterpret_cast<Color*>(uniforms[id]->data);
+
+        uniforms[id]->data = new Color;
+        memcpy(uniforms[id]->data, &data, sizeof(Color));
+    }
+
+    template <>
+    void ShaderUniforms::SetValueToUniform<Matrix3>(const String& uniformName, Matrix3 data)
+    {
+        int id = FindUniformID(uniformName);
+        if (id < 0)
+        {
+            LOG("Trying set unexisting uniform");
+            return;
+        }
+
+        uniforms[id]->count = 1;
+
+        if (uniforms[id]->data != nullptr)
+            delete[] reinterpret_cast<float*>(uniforms[id]->data);
+
+        uniforms[id]->data = new float[9];
+        memcpy(uniforms[id]->data, &data, 9 * sizeof(float));
+    }
 
 	template <>
 	void ShaderUniforms::SetValueToUniform<Matrix4>(const String& uniformName, Matrix4 data)
@@ -255,7 +350,7 @@ namespace Forge
 	}
 
 	template <>
-	void ShaderUniforms::SetValueToUniform<unsigned>(const String& uniformName, uint count, uint* data)
+	void ShaderUniforms::SetValueToUniform<uint>(const String& uniformName, uint count, uint* data)
 	{
 		int id = FindUniformID(uniformName);
 		if (id < 0)

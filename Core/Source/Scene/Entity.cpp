@@ -22,6 +22,15 @@ namespace Forge
 		active = state;
 	}
 
+    void Entity::OnDestroy()
+    {
+        for (Component* component : components)
+        {
+            component->OnDisable();
+            component->OnDestroy();
+        }
+    }
+
 	void Entity::Update()
 	{
 		for(Component* component : components)

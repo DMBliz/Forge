@@ -30,6 +30,7 @@ namespace Forge
         void SetWorldPosition(const Matrix3x4& newPosition);
 
 		void Load(const String& filename) override;
+        void Draw();
         void SetActive(bool state);
         void OnEnable();
         void OnDisable();

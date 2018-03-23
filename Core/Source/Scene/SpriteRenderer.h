@@ -16,6 +16,8 @@ namespace Forge
 
 		void SetTexture(Texture2D* texture);
 		Texture2D* GetTexture() const;
+
+        void Update() override;
 		void OnEnable() override;
 		void OnDisable() override;
 	};
