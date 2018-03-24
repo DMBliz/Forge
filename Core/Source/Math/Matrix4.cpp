@@ -55,7 +55,7 @@ namespace Forge
 		memcpy(elements, other.elements, 4 * 4 * sizeof(float));
 	}
 
-	Matrix4 Matrix4::Transponse()
+	Matrix4 Matrix4::Transponse() const
 	{
 		return Matrix4(mels[0][0], mels[1][0], mels[2][0], mels[3][0],
 					   mels[0][1], mels[1][1], mels[2][1], mels[3][1],
@@ -63,7 +63,7 @@ namespace Forge
 					   mels[0][3], mels[1][3], mels[2][3], mels[3][3]);
 	}
 
-	Matrix3 Matrix4::ToMatrix3()
+	Matrix3 Matrix4::ToMatrix3() const
 	{
 		return Matrix3(
 			mels[0][0], mels[0][1], mels[0][2],
@@ -72,7 +72,7 @@ namespace Forge
 		);
 	}
 
-	Matrix3 Matrix4::RotationMatrix()
+	Matrix3 Matrix4::RotationMatrix() const
 	{
 		Vector3 invScale(
 			1.0f / sqrtf(mels[0][0] * mels[0][0] + mels[1][0] * mels[1][0] + mels[2][0] * mels[2][0]),
@@ -109,131 +109,6 @@ namespace Forge
 		rotation = Quaternion(ToMatrix3().Scaled(invScale));
 	}
 
-	///Matrix invert
-	/*Matrix4& Matrix4::Invert()
-	{
-		double temp[16];
-
-		temp[0] = elements[5] * elements[10] * elements[15] -
-			elements[5] * elements[11] * elements[14] -
-			elements[9] * elements[6] * elements[15] +
-			elements[9] * elements[7] * elements[14] +
-			elements[13] * elements[6] * elements[11] -
-			elements[13] * elements[7] * elements[10];
-
-		temp[4] = -elements[4] * elements[10] * elements[15] +
-			elements[4] * elements[11] * elements[14] +
-			elements[8] * elements[6] * elements[15] -
-			elements[8] * elements[7] * elements[14] -
-			elements[12] * elements[6] * elements[11] +
-			elements[12] * elements[7] * elements[10];
-
-		temp[8] = elements[4] * elements[9] * elements[15] -
-			elements[4] * elements[11] * elements[13] -
-			elements[8] * elements[5] * elements[15] +
-			elements[8] * elements[7] * elements[13] +
-			elements[12] * elements[5] * elements[11] -
-			elements[12] * elements[7] * elements[9];
-
-		temp[12] = -elements[4] * elements[9] * elements[14] +
-			elements[4] * elements[10] * elements[13] +
-			elements[8] * elements[5] * elements[14] -
-			elements[8] * elements[6] * elements[13] -
-			elements[12] * elements[5] * elements[10] +
-			elements[12] * elements[6] * elements[9];
-
-		temp[1] = -elements[1] * elements[10] * elements[15] +
-			elements[1] * elements[11] * elements[14] +
-			elements[9] * elements[2] * elements[15] -
-			elements[9] * elements[3] * elements[14] -
-			elements[13] * elements[2] * elements[11] +
-			elements[13] * elements[3] * elements[10];
-
-		temp[5] = elements[0] * elements[10] * elements[15] -
-			elements[0] * elements[11] * elements[14] -
-			elements[8] * elements[2] * elements[15] +
-			elements[8] * elements[3] * elements[14] +
-			elements[12] * elements[2] * elements[11] -
-			elements[12] * elements[3] * elements[10];
-
-		temp[9] = -elements[0] * elements[9] * elements[15] +
-			elements[0] * elements[11] * elements[13] +
-			elements[8] * elements[1] * elements[15] -
-			elements[8] * elements[3] * elements[13] -
-			elements[12] * elements[1] * elements[11] +
-			elements[12] * elements[3] * elements[9];
-
-		temp[13] = elements[0] * elements[9] * elements[14] -
-			elements[0] * elements[10] * elements[13] -
-			elements[8] * elements[1] * elements[14] +
-			elements[8] * elements[2] * elements[13] +
-			elements[12] * elements[1] * elements[10] -
-			elements[12] * elements[2] * elements[9];
-
-		temp[2] = elements[1] * elements[6] * elements[15] -
-			elements[1] * elements[7] * elements[14] -
-			elements[5] * elements[2] * elements[15] +
-			elements[5] * elements[3] * elements[14] +
-			elements[13] * elements[2] * elements[7] -
-			elements[13] * elements[3] * elements[6];
-
-		temp[6] = -elements[0] * elements[6] * elements[15] +
-			elements[0] * elements[7] * elements[14] +
-			elements[4] * elements[2] * elements[15] -
-			elements[4] * elements[3] * elements[14] -
-			elements[12] * elements[2] * elements[7] +
-			elements[12] * elements[3] * elements[6];
-
-		temp[10] = elements[0] * elements[5] * elements[15] -
-			elements[0] * elements[7] * elements[13] -
-			elements[4] * elements[1] * elements[15] +
-			elements[4] * elements[3] * elements[13] +
-			elements[12] * elements[1] * elements[7] -
-			elements[12] * elements[3] * elements[5];
-
-		temp[14] = -elements[0] * elements[5] * elements[14] +
-			elements[0] * elements[6] * elements[13] +
-			elements[4] * elements[1] * elements[14] -
-			elements[4] * elements[2] * elements[13] -
-			elements[12] * elements[1] * elements[6] +
-			elements[12] * elements[2] * elements[5];
-
-		temp[3] = -elements[1] * elements[6] * elements[11] +
-			elements[1] * elements[7] * elements[10] +
-			elements[5] * elements[2] * elements[11] -
-			elements[5] * elements[3] * elements[10] -
-			elements[9] * elements[2] * elements[7] +
-			elements[9] * elements[3] * elements[6];
-
-		temp[7] = elements[0] * elements[6] * elements[11] -
-			elements[0] * elements[7] * elements[10] -
-			elements[4] * elements[2] * elements[11] +
-			elements[4] * elements[3] * elements[10] +
-			elements[8] * elements[2] * elements[7] -
-			elements[8] * elements[3] * elements[6];
-
-		temp[11] = -elements[0] * elements[5] * elements[11] +
-			elements[0] * elements[7] * elements[9] +
-			elements[4] * elements[1] * elements[11] -
-			elements[4] * elements[3] * elements[9] -
-			elements[8] * elements[1] * elements[7] +
-			elements[8] * elements[3] * elements[5];
-
-		temp[15] = elements[0] * elements[5] * elements[10] -
-			elements[0] * elements[6] * elements[9] -
-			elements[4] * elements[1] * elements[10] +
-			elements[4] * elements[2] * elements[9] +
-			elements[8] * elements[1] * elements[6] -
-			elements[8] * elements[2] * elements[5];
-
-		double determinant = elements[0] * temp[0] + elements[1] * temp[4] + elements[2] * temp[8] + elements[3] * temp[12];
-		determinant = 1.0 / determinant;
-
-		for (int i = 0; i < 4 * 4; i++)
-			elements[i] = temp[i] * determinant;
-
-		return *this;
-	}*/
 
 	Matrix4 Matrix4::operator*(const Matrix4& rhs)
 	{
@@ -335,14 +210,6 @@ namespace Forge
 		res.mels[3][1] = (bottom + top) / (bottom - top);
 		res.mels[3][2] = (far + near) / (far - near);
 
-		/*res.elements[0 + 0 * 4] = 2.0f / (right - left);
-		res.elements[1 + 1 * 4] = 2.0f / (top - bottom);
-		res.elements[2 + 2 * 4] = 2.0f / (near - far);
-
-		res.elements[0 + 3 * 4] = (left + right) / (left - right);
-		res.elements[1 + 3 * 4] = (bottom + top) / (bottom - top);
-		res.elements[2 + 3 * 4] = (far + near) / (far - near);*/
-
 		return res;
 	}
 
@@ -358,12 +225,6 @@ namespace Forge
 		res.mels[2][2] = (near + far) / (near - far);
 		res.mels[3][2] = -1.0f;
 		res.mels[2][3] = (2.0f * near * far) / (near - far);
-
-		/*res.elements[0 + 0 * 4] = a;
-		res.elements[1 + 1 * 4] = q;
-		res.elements[2 + 2 * 4] = (near + far) / (near - far);
-		res.elements[3 + 2 * 4] = -1.0f;
-		res.elements[2 + 3 * 4] = (2.0f * near * far) / (near - far);*/
 
 		return res;
 	}
@@ -388,32 +249,6 @@ namespace Forge
 		float s = sin(r);
 		float nc = 1.0f - c;
 
-		/*res.elements[0 + 0 * 4] = axis.x * nc + c;
-		res.elements[1 + 0 * 4] = axis.y * axis.x * nc + axis.z * s;
-		res.elements[2 + 0 * 4] = axis.x * axis.z * nc - axis.y * s;
-
-		res.elements[0 + 1 * 4] = axis.x * axis.y * nc - axis.z * s;
-		res.elements[1 + 1 * 4] = axis.y * nc + c;
-		res.elements[2 + 1 * 4] = axis.y * axis.z * nc + axis.x *s;
-
-		res.elements[0 + 2 * 4] = axis.x * axis.z * nc + axis.y * s;
-		res.elements[1 + 2 * 4] = axis.y * axis.z * nc - axis.x * s;
-		res.elements[2 + 2 * 4] = axis.z * nc + c;*/
-
-		//[col + ros * 4]
-		/*res.elements[0 + 0 * 4] = axis.x * nc + c;
-		res.elements[0 + 1 * 4] = axis.y * axis.x * nc + axis.z * s;
-		res.elements[0 + 2 * 4] = axis.x * axis.z * nc - axis.y * s;
-
-		res.elements[1 + 0 * 4] = axis.x * axis.y * nc - axis.z * s;
-		res.elements[1 + 1 * 4] = axis.y * nc + c;
-		res.elements[1 + 2 * 4] = axis.y * axis.z * nc + axis.x *s;
-
-		res.elements[2 + 0 * 4] = axis.x * axis.z * nc + axis.y * s;
-		res.elements[2 + 1 * 4] = axis.y * axis.z * nc - axis.x * s;
-		res.elements[2 + 2 * 4] = axis.z * nc + c;*/
-
-
 		res.mels[0][0] = axis.x * nc + c;
 		res.mels[1][0] = axis.y * axis.x * nc + axis.z * s;
 		res.mels[2][0] = axis.x * axis.z * nc - axis.y * s;
@@ -426,10 +261,6 @@ namespace Forge
 		res.mels[1][2] = axis.y * axis.z * nc - axis.x * s;
 		res.mels[2][2] = axis.z * nc + c;
 
-
-
-		
-
 		return res;
 	}
 
@@ -441,13 +272,27 @@ namespace Forge
 		res.mels[1][1] = scale.y;
 		res.mels[2][2] = scale.z;
 
-		/*
-		res.elements[0 + 0 * 4] = scale.x;
-		res.elements[1 + 1 * 4] = scale.y;
-		res.elements[2 + 2 * 4] = scale.z;
-		*/
 		return res;
 	}
+
+    Vector3 Matrix4::GetTranslation() const
+    {
+        return Vector3(mels[0][3], mels[1][3], mels[2][3]);
+    }
+
+    Quaternion Matrix4::GetRotation() const
+    {
+        return Quaternion(RotationMatrix());
+    }
+
+    Vector3 Matrix4::GetScale() const
+    {
+        return Vector3(
+            sqrtf(mels[0][0] * mels[0][0] + mels[1][0] * mels[1][0] + mels[2][0] * mels[2][0]),
+            sqrtf(mels[0][1] * mels[0][1] + mels[1][1] * mels[1][1] + mels[2][1] * mels[2][1]),
+            sqrtf(mels[0][2] * mels[0][2] + mels[1][2] * mels[1][2] + mels[2][2] * mels[2][2])
+        );
+    }
 
 	Matrix4::~Matrix4()
 	{

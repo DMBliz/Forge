@@ -4,6 +4,7 @@
 #include "BufferLayout.h"
 #include "Texture.h"
 #include "Shader.h"
+#include <map>
 
 namespace Forge
 {
@@ -22,25 +23,23 @@ namespace Forge
 	class Material
 	{
 	private:
-		std::vector<TextureDesc> _textures;
 		Shader* shader;
-		ShaderUniforms uniforms;
+        std::map<std::string, UniformDescription*> uniforms;
 		bool dirty = false;
+
+        void ResolveUniforms();
+        void SetTextureSlots();
 	public:
 		Material();
 		~Material();
 
-		void AddTexture(Texture* texture, const String& uniformName);
-		void SetTexture(Texture* texture, const String& uniformName);
-		Texture* GetTexture(const String& uniformName) const;
-
 		void SetShader(Shader* newShader);
+
+        UniformDescription* GetUniform(const String& uniformName);
 		
 		void Use();
 
 		Shader* GetShader() const { return shader;  }
-		ShaderUniforms& Uniforms() { dirty = true; return uniforms; }
-		std::vector<TextureDesc>& Textures() { return _textures; }
 	};
 
 }

@@ -26,10 +26,10 @@ namespace Forge
 		shaderResource->Compile();
 	}
 
-	void Shader::ResolveUniformLocations(ShaderUniforms& uniforms) const
-	{
-		shaderResource->ResolveUniformLocations(uniforms);
-	}
+    int Shader::ResolveUniformLocation(const String& uniformName) const
+    {
+        return shaderResource->ResolveUniformLocation(uniformName);
+    }
 
 	void Shader::SetSytemValueToUniform(UniformDescription& description) const
 	{
@@ -39,11 +39,6 @@ namespace Forge
 	void Shader::SetValueToUniform(const UniformDescription& description) const
 	{
 		shaderResource->SetValueToUniform(description);
-	}
-
-	void Shader::SetValuesToUniforms(const ShaderUniforms& uniforms) const
-	{
-		shaderResource->SetValuesToUniforms(uniforms);
 	}
 
 	void Shader::Load(const String& filename)

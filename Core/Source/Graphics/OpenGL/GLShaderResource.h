@@ -17,10 +17,10 @@ namespace Forge
 		void Compile() override;
 		void Use() override;
 
-		void SetValuesToUniforms(const ShaderUniforms& unifroms) override;
+
+        int ResolveUniformLocation(const String& uniformName) override;
 		void SetValueToUniform(const UniformDescription& desc) override;
 		void SetSystemValueToUniform(UniformDescription& desc) override;
-		void ResolveUniformLocations(ShaderUniforms& unifroms) override;
 
 	}; 
 

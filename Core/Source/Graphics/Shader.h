@@ -16,10 +16,9 @@ namespace Forge
 
 		void Use();
 		void Compile();
-		void ResolveUniformLocations(ShaderUniforms& uniforms) const;
+		int ResolveUniformLocation(const String& uniformName) const;
 		void SetSytemValueToUniform(UniformDescription& description) const;
 		void SetValueToUniform(const UniformDescription& description) const;
-		void SetValuesToUniforms(const ShaderUniforms& uniforms) const;
 
 		void Load(const String& filename) override;
 		void UnLoad() override;

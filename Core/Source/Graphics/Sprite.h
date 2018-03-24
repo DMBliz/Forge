@@ -13,6 +13,7 @@ namespace Forge
 	private:
 		Vector2 _pivot;
 		Color _color;
+        Texture2D* _texture;
 	public:
 		Sprite();
 		~Sprite();
@@ -24,7 +25,7 @@ namespace Forge
 
         void Draw() const override;
 
-		Texture2D* GetTexture() const { return static_cast<Texture2D*>(_material->GetTexture("spriteTexture")); }
+		Texture2D* GetTexture() const { return _texture; }
 	};
 
 }

@@ -50,42 +50,16 @@ namespace Forge
 	    retDrawable->GetMesh().GetBufferLayout()->Add<Vector3>("pos", 0, BufferElementType::Position);
         retDrawable->GetMesh().GetBufferLayout()->Add<Vector2>("textureCoords", 1, BufferElementType::UV);
         retDrawable->GetMesh().GetBufferLayout()->Add<Vector3>("normals", 2, BufferElementType::Normal);
-        //setting uniforms
+
         retDrawable->GetMaterial().SetShader(engine->GetResources()->GetResource<Shader>("Resources/Shaders/Model.glsl"));
-        retDrawable->GetMaterial().Uniforms().AddUniform("projection", UniformDataType::MATRIX4);
-        retDrawable->GetMaterial().Uniforms().AddUniform("view", UniformDataType::MATRIX4);
-        retDrawable->GetMaterial().Uniforms().AddUniform("model", UniformDataType::MATRIX4);
-
-        retDrawable->GetMaterial().Uniforms().AddUniform("viewPos", UniformDataType::VECTOR3);
-
-        retDrawable->GetMaterial().Uniforms().AddUniform("pointLight.position", UniformDataType::VECTOR3);
-        retDrawable->GetMaterial().Uniforms().AddUniform("pointLight.color", UniformDataType::COLOR);
-        retDrawable->GetMaterial().Uniforms().AddUniform("pointLight.linear", UniformDataType::FLOAT);
-        retDrawable->GetMaterial().Uniforms().AddUniform("pointLight.quadratic", UniformDataType::FLOAT);
-
-        retDrawable->GetMaterial().Uniforms().AddUniform("spotLight.position", UniformDataType::VECTOR3);
-        retDrawable->GetMaterial().Uniforms().AddUniform("spotLight.direction", UniformDataType::VECTOR3);
-        retDrawable->GetMaterial().Uniforms().AddUniform("spotLight.color", UniformDataType::COLOR);
-        retDrawable->GetMaterial().Uniforms().AddUniform("spotLight.linear", UniformDataType::FLOAT);
-        retDrawable->GetMaterial().Uniforms().AddUniform("spotLight.quadratic", UniformDataType::FLOAT);
-        retDrawable->GetMaterial().Uniforms().AddUniform("spotLight.cutOff", UniformDataType::FLOAT);
-        retDrawable->GetMaterial().Uniforms().AddUniform("spotLight.outerCutOff", UniformDataType::FLOAT);
-
-        retDrawable->GetMaterial().Uniforms().AddUniform("dirLight.direction", UniformDataType::VECTOR3); 
-        retDrawable->GetMaterial().Uniforms().AddUniform("dirLight.color", UniformDataType::COLOR);
-
-        retDrawable->GetMaterial().Uniforms().AddUniform("material.shininess", UniformDataType::FLOAT);
 
 		if(mesh->mMaterialIndex >= 0)
 		{
 			aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 			
 			//loading textures
-            LoadMaterialTextures(material, retDrawable, aiTextureType_DIFFUSE, "material.ambient");
+            LoadMaterialTextures(material, retDrawable, aiTextureType_DIFFUSE, "material.diffuse");
             LoadMaterialTextures(material, retDrawable, aiTextureType_SPECULAR, "material.specular");
-			LoadMaterialTextures(material, retDrawable, aiTextureType_NORMALS, "TexNormal");
-			LoadMaterialTextures(material, retDrawable, aiTextureType_SHININESS, "TexRoughness");
-			LoadMaterialTextures(material, retDrawable, aiTextureType_AMBIENT, "TexAO");
 		}
         retDrawable->GetMesh().Initialize();
 		return retDrawable;
@@ -98,9 +72,9 @@ namespace Forge
         if (name.length <= 0)
             return;
         Texture2D* tex = engine->GetResources()->LoadNowResource<Texture2D>(directory + name.C_Str());
-        drawable->GetMaterial().Uniforms().AddUniform(uniformName, UniformDataType::SAMPLER2D);
+
         if (tex != nullptr)
-            drawable->GetMaterial().AddTexture(tex, uniformName);
+            drawable->GetMaterial().GetUniform(uniformName)->SetTexture(*tex);
 	}
 
 	Model::Model()
@@ -139,70 +113,55 @@ namespace Forge
 
 		ProcessNode(scene->mRootNode, scene);
 	}
-    //TODO: multiple light support
+
     //setting values to uniform and queing for rendering
     void Model::Draw()
     {
         Renderer* renderer = engine->GetRenderer();
         for (int i = 0; i < _drawables.size(); i++)
         {
-            _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<Matrix4>("projection", renderer->GetFrustum().GetMatrix());
-            _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<Matrix4>("view", renderer->GetCamera().GetViewMatrix());
-            _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<Matrix4>("model", _drawables[i]->GetWorldPosition()->ToMatrix4());
-            
-            _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<Vector3>("viewPos", Matrix3x4(renderer->GetCamera().GetViewMatrix()).Translation());
 
-            _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<float>("material.shininess", 32.0f);
+            _drawables[i]->GetMaterial().GetUniform("projection")->SetValue<Matrix4>(renderer->GetFrustum().GetMatrix());
+            _drawables[i]->GetMaterial().GetUniform("view")->SetValue<Matrix4>(renderer->GetCamera().GetViewMatrix());
+            _drawables[i]->GetMaterial().GetUniform("model")->SetValue<Matrix4>(_drawables[i]->GetWorldPosition()->ToMatrix4());
+
+            _drawables[i]->GetMaterial().GetUniform("viewPos")->SetValue<Vector3>(renderer->GetCamera().GetViewMatrix().GetTranslation());
+            _drawables[i]->GetMaterial().GetUniform("material.shininess")->SetValue<float>(32.0f);
 
 
             auto pointLights = renderer->GetPointLights();
-            if (pointLights.size() > 0)
+
+            _drawables[i]->GetMaterial().GetUniform("numOfPointLight")->SetValue<uint>(pointLights.size());
+
+            for(uint j =0; j < pointLights.size(); j++)
             {
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<Color>("pointLight.color", pointLights[0]->GetColor());
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<float>("pointLight.linear", pointLights[0]->Linear());
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<float>("pointLight.quadratic", pointLights[0]->Quadratic());
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<Vector3>("pointLight.position", pointLights[0]->GetTransform()->Translation());
-            }
-            else
-            {
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<Color>("pointLight.color", Color(1.0f, 1.0f, 1.0f, 1.0f));
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<Vector3>("pointLight.position", Vector3(0.0f, 0.0f, 0.0f));
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<float>("pointLight.linear", 0.22f);
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<float>("pointLight.quadratic", 0.20f);
+                _drawables[i]->GetMaterial().GetUniform("pointLight[" + String(j) + "].color")->SetValue<Color>(pointLights[j]->GetColor());
+                _drawables[i]->GetMaterial().GetUniform("pointLight[" + String(j) + "].linear")->SetValue<float>(pointLights[j]->Linear());
+                _drawables[i]->GetMaterial().GetUniform("pointLight[" + String(j) + "].quadratic")->SetValue<float>(pointLights[j]->Quadratic());
+                _drawables[i]->GetMaterial().GetUniform("pointLight[" + String(j) + "].position")->SetValue<Vector3>(pointLights[j]->GetTransform()->Translation());
             }
 
             auto spotlights = renderer->GetSpotLights();
-            if (spotlights.size() > 0)
+            _drawables[i]->GetMaterial().GetUniform("numOfSpotLight")->SetValue<uint>(spotlights.size());
+
+            for (uint j = 0; j < spotlights.size(); j++)
             {
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<Color>("spotLight.color", spotlights[0]->GetColor());
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<float>("spotLight.linear", spotlights[0]->Linear());
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<float>("spotLight.quadratic", spotlights[0]->Quadratic());
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<float>("spotLight.cutOff", cosf(spotlights[0]->CutOff() * DEGTORAD));
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<float>("spotLight.outerCutOff", cosf(spotlights[0]->OuterCutOff() * DEGTORAD));
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<Vector3>("spotLight.position", spotlights[0]->Transform()->Translation());
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<Vector3>("spotLight.direction", spotlights[0]->Transform()->Rotation() * Vector3::Forward);
-            }
-            else
-            {
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<Color>("spotLight.color", Color(1.0f, 1.0f, 1.0f, 1.0f));
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<float>("spotLight.linear", 0.22f);
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<float>("spotLight.quadratic", 0.20f);
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<float>("spotLight.cutOff", cosf(30.0f * DEGTORAD));
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<float>("spotLight.outerCutOff", cosf(25.0f * DEGTORAD));
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<Vector3>("spotLight.position", Vector3(0.0f, 0.0f, 0.0f));
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<Vector3>("spotLight.direction", Vector3(0.0, 0.0f, 0.0f));
+                _drawables[i]->GetMaterial().GetUniform("spotLight[" + String(j) + "].color")->SetValue<Color>(spotlights[j]->GetColor());
+                _drawables[i]->GetMaterial().GetUniform("spotLight[" + String(j) + "].linear")->SetValue<float>(spotlights[j]->Linear());
+                _drawables[i]->GetMaterial().GetUniform("spotLight[" + String(j) + "].quadratic")->SetValue<float>(spotlights[j]->Quadratic());
+                _drawables[i]->GetMaterial().GetUniform("spotLight[" + String(j) + "].cutOff")->SetValue<float>(cosf(spotlights[j]->CutOff() * DEGTORAD));
+                _drawables[i]->GetMaterial().GetUniform("spotLight[" + String(j) + "].outerCutOff")->SetValue<float>(cosf(spotlights[j]->OuterCutOff() * DEGTORAD));
+                _drawables[i]->GetMaterial().GetUniform("spotLight[" + String(j) + "].position")->SetValue<Vector3>(spotlights[j]->Transform()->Translation());
+                _drawables[i]->GetMaterial().GetUniform("spotLight[" + String(j) + "].direction")->SetValue<Vector3>(spotlights[j]->Transform()->Rotation() * Vector3::Forward);
             }
 
             auto dirLights = renderer->GetDirLights();
-            if (dirLights.size() > 0)
+            _drawables[i]->GetMaterial().GetUniform("numOfDirLight")->SetValue<uint>(dirLights.size());
+
+            for (uint j = 0; j < dirLights.size(); j++)
             {
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<Color>("dirLight.color", dirLights[0]->GetColor());
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<Vector3>("dirLight.direction", dirLights[0]->Direction());
-            }
-            else
-            {
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<Color>("dirLight.color", Color(1.0f, 1.0f, 1.0f, 1.0f));
-                _drawables[i]->GetMaterial().Uniforms().SetValueToUniform<Vector3>("dirLight.direction", Vector3(-0.2f, -1.0f, -0.3f));
+                _drawables[i]->GetMaterial().GetUniform("dirLight[" + String(j) + "].color")->SetValue<Color>(dirLights[j]->GetColor());
+                _drawables[i]->GetMaterial().GetUniform("dirLight[" + String(j) + "].direction")->SetValue<Vector3>(dirLights[j]->Direction());
             }
 
             _drawables[i]->Draw();

@@ -5,8 +5,9 @@
 
 namespace Forge
 {
+    class Texture2D;
 
-	enum class UniformDataType
+    enum class UniformDataType
 	{
 		FLOAT,
 		VECTOR2,
@@ -24,11 +25,23 @@ namespace Forge
 	struct UniformDescription
 	{
 		String name;
-		uint location;
+		int location;
 		UniformDataType type;
-		uint count;
+		uint _count;
 		void* data = nullptr;
 		bool locationResolved = false;
+
+        void SetName(const String& name);
+
+        template<typename  T>
+        void SetValue(uint count, T* value);
+
+        template<typename  T>
+        void SetValue(T value);
+
+        void SetTexture(const Texture2D& texture);
+        void SetTexture(uint textureID);
+        void SetValueTextureSlot(uint slot);
 
 		~UniformDescription()
 		{
@@ -39,30 +52,5 @@ namespace Forge
 		void DeleteData();
 	};
 
-	class ShaderUniforms
-	{
-	private:
-		std::vector<UniformDescription*> uniforms;
-		int FindUniformID(const String& name);
-	public:
-		ShaderUniforms();
-		~ShaderUniforms();
-		
-		int GetSize() const { return uniforms.size(); }
-		UniformDescription* GetByID(int id) const { return uniforms[id]; }
-
-		void AddUniform(UniformDescription* uniform);
-		void AddUniform(const String& uniformName, UniformDataType dataType);
-
-		UniformDescription* operator[](uint index) const;
-
-		template<typename  T>
-		void SetValueToUniform(const String& uniformName, uint count, T* data);
-
-		template<typename  T>
-		void SetValueToUniform(const String& uniformName, T data);
-
-		void SetTextureToUniform(const String& uniformName, uint textureID, uint slot);
-	};
 
 }

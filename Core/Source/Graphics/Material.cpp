@@ -1,9 +1,49 @@
 #include "Material.h"
+#include "Defines.h"
 
 namespace Forge
 {
+    void Material::ResolveUniforms()
+    {
 
-	Material::Material()
+        for (auto it = uniforms.begin(); it != uniforms.end(); )
+        {
+            if (it->second->locationResolved)
+            {
+                ++it;
+                continue;
+            }
+
+            int location = shader->ResolveUniformLocation(it->second->name);
+            if (location >= 0)
+            {
+                LOG("Shader: " + shader->GetResourceName() + " does not contain such: " + it->second->name + " uniform");
+                it->second->location = location;
+                it->second->locationResolved = true;
+
+                ++it;
+            }
+            else
+            {
+                uniforms.erase(it->first);
+            }
+        }
+    }
+
+    void Material::SetTextureSlots()
+    {
+        uint slot = 0;
+        for (auto& uniform : uniforms)
+        {
+            if (uniform.second->type == UniformDataType::SAMPLER2D)
+            {
+                uniform.second->SetValueTextureSlot(slot);
+                slot++;
+            }
+        }
+    }
+
+    Material::Material()
 	{
 	}
 
@@ -11,60 +51,68 @@ namespace Forge
 	{
 	}
 
-	void Material::AddTexture(Texture* texture, const String& uniformName)
-	{
-		_textures.push_back(TextureDesc(texture,uniformName));
-	}
-
-	void Material::SetTexture(Texture* texture, const String& uniformName)
-	{
-		for (int i = 0; i < _textures.size(); ++i)
-		{
-			if(_textures[i].uniformName == uniformName)
-			{
-				_textures[i].texture = texture;
-				_textures[i].dirty = true;
-			}
-		}
-	}
-
-	Texture* Material::GetTexture(const String& uniformName) const
-	{
-		for (int i = 0; i < _textures.size(); ++i)
-		{
-			if (_textures[i].uniformName == uniformName)
-			{
-				return _textures[i].texture;
-			}
-		}
-		return nullptr;
-	}
-
 	void Material::SetShader(Shader* newShader)
 	{
 		shader = newShader;
-		shader->ResolveUniformLocations(uniforms);
+        for (auto& uniform : uniforms)
+        {
+		    uniform.second->location = shader->ResolveUniformLocation(uniform.second->name);
+            uniform.second->locationResolved = true;
+        }
 	}
 
-	void Material::Use()
+    UniformDescription* Material::GetUniform(const String& uniformName)
+    {
+        dirty = true;
+        if(shader != nullptr)
+        {
+            if(uniforms[uniformName.CString()] != nullptr)
+            {
+                return uniforms[uniformName.CString()];
+            }
+
+            int location = shader->ResolveUniformLocation(uniformName);
+            if (location >= 0)
+            {
+                UniformDescription* desc = new UniformDescription();
+                desc->name = uniformName;
+                desc->location = location;
+                desc->locationResolved = true;
+                uniforms.insert_or_assign(uniformName.CString(), desc);
+                return desc;
+            }else
+            {
+                LOG("Uniform with name: " + uniformName + " dosen't exist");
+                UniformDescription* desc = new UniformDescription();
+                desc->name = uniformName;
+                uniforms.insert_or_assign(uniformName.CString(), desc);
+                return desc;
+            }
+        }
+
+        UniformDescription* desc = new UniformDescription();
+        desc->name = uniformName;
+        uniforms.insert_or_assign(uniformName.CString(), desc);
+        return desc;
+    }
+
+    void Material::Use()
 	{
+        if(shader == nullptr)
+        {
+            LOG("Cannot use material without shader");
+            return;
+        }
 		if(dirty)
 		{
-			shader->ResolveUniformLocations(uniforms);
+            ResolveUniforms();
+            SetTextureSlots();
 			dirty = false;
 		}
 		shader->Use();
-		for (int i = 0; i < _textures.size(); ++i)
-		{
-			if (_textures[i].dirty)
-			{
-				if (_textures[i].texture != nullptr)
-				{
-					uniforms.SetTextureToUniform(_textures[i].uniformName, _textures[i].texture->GetID(), i);
-					_textures[i].dirty = false;
-				}
-			}
-		}
-		shader->SetValuesToUniforms(uniforms);
+        for (auto& uniform : uniforms)
+        {
+            shader->SetValueToUniform(*uniform.second);
+        }
 	}
 }

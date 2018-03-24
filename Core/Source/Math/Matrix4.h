@@ -26,9 +26,9 @@ namespace Forge
 		Matrix4(const Matrix4& other);
 
 
-		Matrix4 Transponse();
-		Matrix3 ToMatrix3();
-		Matrix3 RotationMatrix();
+		Matrix4 Transponse() const;
+		Matrix3 ToMatrix3() const;
+		Matrix3 RotationMatrix() const;
 
 		std::vector<float> Values() const;
 		void Values(std::vector<float> values);
@@ -44,6 +44,10 @@ namespace Forge
 		static Matrix4 Translate(const Vector3& translation);
 		static Matrix4 Rotate(float angle, const Vector3& axis);
 		static Matrix4 Scale(const Vector3& scale);
+
+        Vector3 GetTranslation() const;
+        Quaternion GetRotation() const;
+        Vector3 GetScale() const;
 
 		Matrix4 operator*(const Matrix4& rhs);
 		Vector4 operator*(const Vector4& rhs);

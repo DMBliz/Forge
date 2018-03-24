@@ -23,9 +23,15 @@ namespace Forge
 	{
 	private:
 		std::vector<DrawCommand> _drawBuffer;
+
         std::vector<DirectionalLight*> _dirLights;
         std::vector<PointLight*> _pointLights;
         std::vector<SpotLight*> _spotLights;
+
+        int _maxDirLights = 2;
+        int _maxPointLights = 127;
+        int _maxSpotLights = 127;
+
         Frustum _frustum;
         Camera _camera;
 		GraphicsRenderer* _deviceRenderer = nullptr;

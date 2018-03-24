@@ -28,6 +28,10 @@ pixel = {
 
     out vec4 FragColor;
 
+    const uint MAXDIR = 5;
+    const uint MAXSPOT = 10;
+    const uint MAXPOINT = 10;
+
     struct DirLight{
         vec3 direction;
 
@@ -67,9 +71,13 @@ pixel = {
     in vec3 normal;
     in vec3 FragPos;
     
-    uniform DirLight dirLight;
-    uniform PointLight pointLight;
-    uniform SpotLight spotLight;
+    uniform DirLight dirLight[MAXDIR];
+    uniform PointLight pointLight[MAXPOINT];
+    uniform SpotLight spotLight[MAXSPOT];
+
+    uniform uint numOfDirLight;
+    uniform uint numOfPointLight;
+    uniform uint numOfSpotLight;
 
     uniform Material material;
     
@@ -81,17 +89,26 @@ pixel = {
 
     void main()
     {
+        uint dirs = min(numOfDirLight, MAXDIR);
+        uint points = min(numOfPointLight, MAXPOINT);
+        uint spotss = min(numOfSpotLight, MAXSPOT);
+
         vec3 norm = normalize(normal);
         vec3 viewDir = normalize(viewPos - FragPos);
 
-        vec3 res = CalcDirLight(dirLight, norm, viewDir);
+        vec3 res = texture(material.diffuse, texCoord).xyz * 0.05;
 
-        res += CalcPointLight(pointLight, norm, FragPos, viewDir);
+        for(uint i = 0; i < dirs; i++)
+            res += CalcDirLight(dirLight[i], norm, viewDir);
 
-        res += CalcSpotLight(spotLight, norm, FragPos, viewDir);
+        for(uint i = 0; i < points; i++)
+            res += CalcPointLight(pointLight[i], norm, FragPos, viewDir);
+
+        for(uint i = 0; i < spotss; i++)
+            res += CalcSpotLight(spotLight[i], norm, FragPos, viewDir);
         
 
-        FragColor =vec4(res,1.0);
+        FragColor = vec4(res,1.0);
 
     }
 

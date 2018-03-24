@@ -17,12 +17,6 @@ namespace Forge
 		Shader* sh = engine->GetResources()->LoadNowResource<Shader>("Resources/Shaders/SpriteShader.glsl");
 
 		_material->SetShader(sh);
-		_material->AddTexture(nullptr, "spriteTexture");
-		_material->Uniforms().AddUniform("projection", UniformDataType::MATRIX4);
-		_material->Uniforms().AddUniform("view", UniformDataType::MATRIX4);
-		_material->Uniforms().AddUniform("model", UniformDataType::MATRIX4);
-		_material->Uniforms().AddUniform("spriteTexture", UniformDataType::SAMPLER2D);
-
 		
 
         _mesh->GetVertecies().push_back(Vector3(0.5f, 0.5f, 0.0f));
@@ -55,7 +49,8 @@ namespace Forge
 
 	void Sprite::SetTexture(Texture2D* texture)
 	{
-		_material->SetTexture(texture, "spriteTexture");
+        _texture = texture;
+        _material->GetUniform("spriteTexture")->SetTexture(*texture);
 	}
 
 	void Sprite::SetMaterial(Material* material)
@@ -70,7 +65,7 @@ namespace Forge
         Texture2D* texture = new Texture2D();
         texture->CreateOnGPU(img, TextureParametrs(), false);
         
-		_material->SetTexture(texture, "spriteTexture");
+        _material->GetUniform("spriteTexture")->SetTexture(*texture);
 	}
 
 	void Sprite::SetPivotPosition(const Vector2& pivot)
@@ -81,9 +76,9 @@ namespace Forge
     void Sprite::Draw() const 
     {
         Renderer* renderer = engine->GetRenderer();
-        _material->Uniforms().SetValueToUniform<Matrix4>("projection", renderer->GetFrustum().GetMatrix());
-        _material->Uniforms().SetValueToUniform<Matrix4>("view", renderer->GetCamera().GetViewMatrix());
-        _material->Uniforms().SetValueToUniform<Matrix4>("model", worldTransform->ToMatrix4());
+        _material->GetUniform("projection")->SetValue<Matrix4>(renderer->GetFrustum().GetMatrix());
+        _material->GetUniform("view")->SetValue<Matrix4>(renderer->GetCamera().GetViewMatrix());
+        _material->GetUniform("model")->SetValue<Matrix4>(worldTransform->ToMatrix4());
         Drawable::Draw();
     }
 }
