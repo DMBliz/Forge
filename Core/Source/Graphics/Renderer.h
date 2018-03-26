@@ -17,12 +17,16 @@ namespace Forge
         Mesh* _mesh;
         Material* _material;
 
+        bool transparent = false;
+        Matrix4 worldTransform;
     };
 
 	class Renderer
 	{
 	private:
 		std::vector<DrawCommand> _drawBuffer;
+
+        std::map<float, DrawCommand> _transparentBuffer;
 
         std::vector<DirectionalLight*> _dirLights;
         std::vector<PointLight*> _pointLights;
@@ -84,7 +88,7 @@ namespace Forge
 			_camera.SetMatrix(matrix);
 		}
 
-        const Camera& GetCamera() const
+        Camera& GetCamera()
 		{
             return _camera;
 		}

@@ -22,6 +22,8 @@ namespace Forge
 		void SetMaterial(Material* material);
 		void SetColor(const Color& color);
 		void SetPivotPosition(const Vector2& pivot);
+        void FlipX();
+        void FlipY();
 
         void Draw() const override;
 

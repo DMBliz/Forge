@@ -10,7 +10,8 @@ namespace ForgeEditor
 	Forge::Vector3 cameraUp;
 	Forge::Vector3 cameraRight;
 	Forge::Vector2 cameraRotation;
-
+    
+    float cameraSpeedModificator = 1.0f;
 	float cameraMovementSpeed = 2.5f;
 	float cameraMouseSensitivity = 0.2f;
 	float cameraZoom = 45.0f;
@@ -24,8 +25,8 @@ namespace ForgeEditor
 		Forge::Vector3 eye = cameraPosition;
 		Forge::Vector3 target = eye + cameraFront;
 
-		Forge::Vector3 zaxis = (target - eye).Normalized();
-		Forge::Vector3 xaxis = zaxis.Cross(cameraUp).Normalized();
+		Forge::Vector3 zaxis = (eye - target).Normalized();
+		Forge::Vector3 xaxis = cameraUp.Cross(zaxis).Normalized();
 		Forge::Vector3 yaxis = xaxis.Cross(zaxis).Normalized();
 
 		ret.mels[0][0] = xaxis.x;
@@ -54,45 +55,56 @@ namespace ForgeEditor
 
 	inline void UpdateCamera()
 	{
+        bool changed = false;
+        if(Forge::engine->GetInputSystem()->GetKeyState(Forge::KeyboardKey::LShift) == Forge::InputState::Hold)
+        {
+            cameraSpeedModificator = 2.0f;
+        }
+	    else  if(Forge::engine->GetInputSystem()->GetKeyState(Forge::KeyboardKey::LShift) == Forge::InputState::None)
+        {
+            cameraSpeedModificator = 1.0f;
+        }
+
+
 		if (Forge::engine->GetInputSystem()->GetKeyState(Forge::KeyboardKey::W) == Forge::InputState::Hold)
 		{
 			float velocity = cameraMovementSpeed * Forge::Timer::DeltaTime();
-			cameraPosition += cameraFront * velocity;
-			UpdateVectors();
+			cameraPosition += cameraFront * velocity * cameraSpeedModificator;
+            changed = true;
 		}
 		if (Forge::engine->GetInputSystem()->GetKeyState(Forge::KeyboardKey::S) == Forge::InputState::Hold)
 		{
 			float velocity = cameraMovementSpeed * Forge::Timer::DeltaTime();
-			cameraPosition -= cameraFront * velocity;
-			UpdateVectors();
+			cameraPosition -= cameraFront * velocity * cameraSpeedModificator;
+            changed = true;
 		}
 		if (Forge::engine->GetInputSystem()->GetKeyState(Forge::KeyboardKey::A) == Forge::InputState::Hold)
 		{
 			float velocity = cameraMovementSpeed * Forge::Timer::DeltaTime();
-			cameraPosition += cameraRight * velocity;
-			UpdateVectors();
+			cameraPosition -= cameraRight * velocity * cameraSpeedModificator;
+            changed = true;
 		}
 		if (Forge::engine->GetInputSystem()->GetKeyState(Forge::KeyboardKey::D) == Forge::InputState::Hold)
 		{
 			float velocity = cameraMovementSpeed * Forge::Timer::DeltaTime();
-			cameraPosition -= cameraRight * velocity;
-			UpdateVectors();
+			cameraPosition += cameraRight * velocity * cameraSpeedModificator;
+            changed = true;
 		}
 		if (Forge::engine->GetInputSystem()->GetKeyState(Forge::KeyboardKey::Q) == Forge::InputState::Hold)
 		{
 			float velocity = cameraMovementSpeed * Forge::Timer::DeltaTime();
-			cameraPosition -= cameraUp * velocity;
-			UpdateVectors();
+			cameraPosition -= cameraUp * velocity * cameraSpeedModificator;
+            changed = true;
 		}
 		if (Forge::engine->GetInputSystem()->GetKeyState(Forge::KeyboardKey::E) == Forge::InputState::Hold)
 		{
 			float velocity = cameraMovementSpeed * Forge::Timer::DeltaTime();
-			cameraPosition += cameraUp * velocity;
-			UpdateVectors();
+			cameraPosition += cameraUp * velocity * cameraSpeedModificator;
+            changed = true;
 		}
 		if (Forge::engine->GetInputSystem()->GetCursorDelta() != Forge::Vector2::Zero && Forge::engine->GetInputSystem()->GetMouseButtonState(Forge::MouseButton::Right) == Forge::InputState::Hold)
 		{
-			cameraRotation.x -= Forge::engine->GetInputSystem()->GetCursorDelta().x * cameraMouseSensitivity;
+			cameraRotation.x += Forge::engine->GetInputSystem()->GetCursorDelta().x * cameraMouseSensitivity;
 			cameraRotation.y -= Forge::engine->GetInputSystem()->GetCursorDelta().y * cameraMouseSensitivity;
 
 			if(cameraRotation.y > 89.0f)
@@ -103,7 +115,11 @@ namespace ForgeEditor
 				cameraRotation.y = -89.0f;
 			}
 
-			UpdateVectors();
+            changed = true;
 		}
+
+        if(changed)
+            UpdateVectors();
+
 	}
 }

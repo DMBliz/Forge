@@ -18,7 +18,8 @@ namespace ForgeEditor
 			Forge::engine->GetRenderer()->SetSize(Forge::Vector2i(windowSize.x, (windowSize.y - 35) <= 0 ? 1 : windowSize.y - 35));
 			
 			UpdateCamera();
-			Forge::engine->GetRenderer()->SetViewMatrix(GetViewMatrix());
+            Forge::engine->GetRenderer()->SetViewMatrix(GetViewMatrix());
+            Forge::engine->GetRenderer()->GetCamera().SetPosition(cameraPosition);
 		}
 		ImGui::Image(reinterpret_cast<void*>(tex->GetID()), ImVec2(tex->GetSize().x, tex->GetSize().y));
 		ImGui::End();

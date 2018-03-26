@@ -17,6 +17,7 @@ namespace ForgeEditor
 	{
 		Forge::String butName;
 		Forge::Model* mdl = component->GetModel();
+        
 		if (mdl != nullptr)
 		{
 			if (mdl->GetResourceName() != Forge::String::Empty)
@@ -91,6 +92,9 @@ namespace ForgeEditor
 	{
 		Forge::String butName;
 		Forge::Texture2D* tx = component->GetTexture();
+        bool transparent = component->GetSprite()->IsTransparent();
+        bool flipX = component->IsFlipedX();
+        bool flipY = component->IsFlipedY();
 		if(tx != nullptr)
 		{
 			if(tx->GetResourceName() != Forge::String::Empty)
@@ -104,6 +108,8 @@ namespace ForgeEditor
 		{
 			butName = "NotSet";
 		}
+
+
 		ImGui::Text("Texture");
 		ImGui::SameLine();
 		if(ImGui::Button(butName.CString()))
@@ -127,11 +133,29 @@ namespace ForgeEditor
 			ImGui::EndPopup();
 		}
 
+        ImGui::Checkbox("Tranparent", &transparent);
+        ImGui::Checkbox("Flip X", &flipX);
+        ImGui::Checkbox("Flip Y", &flipY);
+
 		if(selectedRes != Forge::String::Empty)
 		{
 			component->SetTexture(Forge::engine->GetResources()->LoadNowResource<Forge::Texture2D>(selectedRes));
 		}
-		
+
+        if (transparent != component->GetSprite()->IsTransparent())
+        {
+            component->GetSprite()->SetTranparent(transparent);
+        }
+
+        if (flipX != component->IsFlipedX())
+        {
+            component->FlipX();
+        }
+
+        if (flipY != component->IsFlipedY())
+        {
+            component->FlipY();
+        }
 	}
 
     inline void DrawComponent(Forge::PointLightComponent* component)

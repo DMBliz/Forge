@@ -65,6 +65,8 @@ namespace Forge
 		Quaternion Slerp(const Quaternion& rhs, float t) const;
 		Quaternion Nlerp(const Quaternion& rhs, float t, bool shortPath = false) const;
 
+        static Vector3 Rotate(const Quaternion& quaternion, const Vector3& vector);
+
 		String ToString() const;
 
 		static Quaternion FromEuler(const Vector3& rotation);

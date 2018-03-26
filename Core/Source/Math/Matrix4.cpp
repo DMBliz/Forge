@@ -225,6 +225,7 @@ namespace Forge
 		res.mels[2][2] = (near + far) / (near - far);
 		res.mels[3][2] = -1.0f;
 		res.mels[2][3] = (2.0f * near * far) / (near - far);
+        res.mels[3][3] = 0.0f;
 
 		return res;
 	}

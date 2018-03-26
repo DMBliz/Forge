@@ -30,6 +30,7 @@ namespace ForgeEditor
 		if(showScene)
 		{
 			DrawScene(showScene);
+            
 		}
 		
 		if(showEntitys)

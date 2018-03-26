@@ -21,16 +21,19 @@ namespace Forge
 		Material screenMaterial;
 		RenderSurface* renderSurface;
 
+		Vector2i size;
+
 		Color clearColor;
 		float clearDepth = 1.0f;
 
 		bool clearColorBuffer = true;
 		bool clearDepthBuffer = true;
 
-		Vector2i size;
 
 		unsigned int sampleCount = 1;
 		bool depth = true;
+        bool _blending = true;
+        bool _cullFace = true;
 		bool debugRenderer = false;
 
 		bool renderToScreen = true;
@@ -45,6 +48,9 @@ namespace Forge
 		virtual void PostDraw() = 0;
 
 		virtual void DrawToScreen() = 0;
+
+        virtual void SetBlending(bool value) { _blending = value; }
+        virtual void SetCullFace(bool value) { _cullFace = value; }
 
 		virtual void SetSize(const Vector2i& newSize) { size = newSize; }
 		const Vector2i& GetSize() { return size; }

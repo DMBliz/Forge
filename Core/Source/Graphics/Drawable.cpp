@@ -14,7 +14,7 @@ namespace Forge
 
     const Matrix3x4* Drawable::GetWorldPosition() const
     {
-        return worldTransform;
+        return _worldTransform;
     }
 
 	Material& Drawable::GetMaterial() const
@@ -29,7 +29,7 @@ namespace Forge
 
 	void Drawable::SetWorldPosition(const Matrix3x4& newPosition)
 	{
-		worldTransform = &newPosition;
+		_worldTransform = &newPosition;
 	}
 
     void Drawable::Draw() const
@@ -39,6 +39,8 @@ namespace Forge
             DrawCommand command;
             command._mesh = _mesh;
             command._material = _material;
+            command.transparent = _transparent;
+            command.worldTransform = _worldTransform->ToMatrix4();
             engine->GetRenderer()->PushCommand(command);
         }
     }

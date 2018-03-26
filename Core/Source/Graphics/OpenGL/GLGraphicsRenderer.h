@@ -27,6 +27,9 @@ namespace Forge
 		void SetSize(const Vector2i& newSize) override;
 		void SetClearColorBuffer(bool value) override;
 		void SetClearDepthBuffer(bool value) override;
+        void SetBlending(bool value) override;
+        void SetCullFace(bool value) override;
+
 
 		void BindFrameBuffer(GLuint bufferId);
 		void SetViewport(GLint x, GLint y, GLsizei width, GLsizei height);

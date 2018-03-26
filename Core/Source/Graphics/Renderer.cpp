@@ -77,10 +77,19 @@ namespace Forge
             _drawBuffer[i]._mesh->Bind();
 			_deviceRenderer->Draw(_drawBuffer[i]._mesh->GetIndexBufferSize());
 		}
-		_deviceRenderer->PostDraw();
 
+        for(std::map<float, DrawCommand>::reverse_iterator it = _transparentBuffer.rbegin(); it != _transparentBuffer.rend(); ++it)
+        {
+            it->second._material->Use();
+            it->second._mesh->Bind();
+            _deviceRenderer->Draw(it->second._mesh->GetIndexBufferSize());
+        }
+
+		_deviceRenderer->PostDraw();
 		_deviceRenderer->DrawToScreen();
+
         _drawBuffer.clear();
+        _transparentBuffer.clear();
 	}
 
     const std::vector<DirectionalLight*>& Renderer::GetDirLights() const
@@ -125,7 +134,17 @@ namespace Forge
 
     void Renderer::PushCommand(DrawCommand command)
     {
-        _drawBuffer.push_back(command);
+        if(command.transparent)
+        {
+            Vector3 cam = GetCamera().GetPosition();
+            Vector3 pos = command.worldTransform.GetTranslation();
+            _transparentBuffer[(cam - pos).LengthSquared()] = command;
+        }
+	    else
+        {
+            _drawBuffer.push_back(command);
+        }
+
     }
 
     void Renderer::SetWindowClearColor(const Color& color)

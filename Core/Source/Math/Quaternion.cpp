@@ -467,7 +467,21 @@ namespace Forge
 		return res;
 	}
 
-	String Quaternion::ToString() const
+    Vector3 Quaternion::Rotate(const Quaternion& quaternion, const Vector3& vector)
+    {
+        float tmpX, tmpY, tmpZ, tmpW;
+        tmpX = (((quaternion.w * vector.x) + (quaternion.y * vector.z)) - (quaternion.z * vector.y));
+        tmpY = (((quaternion.w * vector.y) + (quaternion.z * vector.x)) - (quaternion.x * vector.z));
+        tmpZ = (((quaternion.w * vector.z) + (quaternion.x * vector.y)) - (quaternion.y * vector.x));
+        tmpW = (((quaternion.x * vector.x) + (quaternion.y * vector.y)) + (quaternion.z * vector.z));
+        return Vector3(
+            ((((tmpW * quaternion.x) + (tmpX * quaternion.w)) - (tmpY * quaternion.z)) + (tmpZ * quaternion.y)),
+            ((((tmpW * quaternion.y) + (tmpY * quaternion.w)) - (tmpZ * quaternion.x)) + (tmpX * quaternion.z)),
+            ((((tmpW * quaternion.z) + (tmpZ * quaternion.w)) - (tmpX * quaternion.y)) + (tmpY * quaternion.x))
+        );
+    }
+
+    String Quaternion::ToString() const
 	{
 		return "(" + String(w) + ", " + String(x) + ", " + String(y) + ", " + String(z) + ")\n";
 	}

@@ -96,7 +96,7 @@ pixel = {
         vec3 norm = normalize(normal);
         vec3 viewDir = normalize(viewPos - FragPos);
 
-        vec3 res = texture(material.diffuse, texCoord).xyz * 0.05;
+        vec3 res = texture(material.diffuse, texCoord).xyz;
 
         for(uint i = 0; i < dirs; i++)
             res += CalcDirLight(dirLight[i], norm, viewDir);

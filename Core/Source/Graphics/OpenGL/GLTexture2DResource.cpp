@@ -83,6 +83,7 @@ namespace Forge
 
 	void GLTexture2DResource::SetTexture(const Image& img)
 	{
+        size = img.GetSize();
 		glCheck(glBindTexture(GL_TEXTURE_2D, textureID));
 		glCheck(glTexImage2D(GL_TEXTURE_2D, 0, ConvertToOGL(parametrs.internalFormat), size.x, size.y, 0,
 				ConvertToOGL(parametrs.format), ConvertToOGL(parametrs.dataType), img.GetPixels()));

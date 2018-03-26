@@ -49,6 +49,8 @@ namespace Forge
 		renderSurface->Bind();
 		
 		ClearFrameBuffer(renderSurface->GetClearColor());
+        SetBlending(_blending);
+        SetCullFace(_cullFace);
 		glEnable(GL_DEPTH_TEST);
 		SetDepthMask(true);
 		ClearDepthValue(clearDepth);
@@ -106,7 +108,36 @@ namespace Forge
 			clearMask &= static_cast<GLbitfield>(GL_DEPTH_BUFFER_BIT);
 	}
 
-	void GLGraphicsRenderer::BindFrameBuffer(GLuint bufferId)
+    void GLGraphicsRenderer::SetBlending(bool value)
+    {
+        GraphicsRenderer::SetBlending(value);
+
+        if(value)
+        {
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        }
+	    else
+        {
+            glDisable(GL_BLEND);
+        }
+    }
+
+    void GLGraphicsRenderer::SetCullFace(bool value)
+    {
+        GraphicsRenderer::SetCullFace(value);
+        if(value)
+        {
+            glEnable(GL_CULL_FACE);
+            glCullFace(GL_BACK);
+            glFrontFace(GL_CW);
+        }else
+        {
+            glDisable(GL_CULL_FACE);
+        }
+    }
+
+    void GLGraphicsRenderer::BindFrameBuffer(GLuint bufferId)
 	{
 		glCheck(glBindFramebuffer(GL_FRAMEBUFFER, bufferId));
 	}

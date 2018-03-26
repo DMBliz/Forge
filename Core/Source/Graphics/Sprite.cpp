@@ -19,10 +19,10 @@ namespace Forge
 		_material->SetShader(sh);
 		
 
-        _mesh->GetVertecies().push_back(Vector3(0.5f, 0.5f, 0.0f));
-        _mesh->GetVertecies().push_back(Vector3(0.5f, -0.5f, 0.0f));
-        _mesh->GetVertecies().push_back(Vector3(-0.5f, -0.5f, 0.0f));
         _mesh->GetVertecies().push_back(Vector3(-0.5f, 0.5f, 0.0f));
+        _mesh->GetVertecies().push_back(Vector3(-0.5f, -0.5f, 0.0f));
+        _mesh->GetVertecies().push_back(Vector3(0.5f, -0.5f, 0.0f));
+        _mesh->GetVertecies().push_back(Vector3(0.5f, 0.5f, 0.0f));
 
         _mesh->GetUV().push_back(Vector2(1.0f, 1.0f));
         _mesh->GetUV().push_back(Vector2(1.0f, 0.0f));
@@ -32,8 +32,8 @@ namespace Forge
 		
         _mesh->GetIndicies().push_back(0);
         _mesh->GetIndicies().push_back(1);
-        _mesh->GetIndicies().push_back(3);
-        _mesh->GetIndicies().push_back(1);
+        _mesh->GetIndicies().push_back(2);
+        _mesh->GetIndicies().push_back(0);
         _mesh->GetIndicies().push_back(2);
         _mesh->GetIndicies().push_back(3);
 
@@ -73,12 +73,32 @@ namespace Forge
 		_pivot = pivot;
 	}
 
+    void Sprite::FlipX()
+    {
+        if (_texture == nullptr)
+            return;
+
+        Image* img = engine->GetResources()->GetResource<Image>(_texture->GetResourceName());
+        img->FlipX();
+        _texture->SetTexture(*img);
+    }
+
+    void Sprite::FlipY()
+    {
+        if (_texture == nullptr)
+            return;
+
+        Image* img = engine->GetResources()->GetResource<Image>(_texture->GetResourceName());
+        img->FlipY();
+        _texture->SetTexture(*img);
+    }
+
     void Sprite::Draw() const 
     {
         Renderer* renderer = engine->GetRenderer();
         _material->GetUniform("projection")->SetValue<Matrix4>(renderer->GetFrustum().GetMatrix());
         _material->GetUniform("view")->SetValue<Matrix4>(renderer->GetCamera().GetViewMatrix());
-        _material->GetUniform("model")->SetValue<Matrix4>(worldTransform->ToMatrix4());
+        _material->GetUniform("model")->SetValue<Matrix4>(_worldTransform->ToMatrix4());
         Drawable::Draw();
     }
 }

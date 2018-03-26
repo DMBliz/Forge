@@ -26,6 +26,22 @@ namespace Forge
 		return sprite->GetTexture();
 	}
 
+    void SpriteRenderer::FlipX()
+    {
+        if (sprite == nullptr)
+            return;
+        sprite->FlipX();
+        _flipedX = !_flipedX;
+    }
+
+    void SpriteRenderer::FlipY()
+    {
+        if (sprite == nullptr)
+            return;
+        sprite->FlipY();
+        _flipedY = !_flipedY;
+    }
+
     void SpriteRenderer::Update()
     {
         sprite->Draw();
