@@ -7,7 +7,7 @@ namespace Forge
 
 	class Camera
 	{
-		Matrix4 _view;
+		Matrix4 _view = Matrix4::Identity;
         Vector3 _position;
 	public:
 		Camera();

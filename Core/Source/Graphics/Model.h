@@ -1,4 +1,6 @@
 #pragma once
+
+#include <include/assimp/material.h>
 #include "Drawable.h"
 #include "Resources/Resource.h"
 #include "Texture2D.h"
@@ -7,7 +9,6 @@ struct aiNode;
 struct aiMesh;
 struct aiScene;
 struct aiMaterial;
-enum aiTextureType;
 
 namespace Forge
 {

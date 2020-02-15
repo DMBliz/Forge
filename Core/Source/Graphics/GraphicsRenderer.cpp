@@ -1,7 +1,5 @@
 #include "GraphicsRenderer.h"
-#include "Platform/Window.h"
-#include "OpenGL/GLGraphicsRenderer.h"
-#include "Shader.h"
+#include "Platform/Api/Window.h"
 #include "Resources/Resources.h"
 #include "Graphics/RenderSurface.h"
 #include "Core/Engine.h"
@@ -14,6 +12,7 @@ namespace Forge
 		renderSurface->SetFramebufferSize(size);
 		renderSurface->Generate();
 		screenMaterial.SetShader(engine->GetResources()->LoadNowResource<Shader>("Resources/Shaders/ScreenShader.glsl"));
+		screenMaterial.GetShader()->Compile();
         screenMaterial.GetUniform("ScreenTexture")->SetTexture(*renderSurface->GetColorTexture());
 
 		float tmp[] =
@@ -28,7 +27,7 @@ namespace Forge
 			0, 1, 3,
 			1, 2, 3
 		};
-		
+
 		screenMesh.SetVertexBuffer(tmp, 16, BufferUsage::STATIC);
 		screenMesh.SetIndexBuffer(ib, 6);
 		BufferLayout bf;
@@ -47,14 +46,5 @@ namespace Forge
 	void GraphicsRenderer::Init(const Vector2i& windowSize)
 	{
 		size = windowSize;
-	}
-
-	GraphicsRenderer* GraphicsRenderer::Create()
-	{
-#if defined(OGL)
-		return new GLGraphicsRenderer();
-#elif defined(DX) //TODO: return for DX
-		return nullptr;
-#endif
 	}
 }

@@ -1,11 +1,13 @@
 #pragma once
-#include "Platform/Window.h"
+
+#include "Platform/Api/WindowSystem.h"
+#include "Platform/Api/Window.h"
 #include "Graphics/Renderer.h"
-#include "FileSystem/FileSystem.h"
-#include "Input/Input.h"
+#include "Platform/Api/FileSystem.h"
+#include "Platform/Api/Input.h"
 #include "Scene/Scene.h"
 #include "Resources/Resources.h"
-
+#include "Platform/Application.h"
 
 namespace Forge
 {
@@ -14,10 +16,9 @@ namespace Forge
 	{
 	protected:
 		bool active;
-		bool paused;
-		bool hasWindow = true;
+		Application* application;
 		Renderer* renderer;
-		Window* window;
+        WindowSystem* windowSystem;
 		FileSystem* fileSystem;
 		Input* input;
 		Scene* scene;
@@ -26,25 +27,24 @@ namespace Forge
 
 		Engine();
 
-		void OpenWindow(const Vector2i& winSize, const String& title, bool fullScreen, bool HighDPI);
-
-		void Init();
+		void Init(Application* application);
+		Application* getApplication() const;
 		Resources* GetResources() const { return resources; }
 		FileSystem* GetFileSystem() const { return fileSystem; }
 		Input* GetInputSystem() const { return input; }
-		Window* GetWindow() const { return window; }
+		WindowSystem* GetWindow() const { return windowSystem; }
 		Renderer* GetRenderer() const { return renderer; }
 		Scene* GetScene() const { return scene; }
+		void setRender(Renderer* render)
+		{
+			renderer = render;
+		}
 
 		void Start();
-		void ShutDown() { active = false; }
+		void ShutDown();
 
 		void MainLoop();
 		void Update();
-
-
-		void Pause();
-		void Resume();
 
 		bool IsActive();
 	};

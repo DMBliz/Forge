@@ -64,16 +64,3 @@ namespace Forge
 		~Matrix4();
 	};
 }
-
-#include "Serialization/Meta.h"
-
-namespace meta
-{
-	template<>
-	inline auto registerMembers<Forge::Matrix4>()
-	{
-		return members(
-			member("elements", &Forge::Matrix4::Values, &Forge::Matrix4::Values)
-		);
-	}
-}

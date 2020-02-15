@@ -1,5 +1,5 @@
 #include "Texture2DResource.h"
-#include "OpenGL/GLTexture2DResource.h"
+#include "OGL/GLTexture2DResource.h"
 #include "Resources/Image.h"
 
 namespace Forge

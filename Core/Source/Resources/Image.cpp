@@ -1,12 +1,12 @@
 #include "Image.h"
-#include "FileSystem/File.h"
+#include "Platform/Api/File.h"
 #define STB_IMAGE_STATIC
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image/stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image/stb_image_write.h"
 #include "Resources.h"
-#include "FileSystem/FileSystem.h"
+#include "Platform/Api/FileSystem.h"
 #include "Core/Engine.h"
 
 namespace Forge
@@ -73,8 +73,8 @@ namespace Forge
 			uint rowSize = _size.x * 4;
 			for(int y = 0; y < _size.y; y++)
 			{
-				byte* left = _pixels.begin()._Ptr + y * rowSize;
-				byte* right = _pixels.begin()._Ptr + (y + 1) * rowSize - 4;
+				byte* left = _pixels.begin().base() + y * rowSize;
+				byte* right = _pixels.begin().base() + (y + 1) * rowSize - 4;
 
 				for (int x = 0; x < _size.x / 2; x++)
 				{
@@ -92,8 +92,8 @@ namespace Forge
 		if (_pixels.size() > 0)
 		{
 			uint rowSize = _size.x * 4;
-			byte* top = _pixels.begin()._Ptr;
-			byte* bottom = _pixels.end()._Ptr - rowSize;
+			byte* top = _pixels.begin().base();
+			byte* bottom = _pixels.end().base() - rowSize;
 
 			for (int y = 0; y < _size.y / 2; y++)
 			{

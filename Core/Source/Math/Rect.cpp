@@ -13,8 +13,8 @@ namespace Forge
 		: min(min), max(max)
 	{}
 
-	Rect::Rect(float left, float top, float right, float bottom)
-		: min(left, top), max(right, bottom)
+	Rect::Rect(float x, float y, float width, float height)
+		: min(x, y), max(x + width, y + height)
 	{}
 
 	Rect::Rect(const Vector4& vector)

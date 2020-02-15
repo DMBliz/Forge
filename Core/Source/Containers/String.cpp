@@ -58,7 +58,7 @@ namespace Forge
 		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		char tmp[CONVERSION_BUFFER_LENGTH];
-		sprintf_s(tmp, "%d", value);
+		sprintf(tmp, "%d", value);
 		*this = tmp;
 	}
 
@@ -66,7 +66,7 @@ namespace Forge
 		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		char tmp[CONVERSION_BUFFER_LENGTH];
-		sprintf_s(tmp, "%d", value);
+		sprintf(tmp, "%d", value);
 		*this = tmp;
 	}
 
@@ -74,7 +74,7 @@ namespace Forge
 		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		char tmp[CONVERSION_BUFFER_LENGTH];
-		sprintf_s(tmp, "%ld", value);
+		sprintf(tmp, "%ld", value);
 		*this = tmp;
 	}
 
@@ -82,7 +82,7 @@ namespace Forge
 		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		char tmp[CONVERSION_BUFFER_LENGTH];
-		sprintf_s(tmp, "%lld", value);
+		sprintf(tmp, "%lld", value);
 		*this = tmp;
 	}
 
@@ -90,7 +90,7 @@ namespace Forge
 		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		char tmp[CONVERSION_BUFFER_LENGTH];
-		sprintf_s(tmp, "%u", value);
+		sprintf(tmp, "%u", value);
 		*this = tmp;
 	}
 
@@ -98,7 +98,7 @@ namespace Forge
 		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		char tmp[CONVERSION_BUFFER_LENGTH];
-		sprintf_s(tmp, "%u", value);
+		sprintf(tmp, "%u", value);
 		*this = tmp;
 	}
 
@@ -106,7 +106,7 @@ namespace Forge
 		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		char tmp[CONVERSION_BUFFER_LENGTH];
-		sprintf_s(tmp, "%lu", value);
+		sprintf(tmp, "%lu", value);
 		*this = tmp;
 	}
 
@@ -114,7 +114,7 @@ namespace Forge
 		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		char tmp[CONVERSION_BUFFER_LENGTH];
-		sprintf_s(tmp, "%llu", value);
+		sprintf(tmp, "%llu", value);
 		*this = tmp;
 	}
 
@@ -122,7 +122,7 @@ namespace Forge
 		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		char tmp[CONVERSION_BUFFER_LENGTH];
-		sprintf_s(tmp, "%g", value);
+		sprintf(tmp, "%g", value);
 		*this = tmp;
 	}
 
@@ -130,7 +130,7 @@ namespace Forge
 		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
 		char tmp[CONVERSION_BUFFER_LENGTH];
-		sprintf_s(tmp, "%.15g", value);
+		sprintf(tmp, "%.15g", value);
 		*this = tmp;
 	}
 
@@ -1318,11 +1318,11 @@ namespace Forge
 	}
 
 	WString::WString()
-		: length_(0), wñharBuffer(nullptr)
+		: length_(0), wcharBuffer(nullptr)
 	{}
 
 	WString::WString(const String& str)
-		: length_(0), wñharBuffer(nullptr)
+		: length_(0), wcharBuffer(nullptr)
 	{
 
 #ifdef WIN32
@@ -1340,14 +1340,14 @@ namespace Forge
 		Resize(neededSize);
 
 		offset = 0;
-		wchar_t* dest = wñharBuffer;
+		wchar_t* dest = wï¿½harBuffer;
 		while (offset < str.Length())
 			String::EncodeUTF16(dest, str.NextUTF8Char(offset));
 #else
 		Resize(str.LengthUTF8());
 
 		unsigned offset = 0;
-		wchar_t* dest = wñharBuffer;
+		wchar_t* dest = wcharBuffer;
 		while (offset < str.Length())
 			*dest++ = (wchar_t)str.NextUTF8Char(offset);
 #endif
@@ -1355,53 +1355,53 @@ namespace Forge
 
 	WString::~WString()
 	{
-		delete[] wñharBuffer;
+		delete[] wcharBuffer;
 	}
 
 	wchar_t& WString::operator[](unsigned index)
 	{
 		assert(index < length_);
-		return wñharBuffer[index];
+		return wcharBuffer[index];
 	}
 
 	const wchar_t& WString::operator[](unsigned index) const
 	{
 		assert(index < length_);
-		return wñharBuffer[index];
+		return wcharBuffer[index];
 	}
 
 	wchar_t& WString::At(unsigned index)
 	{
 		assert(index < length_);
-		return wñharBuffer[index];
+		return wcharBuffer[index];
 	}
 
 	const wchar_t& WString::At(unsigned index) const
 	{
 		assert(index < length_);
-		return wñharBuffer[index];
+		return wcharBuffer[index];
 	}
 
 	void WString::Resize(unsigned newLength)
 	{
 		if (!newLength)
 		{
-			delete[] wñharBuffer;
-			wñharBuffer = nullptr;
+			delete[] wcharBuffer;
+			wcharBuffer = nullptr;
 			length_ = 0;
 		}
 		else
 		{
 			wchar_t* newBuffer = new wchar_t[newLength + 1];
-			if (wñharBuffer)
+			if (wcharBuffer)
 			{
 				unsigned copyLength = length_ < newLength ? length_ : newLength;
-				memcpy(newBuffer, wñharBuffer, copyLength * sizeof(wchar_t));
-				delete[] wñharBuffer;
+				memcpy(newBuffer, wcharBuffer, copyLength * sizeof(wchar_t));
+				delete[] wcharBuffer;
 			}
 
 			newBuffer[newLength] = 0;
-			wñharBuffer = newBuffer;
+            wcharBuffer = newBuffer;
 			length_ = newLength;
 		}
 	}

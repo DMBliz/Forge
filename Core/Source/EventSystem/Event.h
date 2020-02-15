@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "Delegate.h"
+#include "Defines.h"
 
 namespace Forge
 {
@@ -13,27 +14,30 @@ namespace Forge
 	private:
 		std::vector<Delegate<R(Args...)>> delegates;
 	public:
-		template<typename R(*Function)(Args...)>
+
+
+		template<R(*Function)(Args...)>
 		void Add()
 		{
-			Add(Delegate<R(Args...)>::Create<Function>());
+			Add(Delegate<R(Args...)>::template Create<Function>());
 		}
 
-		template<typename R(*Function)(Args...)>
+		template<R(*Function)(Args...)>
 		void Remove()
 		{
-			Remove(Delegate<R(Args...)>::Create<Function>());
-		}
-		template<class C, typename R(C::*Function)(Args...)>
-		void Add(C* instance)
-		{
-			Add(Delegate<R(Args...)>::Create<C, Function>(instance));
+			Remove(Delegate<R(Args...)>::template Create<Function>());
 		}
 
-		template<class C, typename R(*Function)(Args...)>
+		template<class C,  R(C::*Function)(Args...)>
+		void Add(C* instance)
+		{
+			Add(Delegate<R(Args...)>::template Create<C, Function>(instance));
+		}
+
+		template<class C, R(C::*Function)(Args...)>
 		void Remove(C* instance)
 		{
-			Remove(Delegate<R(Args...)>::Create<C, Function>(instance));
+			Remove(Delegate<R(Args...)>::template Create<C, Function>(instance));
 		}
 
 		void Add(Delegate<R(Args...)> delegate)
@@ -52,11 +56,13 @@ namespace Forge
 
 		void operator()(Args... args)
 		{
+
+		    LOG_INFO(delegates.size());
+
 			for (auto& delegate : delegates)
 			{
-				delegate.Invoke(args...);
+				delegate(args...);
 			}
-			
 		}
 
 		void Invoke(Args... args)
@@ -68,6 +74,5 @@ namespace Forge
 			
 		}
 	};
-
 }
 

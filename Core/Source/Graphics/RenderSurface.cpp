@@ -1,5 +1,5 @@
 #include "RenderSurface.h"
-#include "OpenGL/GLRenderSurface.h"
+#include "OGL/GLRenderSurface.h"
 
 namespace Forge
 {

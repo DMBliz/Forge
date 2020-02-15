@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include "Scene/Entity.h"
-#include "Serialization/Meta.h"
 #include "Scene/EntityManager.h"
 
 namespace Forge
@@ -9,7 +8,6 @@ namespace Forge
 
 	class Scene : public Entity
 	{
-		friend auto meta::registerMembers<Scene>();
 		EntityManager manager;
 
 		void SetEntitys(const std::vector<Entity*>& newEntitys)
@@ -55,13 +53,3 @@ namespace Forge
 	};
 }
 
-//namespace meta
-//{
-//	template<>
-//	inline auto registerMembers<Forge::Scene>()
-//	{
-//		return members(
-//			member("Entitys", &Forge::Scene::GetAllChilds, &Forge::Scene::SetEntitys)
-//		);
-//	}
-//}

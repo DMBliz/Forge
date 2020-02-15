@@ -33,7 +33,7 @@ namespace Forge
 			void Add(T* value)
 			{
 				
-				content.insert_or_assign(value->componentID, value);
+				content[value->componentID] = value;
 			}
 
 			void Destroy(T* value)

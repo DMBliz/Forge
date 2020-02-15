@@ -1,6 +1,7 @@
 #include "Model.h"
 #include "Core/Engine.h"
-#include "OpenGL/GLIndexBuffer.h"
+#include "Math/Quaternion.h"
+#include "OGL/GLIndexBuffer.h"
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"

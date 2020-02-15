@@ -75,17 +75,3 @@ namespace Forge
 	};
 
 }
-
-
-#include "Serialization/Meta.h"
-
-namespace meta
-{
-	template<>
-	inline auto registerMembers<Forge::Matrix3x4>()
-	{
-		return members(
-			member("elements", &Forge::Matrix3x4::Values, &Forge::Matrix3x4::Values)
-		);
-	}
-}

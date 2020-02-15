@@ -1,5 +1,5 @@
 #include "IndexBuffer.h"
-#include "OpenGL/GLIndexBuffer.h"
+#include "OGL/GLIndexBuffer.h"
 
 namespace Forge
 {

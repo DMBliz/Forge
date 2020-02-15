@@ -3,7 +3,6 @@
 #include "Component.h"
 #include "ComponentManager.h"
 #include "Defines.h"
-#include "Serialization/meta.h"
 #include "TransformComponent.h"
 
 namespace Forge
@@ -12,7 +11,6 @@ namespace Forge
 	class Entity
 	{
 		friend class EntityManager;
-		friend inline auto meta::registerMembers<Entity>();
 	private:
 		ComponentManager* _componentManager;
 		
@@ -215,17 +213,4 @@ namespace Forge
 
 		virtual void Update();
 	};
-}
-
-
-namespace meta
-{
-	template<>
-	inline auto registerMembers<Forge::Entity>()
-	{
-		return members(
-			member("EntityID", &Forge::Entity::GetEntityID, &Forge::Entity::SetEntityID),
-			member("Components", &Forge::Entity::GetAllComponents, &Forge::Entity::SetComponents)
-		);
-	}
 }

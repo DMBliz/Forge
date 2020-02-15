@@ -4,6 +4,7 @@
 #include "Drawable.h"
 #include "Math/Frustum.h"
 #include "Camera.h"
+#include "Platform/Api/Context.h"
 
 namespace Forge
 {
@@ -28,7 +29,6 @@ namespace Forge
 
 		bool clearColorBuffer = true;
 		bool clearDepthBuffer = true;
-
 
 		unsigned int sampleCount = 1;
 		bool depth = true;
@@ -69,7 +69,6 @@ namespace Forge
 
 		RenderSurface* GetSurface() const { return renderSurface; }
 
-
 		bool RenderToScreen() const
 		{
 			return renderToScreen;
@@ -79,8 +78,6 @@ namespace Forge
 		{
 			renderToScreen = value;
 		}
-
-		static GraphicsRenderer* Create();
 	};
 
 }

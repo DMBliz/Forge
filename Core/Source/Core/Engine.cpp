@@ -1,5 +1,7 @@
+#include <Platform/OSX/OSXFileSystem.h>
 #include "Engine.h"
 #include "Utilities/Timer.h"
+#include "Platform/Api/PlatformApiProvider.h"
 
 namespace Forge
 {
@@ -8,28 +10,22 @@ namespace Forge
 	Engine::Engine()
 	{
 		engine = this;
-		scene = new Scene();
 	}
 
-	void Engine::Init()
+	void Engine::Init(Application* application)
 	{
-		fileSystem = FileSystem::Create();
-		renderer = new Renderer();
-		resources = new Resources();
-		input = Input::Create();
-		window = Window::GetInstance();
+	    this->application = application;
+        application->getPlatformApiProvider()->init();
+        resources = new Resources();
+        fileSystem = new OSXFileSystem();
 
 		active = true;
-		paused = false;
-
-		window->CreateContext();
-		renderer->Init(Vector2i(800, 600));
 		Timer::StartTime();
 	}
 
 	void Engine::Start()
 	{
-		//Init();
+		application->start();
 		MainLoop();
 	}
 
@@ -43,26 +39,12 @@ namespace Forge
 
 	void Engine::Update()
 	{
-		window->PlatformUpdate();
-		if (!paused)
+		if (active)
 		{
 			Timer::BeginFrame();
-			input->Update();
-			scene->Update();
-			renderer->Draw();
-			resources->Update();
+			application->update();
 			Timer::EndFrame();
 		}
-	}
-
-	void Engine::Pause()
-	{
-		//paused = true;
-	}
-
-	void Engine::Resume()
-	{
-		//paused = false;
 	}
 
 	bool Engine::IsActive()
@@ -70,10 +52,15 @@ namespace Forge
 		return active;
 	}
 
-	void Engine::OpenWindow(const Vector2i& winSize, const String& title, bool fullScreen, bool HighDPI)
-	{
-		window->Create(winSize, title, true, fullScreen, fullScreen, HighDPI, true);
-		renderer->Init(winSize);
-	}
+    void Engine::ShutDown()
+    {
+        active = false;
+        application->stop();
+    }
+
+    Application* Engine::getApplication() const
+    {
+        return application;
+    }
 }
 

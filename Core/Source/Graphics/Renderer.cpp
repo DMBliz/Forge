@@ -1,24 +1,38 @@
 #include "Renderer.h"
-#include "Platform/Window.h"
+#include "Platform/Api/Window.h"
 #include "GraphicsRenderer.h"
 #include "Core/Engine.h"
+#if defined(OGL)
+#include "OGL/GLGraphicsRenderer.h"
+#endif
+#if defined(Vk)
+#endif
 
 namespace Forge
 {
 
+    Renderer::Renderer(GraphicsApiType api)
+    {
+        switch (api)
+        {
+            case GraphicsApiType::Vulkan:
+#ifdef VK
+                //TODO: create here Vulkan render
+                _deviceRenderer = new GLGraphicsRenderer();
+#endif
+            case GraphicsApiType::OpenGL:
+#ifdef OGL
+                _deviceRenderer = new GLGraphicsRenderer();
+#endif
+                break;
+        }
+    }
+
+    Renderer::~Renderer()
+    {}
+
 	void Renderer::Init(const Vector2i& windowSize)
 	{
-		if (_deviceRenderer != nullptr)
-			delete _deviceRenderer;
-#if defined(_WIN32)
-#if defined(OGL)
-		_deviceRenderer = GraphicsRenderer::Create();
-#elif defined(DX)
-#endif
-#elif defined(MACOS)
-#elif defined(ANDROID)
-#elif defined(IOS)
-#endif
 		_deviceRenderer->Init(windowSize);
 
         _frustum.SetSize(windowSize);
@@ -114,12 +128,6 @@ namespace Forge
 		_deviceRenderer->SetSize(newSize);
         
 	}
-
-	Renderer::Renderer()
-	{}
-
-	Renderer::~Renderer()
-	{}
 
 	void Renderer::SetFrustum(const Frustum& frustum)
 	{

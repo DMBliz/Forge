@@ -1,7 +1,5 @@
-#pragma once
-
 #include "VertexBuffer.h"
-#include "OpenGL/GLVertexBuffer.h"
+#include "OGL/GLVertexBuffer.h"
 
 namespace Forge
 {

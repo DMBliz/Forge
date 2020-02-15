@@ -1,5 +1,5 @@
 #include "Sprite.h"
-#include "FileSystem/FileSystem.h"
+#include "Platform/Api/FileSystem.h"
 #include "Resources/Resources.h"
 #include "Shader.h"
 #include "Core/Engine.h"
@@ -19,15 +19,15 @@ namespace Forge
 		_material->SetShader(sh);
 		
 
-        _mesh->GetVertecies().push_back(Vector3(-0.5f, 0.5f, 0.0f));
-        _mesh->GetVertecies().push_back(Vector3(-0.5f, -0.5f, 0.0f));
-        _mesh->GetVertecies().push_back(Vector3(0.5f, -0.5f, 0.0f));
-        _mesh->GetVertecies().push_back(Vector3(0.5f, 0.5f, 0.0f));
+        _mesh->GetVertecies().emplace_back(-0.5f, 0.5f, 0.0f);
+        _mesh->GetVertecies().emplace_back(-0.5f, -0.5f, 0.0f);
+        _mesh->GetVertecies().emplace_back(0.5f, -0.5f, 0.0f);
+        _mesh->GetVertecies().emplace_back(0.5f, 0.5f, 0.0f);
 
-        _mesh->GetUV().push_back(Vector2(1.0f, 1.0f));
-        _mesh->GetUV().push_back(Vector2(1.0f, 0.0f));
-        _mesh->GetUV().push_back(Vector2(0.0f, 0.0f));
-        _mesh->GetUV().push_back(Vector2(0.0f, 1.0f));
+        _mesh->GetUV().emplace_back(1.0f, 1.0f);
+        _mesh->GetUV().emplace_back(1.0f, 0.0f);
+        _mesh->GetUV().emplace_back(0.0f, 0.0f);
+        _mesh->GetUV().emplace_back(0.0f, 1.0f);
 
 		
         _mesh->GetIndicies().push_back(0);

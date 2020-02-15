@@ -1,6 +1,6 @@
 #include "ShaderResource.h"
 #include <fstream>
-#include "OpenGL/GLShaderResource.h"
+#include "OGL/GLShaderResource.h"
 
 namespace Forge
 {

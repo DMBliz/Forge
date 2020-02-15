@@ -1,5 +1,5 @@
 #include "Vector2i.h"
-
+#include <math.h>
 namespace Forge
 {
 
@@ -54,10 +54,15 @@ namespace Forge
 		return Vector2i(x * rhs.x, y * rhs.y);
 	}
 
-	Vector2i Vector2i::operator*(int rhs) const
-	{
-		return Vector2i(x * rhs, y * rhs);
-	}
+    Vector2i Vector2i::operator*(int rhs) const
+    {
+        return Vector2i(x * rhs, y * rhs);
+    }
+
+    Vector2i Vector2i::operator*(float rhs) const
+    {
+        return Vector2i(x * rhs, y * rhs);
+    }
 
 	Vector2i operator*(int lhs, const Vector2i& rhs)
 	{
@@ -69,10 +74,15 @@ namespace Forge
 		return Vector2i(x / rhs.x, y / rhs.y);
 	}
 
-	Vector2i Vector2i::operator/(int rhs) const
-	{
-		return Vector2i(x / rhs, y / rhs);
-	}
+    Vector2i Vector2i::operator/(int rhs) const
+    {
+        return Vector2i(x / rhs, y / rhs);
+    }
+
+    Vector2i Vector2i::operator/(float rhs) const
+    {
+        return Vector2i(x / rhs, y / rhs);
+    }
 
 
 	Vector2i& Vector2i::operator+=(const Vector2i& rhs)

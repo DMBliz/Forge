@@ -17,7 +17,7 @@ namespace Forge
 
 		Rect();
 		Rect(const Vector2& min, const Vector2& max);
-		Rect(float left, float top, float right, float bottom);
+		Rect(float x, float y, float width, float height);
 		Rect(const Vector4& vector);
 		Rect(const Rect& rect);
 
@@ -35,19 +35,4 @@ namespace Forge
 		String ToString() const;
 
 	};
-}
-
-
-#include "Serialization/Meta.h"
-
-namespace meta
-{
-	template<>
-	inline auto registerMembers<Forge::Rect>()
-	{
-		return members(
-			member("min", &Forge::Rect::min),
-			member("max", &Forge::Rect::max)
-		);
-	}
 }

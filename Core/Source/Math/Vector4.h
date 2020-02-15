@@ -62,30 +62,13 @@ namespace Forge
 		Vector4 Abs() const;
 		Vector4 Lerp(const Vector4& rhs, float t) const;
 
-		static friend Vector4 Lerp(const Vector4& lhs, const Vector4& rhs, const Vector4& t);
-		static friend Vector4 Max(const Vector4& lhs, const Vector4& rhs);
-		static friend Vector4 Min(const Vector4& lhs, const Vector4& rhs);
-		static friend Vector4 Floor(const Vector4& vec);
-		static friend Vector4 Round(const Vector4& vec);
-		static friend Vector4 Ceil(const Vector4& vec);
+		static Vector4 Lerp(const Vector4& lhs, const Vector4& rhs, const Vector4& t);
+		static Vector4 Max(const Vector4& lhs, const Vector4& rhs);
+		static Vector4 Min(const Vector4& lhs, const Vector4& rhs);
+		static Vector4 Floor(const Vector4& vec);
+		static Vector4 Round(const Vector4& vec);
+		static Vector4 Ceil(const Vector4& vec);
 
 		String ToString() const;
 	};
-}
-
-
-#include "Serialization/Meta.h"
-
-namespace meta
-{
-	template<>
-	inline auto registerMembers<Forge::Vector4>()
-	{
-		return members(
-			member("x", &Forge::Vector4::x),
-			member("y", &Forge::Vector4::y),
-			member("z", &Forge::Vector4::z),
-			member("w", &Forge::Vector4::w)
-		);
-	}
 }

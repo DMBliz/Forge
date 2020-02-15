@@ -48,19 +48,3 @@ namespace Forge
 	};
 
 }
-
-#include "Serialization/Meta.h"
-
-namespace meta
-{
-	template<>
-	inline auto registerMembers<Forge::TransformComponent>()
-	{
-		return members(
-			member("position", &Forge::TransformComponent::Position, &Forge::TransformComponent::Position),
-			member("rotation", &Forge::TransformComponent::Rotation, &Forge::TransformComponent::Rotation),
-			member("scale", &Forge::TransformComponent::Scale, &Forge::TransformComponent::Scale)
-		);
-	}
-	
-}

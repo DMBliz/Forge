@@ -3,7 +3,7 @@
 #include "Matrix4.h"
 #include "Quaternion.h"
 #include <cstring>
-
+#include <math.h>
 namespace Forge
 {
 

@@ -23,40 +23,40 @@ namespace Forge
 			};
 		};
 
-		Color::Color()
+		Color()
 			: rgba(0x00000000)
 		{}
 
-		Color::Color(uint color)
+		Color(uint color)
 			: rgba(color)
 		{}
 
-		Color::Color(const Color& color)
+		Color(const Color& color)
 			: rgba(color.rgba)
 		{}
 
-		Color::Color(int red, int green, int blue) : 
+		Color(int red, int green, int blue) :
 		a(255), 
 		b(static_cast<byte>(blue)), 
 		g(static_cast<byte>(green)), 
 		r(static_cast<byte>(red))
 		{}
 
-		Color::Color(float red, float green, float blue) : 
+		Color(float red, float green, float blue) :
 		a(255), 
 		b(static_cast<byte>(blue * 255.0f)), 
 		g(static_cast<byte>(green * 255.0f)), 
 		r(static_cast<byte>(red * 255.0f))
 		{}
 
-		Color::Color(int red, int green, int blue, int alpha) :
+		Color(int red, int green, int blue, int alpha) :
 		a(static_cast<byte>(alpha)), 
 		b(static_cast<byte>(blue)), 
 		g(static_cast<byte>(green)),
 		r(static_cast<byte>(red))
 		{}
 
-		Color::Color(float red, float green, float blue, float alpha) :
+		Color(float red, float green, float blue, float alpha) :
 		a(static_cast<byte>(alpha * 255.0f)), 
 		b(static_cast<byte>(blue * 255.0f)), 
 		g(static_cast<byte>(green * 255.0f)),
@@ -87,18 +87,4 @@ namespace Forge
 				", " + String(static_cast<int>(b)) + ", " + String(static_cast<int>(a)) + ")";
 		}
 	};
-}
-
-
-#include "Serialization/Meta.h"
-
-namespace meta
-{
-	template<>
-	inline auto registerMembers<Forge::Color>()
-	{
-		return members(
-			member("rgba", &Forge::Color::rgba)
-		);
-	}
 }

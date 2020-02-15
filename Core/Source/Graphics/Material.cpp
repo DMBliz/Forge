@@ -17,7 +17,7 @@ namespace Forge
             int location = shader->ResolveUniformLocation(it->second->name);
             if (location >= 0)
             {
-                LOG("Shader: " + shader->GetResourceName() + " does not contain such: " + it->second->name + " uniform");
+//                LOG("Shader: " + shader->GetResourceName() + " does not contain such: " + it->second->name + " uniform");
                 it->second->location = location;
                 it->second->locationResolved = true;
 
@@ -25,7 +25,7 @@ namespace Forge
             }
             else
             {
-                uniforms.erase(it->first);
+                it = uniforms.erase(it);
             }
         }
     }
@@ -78,21 +78,21 @@ namespace Forge
                 desc->name = uniformName;
                 desc->location = location;
                 desc->locationResolved = true;
-                uniforms.insert_or_assign(uniformName.CString(), desc);
+                uniforms[uniformName.CString()] = desc;
                 return desc;
             }else
             {
                 LOG("Uniform with name: " + uniformName + " dosen't exist");
                 UniformDescription* desc = new UniformDescription();
                 desc->name = uniformName;
-                uniforms.insert_or_assign(uniformName.CString(), desc);
+                uniforms[uniformName.CString()] = desc;
                 return desc;
             }
         }
 
         UniformDescription* desc = new UniformDescription();
         desc->name = uniformName;
-        uniforms.insert_or_assign(uniformName.CString(), desc);
+        uniforms[uniformName.CString()] = desc;
         return desc;
     }
 

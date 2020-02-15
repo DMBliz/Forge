@@ -30,7 +30,6 @@ namespace Forge
 					}
 					else
 					{
-						//TODO: warning
 						data.push_back(0);
 						data.push_back(0);
 					}

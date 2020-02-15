@@ -34,7 +34,7 @@ namespace Forge
 
 			void Add(T* value)
 			{
-				content.insert_or_assign(value->entityID, value);
+				content[value->entityID] = value;
 			}
 
 			void Destroy(T* value)
@@ -137,9 +137,10 @@ namespace Forge
 		{
 			for (auto it = componentRegistry.begin(); it != componentRegistry.end(); ++it)
 			{
-				if(it._Ptr->_Myval.second->ContainsEntity(entity->GetEntityID()))
+
+				if(it->second->ContainsEntity(entity->GetEntityID()))
 				{
-					it._Ptr->_Myval.second->Destroy(entity->GetEntityID());
+					it->second->Destroy(entity->GetEntityID());
 					return;
 				}
 			}

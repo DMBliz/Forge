@@ -12,7 +12,7 @@ namespace Forge
 		Material* _material;
 		const Matrix3x4* _worldTransform;
         bool _transparent = false;
-        bool active = false;
+        bool active = true;
 	public:
 		Drawable();
 		~Drawable();

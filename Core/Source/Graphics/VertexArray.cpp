@@ -1,5 +1,5 @@
 #include "VertexArray.h"
-#include "OpenGL/GLVertexArray.h"
+#include "OGL/GLVertexArray.h"
 
 namespace Forge
 {

@@ -1,3 +1,4 @@
+include(${CMAKE_SOURCE_DIR}/Core/cmake/functions.cmake)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Source)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Dependecies)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Dependecies/include)
@@ -18,6 +19,9 @@ file(GLOB sources  "${CMAKE_CURRENT_SOURCE_DIR}/Source/*.cpp"
 "${CMAKE_CURRENT_SOURCE_DIR}/Dependecies/imgui/*.cpp"
 "${CMAKE_SOURCE_DIR}/Core/Dependecies/src/glad/glad.c"
 "${CMAKE_SOURCE_DIR}/Core/Dependecies/src/glad/glad_wgl.c")
+
+assign_source_group(${sources})
+assign_source_group(${headers})
 
 add_executable(Editor ${sources} ${headers})
 

@@ -1,7 +1,9 @@
 #include "imgui_impl.h"
 #include "include/glad/glad.h"
 #include "Core/Engine.h"
+#if defined(_WIN32)
 #include "Platform/Windows/WindowWin32.h"
+#endif
 #include "Utilities/Timer.h"
 
 // Data

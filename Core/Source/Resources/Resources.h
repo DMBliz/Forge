@@ -2,7 +2,6 @@
 #include "ResourceManager.h"
 #include <typeindex>
 #include "Resource.h"
-#include "Serialization/meta.h"
 #include "Graphics/Shader.h"
 #include "Graphics/Texture2D.h"
 #include "EventSystem/Event.h"
@@ -12,7 +11,6 @@ namespace Forge
 
 	class Resources
 	{
-		friend auto meta::registerMembers<Resources>();
 	private:
 		std::unordered_map<std::type_index, IResourceManager*> resources;
 		std::vector<Resource*> res;
@@ -55,7 +53,7 @@ namespace Forge
 		{
 			auto t = resources.find(typeid(T));
 			if (t == resources.end() || t->second == nullptr)
-				resources.insert_or_assign(typeid(T), new ResourceManager<T>());
+				resources[typeid(T)] = new ResourceManager<T>();
 		}
 
 		template<typename T>
@@ -117,16 +115,4 @@ namespace Forge
 			}
 		}
 	};
-}
-
-
-namespace meta
-{
-	template<>
-	inline auto registerMembers<Forge::Resources>()
-	{
-		return members(
-			member("Resources", &Forge::Resources::res)
-		);
-	}
 }

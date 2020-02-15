@@ -114,7 +114,7 @@ namespace Forge
 			if (fn == nullptr)
 			{
 				T* res = Load(filename);
-				resources.insert_or_assign(filename.CString(), res);
+				resources[filename.CString()] = res;
 				return res;
 			}
 			else

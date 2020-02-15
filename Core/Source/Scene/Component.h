@@ -1,6 +1,5 @@
 #pragma once
-#include "FileSystem/File.h"
-#include "Serialization/Meta.h"
+#include "Platform/Api/File.h"
 
 namespace Forge
 {
@@ -8,7 +7,6 @@ namespace Forge
 	class Component
 	{
 		friend class ComponentManager;
-		friend inline auto meta::registerMembers<Component>();
 	private:
 		static uint gComponentID;
 
@@ -66,15 +64,4 @@ namespace Forge
 		Entity* GetOwner() const { return owner; }
 	};
 
-}
-
-namespace meta
-{
-	template<>
-	inline auto registerMembers<Forge::Component>()
-	{
-		return members(
-			member("Component", &Forge::Component::GetComponentID, &Forge::Component::SetComponentID)
-		);
-	}
 }

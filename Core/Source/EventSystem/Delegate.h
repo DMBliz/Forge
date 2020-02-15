@@ -9,59 +9,58 @@ namespace Forge
 	template<typename R,typename ...Args>
 	class Delegate<R(Args...)>
 	{
-		using InstancePtr = void*;
-		using InternalFunction = R(*)(InstancePtr, Args...);
-		using Stub = std::pair<InstancePtr, InternalFunction>;
+		using InternalFunction = R(*)(void*, Args...);
 
 		template<R(*Function)(Args...)>
-		static R FunctionStub(InstancePtr,Args... args)
+		static R FunctionStub(void*,Args... args)
 		{
 			return (Function)(args...);
 		}
 
 		template<class C, R(C::*Function)(Args...)>
-		static R ClassMethodStub(InstancePtr instance, Args... args)
+		static R ClassMethodStub(void* instance, Args... args)
 		{
 			return (static_cast<C*>(instance)->*Function)(args...);
 		}
 
 	private:
-		Stub stub;
+        InternalFunction callback{ nullptr };
+		void* callee{ nullptr };
+
 		Delegate(void* instance, InternalFunction callbackFunction)
-			:stub{ instance, callbackFunction }
+			:callee{ instance }, callback{ callbackFunction}
 		{}
 	public:
 		Delegate()
-			:stub(nullptr, nullptr)
 		{}
 
 		R operator()(Args... args)
 		{
-			return stub.second(stub.first, args...);
+		    return callback(callee, args...);
 		}
 
 		bool operator==(const Delegate& other)
 		{
-			return stub.first == other.stub.first && stub.second == other.stub.second;
+			return callee == other.callee && callback == other.callback;
 		}
 
 		template<R(*Function)(Args...)>
 		void Bind()
 		{
-			stub.first = nullptr;
-			stub.second = &FunctionStub<Function>;
+			callee = nullptr;
+			callback = &FunctionStub<Function>;
 		}
 
 		template<class C, R(C::*Function)(Args...)>
 		void Bind(C* instance)
 		{
-			stub.first = instance;
-			stub.second = &ClassMethodStub<C, Function>;
+			callee = instance;
+			callback = &ClassMethodStub<C, Function>;
 		}
 
 		R Invoke(Args... args)
 		{
-			return stub.second(stub.first, args...);
+            return callback(callee, args...);
 		}
 
 		template<R(*Function)(Args...)>

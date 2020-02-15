@@ -1,5 +1,7 @@
 #pragma once
-#include "Context.h"
+
+#include "Platform/Api/DeviceCapabilities.h"
+#include "Platform/Api/Context.h"
 #include "GraphicsRenderer.h"
 #include "RenderSurface.h"
 #include "Model.h"
@@ -40,7 +42,7 @@ namespace Forge
         Camera _camera;
 		GraphicsRenderer* _deviceRenderer = nullptr;
 	public:
-		Renderer();
+		Renderer(GraphicsApiType api);
 		~Renderer();
 
 		void Init(const Vector2i& windowSize);

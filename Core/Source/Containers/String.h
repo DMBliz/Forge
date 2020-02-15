@@ -195,7 +195,7 @@ namespace Forge
 	class WString
 	{
 	private:
-		wchar_t* wñharBuffer;
+		wchar_t* wcharBuffer;
 		unsigned length_;
 	public:
 		WString();
@@ -214,7 +214,7 @@ namespace Forge
 
 		unsigned Length() const { return length_; }
 
-		const wchar_t* CString() const { return wñharBuffer; }
+		const wchar_t* CString() const { return wcharBuffer; }
 
 	};
 
