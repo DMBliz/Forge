@@ -1,17 +1,17 @@
 //
 // Created by Дмитрий Метелица on 2019-10-24.
 //
-
-#include "WIN32App.h"
-#include "WIN32Input.h
-#include "WIN32FileSystem.h"
+#include "Platform/Api/PlatformApiProvider.h"
+#include "Win32Input.h"
+#include "Win32FileSystem.h"
+#include "Win32ContextApi.h"
 
 namespace Forge
 {
     void PlatformApiProvider::init()
     {
-        addApi("WindowSystem", new WIN32WindowSystem());
-        addApi("InputSystem", new WIN32Input());
-        addApi("FileSystem", new WIN32FileSystem());
+        addApi("ContextApi", new Win32ContextApi());
+        addApi("InputSystem", new Win32Input());
+        addApi("FileSystem", new Win32FileSystem());
     }
 }

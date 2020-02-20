@@ -19,25 +19,25 @@ namespace Forge
 		template<R(*Function)(Args...)>
 		void Add()
 		{
-			Add(Delegate<R(Args...)>::template Create<Function>());
+			Add(Delegate<R(Args...)>::template create<Function>());
 		}
 
 		template<R(*Function)(Args...)>
 		void Remove()
 		{
-			Remove(Delegate<R(Args...)>::template Create<Function>());
+			Remove(Delegate<R(Args...)>::template create<Function>());
 		}
 
 		template<class C,  R(C::*Function)(Args...)>
 		void Add(C* instance)
 		{
-			Add(Delegate<R(Args...)>::template Create<C, Function>(instance));
+			Add(Delegate<R(Args...)>::template create<C, Function>(instance));
 		}
 
 		template<class C, R(C::*Function)(Args...)>
 		void Remove(C* instance)
 		{
-			Remove(Delegate<R(Args...)>::template Create<C, Function>(instance));
+			Remove(Delegate<R(Args...)>::template create<C, Function>(instance));
 		}
 
 		void Add(Delegate<R(Args...)> delegate)

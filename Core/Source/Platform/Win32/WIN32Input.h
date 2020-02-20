@@ -1,15 +1,15 @@
 #pragma once
 #include "Platform/Api/Input.h"
-#include <windows.h>
+#include <Windows.h>
 
 namespace Forge
 {
 
-	class WIN32Input : public Input
+	class Win32Input : public Input
 	{
 	public:
-		WIN32Input();
-		~WIN32Input();
+		Win32Input();
+		~Win32Input();
 
 		void SetKeyStateNative(UINT key, InputState state);
 		void SetKeyUpNative(UINT key);

@@ -1,4 +1,4 @@
-#include <Platform/OSX/OSXFileSystem.h>
+#include "Platform/Win32/Win32FileSystem.h"
 #include "Engine.h"
 #include "Utilities/Timer.h"
 #include "Platform/Api/PlatformApiProvider.h"
@@ -17,7 +17,7 @@ namespace Forge
 	    this->application = application;
         application->getPlatformApiProvider()->init();
         resources = new Resources();
-        fileSystem = new OSXFileSystem();
+        fileSystem = new Win32FileSystem();
 
 		active = true;
 		Timer::StartTime();

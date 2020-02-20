@@ -6,7 +6,7 @@
 namespace Forge
 {
 
-	class OGLWIN32Context : public Context
+	class OGLWin32Context : public Context
 	{
 	private:
 		HWND window;
@@ -14,15 +14,19 @@ namespace Forge
 		HGLRC renderContext = 0;
 		ATOM windowClass;
 		
+		/**
+			creates temp context, loads wgl functions and deletes temp context, 
+			because in windows to create normal context you should create context
+			@return true if glad loaded, false if somthing fails
+		*/
+		bool loadGladWithTempWindow();
 	public:
-		OGLWIN32Context();
-		~OGLWIN32Context();
-
-		void CreateContext(const Window& win, unsigned int sampleCount) override;
-		void CreateContext(unsigned sampleCount) override;
+        OGLWin32Context();
+		~OGLWin32Context();
+		void CreateContext(Window& win, unsigned int sampleCount) override;
 		void DeleteContext() override;
-		void SendMsg(const int* hwnd, int msg, const int wParam, const int lParam) override;
 		void PlatformUpdate() override;
+		void setActive() override;
 	};
 
 }

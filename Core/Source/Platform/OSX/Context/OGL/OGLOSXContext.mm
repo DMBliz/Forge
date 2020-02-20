@@ -123,11 +123,6 @@ namespace Forge
         
     }
 
-    void OGLOSXContext::SendMsg(const int *hwnd, int msg, const int wParam, const int lParam)
-    {
-
-    }
-
     void OGLOSXContext::PlatformUpdate()
     {
         [openGLContext flushBuffer];

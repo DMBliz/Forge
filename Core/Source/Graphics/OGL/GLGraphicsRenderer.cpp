@@ -25,12 +25,10 @@ namespace Forge
 	{
 		GraphicsRenderer::Init(windowSize);
 
-
 		if (!gladLoadGL())
 		{
 			LOG("Failed to load glad");
 		}
-		
 
 		size = windowSize;
 
@@ -49,11 +47,13 @@ namespace Forge
 		renderSurface->Bind();
 		
 		ClearFrameBuffer(renderSurface->GetClearColor());
+		const Vector2i& size = renderSurface->GetSize();
         SetBlending(_blending);
         SetCullFace(_cullFace);
 		glEnable(GL_DEPTH_TEST);
 		SetDepthMask(true);
 		ClearDepthValue(clearDepth);
+		glDepthFunc(GL_LESS);
 		glCheck(glClear(clearMask));
 	}
 
@@ -131,7 +131,8 @@ namespace Forge
             glEnable(GL_CULL_FACE);
             glCullFace(GL_BACK);
             glFrontFace(GL_CW);
-        }else
+        }
+		else
         {
             glDisable(GL_CULL_FACE);
         }

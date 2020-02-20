@@ -1,10 +1,10 @@
 #include "Win32Window.h"
 #include "Containers/String.h"
 #include "Math/Vector2.h"
-#include <Windowsx.h>
+#include <windowsx.h>
 #include "Defines.h"
 #include "Core/Engine.h"
-#include "Input/Windows/WIN32Input.h"
+#include "Platform/Win32/Win32Input.h"
 #include "glad/glad_wgl.h"
 
 
@@ -13,133 +13,125 @@ namespace Forge
 	const wchar_t* classname = L"ForgeWindow";
 
 	
-	WindowWin32::WindowWin32()
+	Win32Window::Win32Window()
 	{
-		context = Context::Create();
+	    winInput.setPosition = Delegate<void(const Vector2i&)>::create<Win32Window, &Win32Window::setCursorPosition>(this);
 	}
 
-	WindowWin32::~WindowWin32()
+	Win32Window::~Win32Window()
 	{
 		
 	}
 
-	void WindowWin32::Create(const Vector2i& size, const String& title, bool Resizable, bool FullScreen, 
-							 bool ExclusiveFullScreen, bool HighDPI, bool depth)
+    void Win32Window::create(const WindowCreationDesc &creationDesc)
+    {
+        this->windowRect = creationDesc.size;
+        this->windowTitle = creationDesc.title;
+        this->resizable = creationDesc.resizable;
+        this->windowState = creationDesc.openState;
+        this->highDPI = creationDesc.highDPI;
+
+        if (highDPI)
+        {
+            HMODULE shcore = LoadLibraryW(L"shcore.dll");
+            if (shcore)
+            {
+                typedef HRESULT(STDAPICALLTYPE *SetProcessDPIAwarenessProc)(int value);
+                SetProcessDPIAwarenessProc setProcessDpiAwareness = reinterpret_cast<SetProcessDPIAwarenessProc>(GetProcAddress(shcore, "SetProcessDpiAwareness"));
+
+                if (setProcessDpiAwareness)
+                    setProcessDpiAwareness(2);
+            }
+        }
+
+        HINSTANCE instance = GetModuleHandleW(nullptr);
+
+        WNDCLASSEXW wc;
+        wc.cbSize = sizeof(wc);
+        wc.style = CS_HREDRAW | CS_VREDRAW;
+        wc.lpfnWndProc = &WindProc;
+        wc.cbClsExtra = 0;
+        wc.cbWndExtra = 0;
+        wc.hInstance = instance;
+        wc.hIcon = LoadIconW(instance, MAKEINTRESOURCEW(101));
+        wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
+        wc.hbrBackground = static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
+        wc.lpszMenuName = nullptr;
+        wc.lpszClassName = classname;
+        wc.hIconSm = nullptr;
+
+        _windowClass = RegisterClassExW(&wc);
+        if (!_windowClass)
+        {
+            LOG_ERROR("can't register window class");
+            return;
+        }
+
+        _windowWindowedStyle = WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_CLIPSIBLINGS | WS_BORDER | WS_DLGFRAME | WS_THICKFRAME | WS_GROUP | WS_TABSTOP;
+
+        if (resizable)
+            _windowWindowedStyle |= WS_SIZEBOX | WS_MAXIMIZEBOX;
+
+        _wdindowFullScreenStyle = WS_CLIPSIBLINGS | WS_GROUP | WS_TABSTOP;
+
+        int x = CW_USEDEFAULT;
+        int y = CW_USEDEFAULT;
+
+        _windowStyle = _windowWindowedStyle;
+        _windowExStyle = WS_EX_APPWINDOW;
+
+        RECT nativeRect = {windowRect.x, windowRect.x, static_cast<LONG>(windowRect.width), static_cast<LONG>(windowRect.height) };
+        AdjustWindowRectEx(&nativeRect, _windowStyle, FALSE, _windowExStyle);
+
+        int width = CW_USEDEFAULT;
+        int height = CW_USEDEFAULT;
+
+        if (windowRect.width > 0.0f)
+            width = nativeRect.right - nativeRect.left;
+        if (windowRect.height > 0.0f)
+            height = nativeRect.bottom - nativeRect.top;
+
+
+        wchar_t titleBuff[256] = L"Window";
+        if (!windowTitle.IsEmpty())
+        {
+            WString tmp(windowTitle);
+            wcsncpy_s(titleBuff, tmp.CString(), tmp.Length());
+        }
+
+        _hwnd = CreateWindowExW(_windowExStyle, classname, titleBuff, _windowStyle,
+                                x, y, width, height, nullptr, nullptr, instance, nullptr);
+
+
+        if (!_hwnd)
+        {
+            LOG_ERROR("can't create window");
+            return;
+        }
+
+        _monitor = MonitorFromWindow(_hwnd, MONITOR_DEFAULTTONEAREST);
+
+        if (windowState == WindowState::FULLSCREEN)
+            setWindowState(windowState);
+
+        GetClientRect(_hwnd, &nativeRect);
+
+        windowRect.x = nativeRect.right - nativeRect.left;
+        windowRect.y = nativeRect.bottom - nativeRect.top;
+        resolution = windowRect.size();
+
+        if (!RegisterTouchWindow(_hwnd, SW_SHOW))
+        {
+            LOG_WARN("cant register touch window");
+        }
+        ShowWindow(_hwnd, SW_SHOW);
+
+        SetWindowLongPtr(_hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
+    }
+
+	void Win32Window::setWindowRect(const RectI& newSize)
 	{
-		this->windowSize = size;
-		this->windowTitle = title;
-		this->resizable = Resizable;
-		this->fullScreen = FullScreen;
-		this->exclusiveFullScreen = ExclusiveFullScreen;
-		this->highDPI = HighDPI;
-
-		if (highDPI)
-		{
-			HMODULE shcore = LoadLibraryW(L"shcore.dll");
-
-			if (shcore)
-			{
-				typedef HRESULT(STDAPICALLTYPE *SetProcessDPIAwarenessProc)(int value);
-				SetProcessDPIAwarenessProc setProcessDpiAwareness = reinterpret_cast<SetProcessDPIAwarenessProc>(GetProcAddress(shcore, "SetProcessDpiAwareness"));
-
-				if (setProcessDpiAwareness)
-					setProcessDpiAwareness(2);
-			}
-		}
-
-		HINSTANCE instance = GetModuleHandleW(nullptr);
-
-		WNDCLASSEXW wc;
-		wc.cbSize = sizeof(wc);
-		wc.style = CS_HREDRAW | CS_VREDRAW;
-		wc.lpfnWndProc = &WindProc;
-		wc.cbClsExtra = 0;
-		wc.cbWndExtra = 0;
-		wc.hInstance = instance;
-		wc.hIcon = LoadIconW(instance, MAKEINTRESOURCEW(101));
-		wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
-		wc.hbrBackground = static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
-		wc.lpszMenuName = nullptr;
-		wc.lpszClassName = classname;
-		wc.hIconSm = nullptr;
-
-		_windowClass = RegisterClassExW(&wc);
-		if (!_windowClass)
-		{
-			LOG_ERROR("can't register window class");
-			return;
-		}
-
-		_windowWindowedStyle = WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_CLIPSIBLINGS | WS_BORDER | WS_DLGFRAME | WS_THICKFRAME | WS_GROUP | WS_TABSTOP;
-
-		if (Resizable)
-			_windowWindowedStyle |= WS_SIZEBOX | WS_MAXIMIZEBOX;
-
-		_wdindowFullScreenStyle = WS_CLIPSIBLINGS | WS_GROUP | WS_TABSTOP;
-
-		int x = CW_USEDEFAULT;
-		int y = CW_USEDEFAULT;
-
-		_windowStyle = _windowWindowedStyle;
-		_windowExStyle = WS_EX_APPWINDOW;
-
-		RECT windowRect = { 0, 0, static_cast<LONG>(size.x), static_cast<LONG>(size.y) };
-		AdjustWindowRectEx(&windowRect, _windowStyle, FALSE, _windowExStyle);
-
-		int width = CW_USEDEFAULT;
-		int height = CW_USEDEFAULT;
-
-		if (size.x > 0.0f) width = windowRect.right - windowRect.left;
-		if (size.y > 0.0f) height = windowRect.bottom - windowRect.top;
-
-
-		wchar_t titleBuff[256] = L"game";
-		if (!title.IsEmpty())
-		{
-			WString tmp(title);
-			wcsncpy_s(titleBuff, tmp.CString(), tmp.Length());
-		}
-
-		_hwnd = CreateWindowExW(_windowExStyle, classname, titleBuff, _windowStyle, 
-								x, y, width, height, nullptr, nullptr, instance, nullptr);
-
-		
-		if (!_hwnd)
-		{
-			LOG_ERROR("can't create window");
-			return;
-		}
-
-		_monitor = MonitorFromWindow(_hwnd, MONITOR_DEFAULTTONEAREST);
-
-		if (fullScreen)
-			SetFullScreen(fullScreen);
-
-		GetClientRect(_hwnd, &windowRect);
-		
-		windowSize.x = windowRect.right - windowRect.left;
-		windowSize.y = windowRect.bottom - windowRect.top;
-		framebufferSize.Set(static_cast<int>(windowRect.right), static_cast<int>(windowRect.bottom));
-		windowResolution = windowSize;
-
-		if (!RegisterTouchWindow(_hwnd, SW_SHOW))
-		{
-			LOG_WARN("cant register touch window");
-		}
-		ShowWindow(_hwnd, SW_SHOW);
-
-		SetWindowLongPtr(_hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
-		context->CreateContext(*this, 0, 0);
-	}
-
-	void WindowWin32::CreateContext()
-	{
-		context->CreateContext(0, 0);
-	}
-
-	void WindowWin32::SetSize(const Vector2i& newSize)
-	{
-		Window::SetSize(newSize);
+		Window::setWindowRect(newSize);
 
 		RECT rect = { 0, 0, static_cast<LONG>(newSize.x), static_cast<LONG>(newSize.y) };
 		AdjustWindowRectEx(&rect, _windowStyle, GetMenu(_hwnd) ? TRUE : FALSE, _windowExStyle);
@@ -149,61 +141,59 @@ namespace Forge
 
 		SetWindowPos(_hwnd, nullptr, 0, 0, width, height, SWP_NOMOVE | SWP_NOZORDER);
 
-		windowResolution = windowSize;
-
-		onSizeChanged(windowSize);
+		resolution = windowRect.size();
 	}
 
-	void WindowWin32::SetTitle(const String& newTitle)
+	void Win32Window::setTitle(const String& newTitle)
 	{
 		if(windowTitle == newTitle)
 			return;
 
 		SetWindowTextW(_hwnd, WString(windowTitle).CString());
-		Window::SetTitle(newTitle);
+		Window::setTitle(newTitle);
 	}
 
-	void WindowWin32::SetFullScreen(bool value)
+	void Win32Window::setWindowState(WindowState windowState)
 	{
-		Window::SetFullScreen(value);
+		Window::setWindowState(windowState);
 
-		if (exclusiveFullScreen)
-		{
-			//TODO: renderer set fullscreen
-		}
-		else
-		{
-			_windowStyle = (value ? _wdindowFullScreenStyle : _windowWindowedStyle);
-			SetWindowLong(_hwnd, GWL_STYLE, _windowStyle);
+		switch (windowState)
+        {
+            case WindowState::FULLSCREEN:
+                break;
+            case WindowState::WINDOWED:
+                break;
+            case WindowState::MAXIMIZED:
+                _windowStyle = _windowWindowedStyle;
+                SetWindowLong(_hwnd, GWL_STYLE, _windowStyle);
 
-			if (value)
-			{
-				RECT rect;
-				GetWindowRect(_hwnd, &rect);
+                RECT rect;
+                GetWindowRect(_hwnd, &rect);
 
-				windowedPos.Set(static_cast<int>(rect.left), static_cast<int>(rect.top));
-				windowedSize.Set(static_cast<int>(rect.right), static_cast<int>(rect.bottom));
-				framebufferSize.Set(static_cast<int>(rect.right - rect.left), static_cast<int>(rect.bottom - rect.top));
+                windowedPos.Set(static_cast<int>(rect.left), static_cast<int>(rect.top));
+                windowedSize.Set(static_cast<int>(rect.right), static_cast<int>(rect.bottom));
 
-				windowResolution = windowSize;
-
-
-				onSizeChanged(windowSize);
-			}
-		}
+                resolution = windowRect.size();
+                break;
+        }
 	}
 
-	void WindowWin32::Close()
+	void Win32Window::close()
 	{
 		SendMessage(_hwnd, WM_CLOSE, 0, 0);
 	}
 
-	void WindowWin32::PlatformUpdate()
+	void Win32Window::platformUpdate()
 	{
-		context->PlatformUpdate();
+		MSG message;
+		while (PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE) > 0)
+		{
+			TranslateMessage(&message);
+			DispatchMessageW(&message);
+		}
 	}
 
-	void WindowWin32::SetClipboard(const String& data)
+	void Win32Window::setClipboard(const String& data)
 	{
 		if (!OpenClipboard(_hwnd))
 			return;
@@ -221,36 +211,36 @@ namespace Forge
 		CloseClipboard();
 	}
 
-	const String& WindowWin32::GetClipboard()
+	const String& Win32Window::getClipboard()
 	{
 		return static_cast<char*>(GetClipboardData(CF_TEXT));
 	}
 
-	void WindowWin32::SetCursorPosition(const Vector2i& newPos)
+	void Win32Window::setCursorPosition(const Vector2i& newPos)
 	{
 		POINT pos = { newPos.x, newPos.y };
 		ClientToScreen(_hwnd, &pos);
 		SetCursorPos(pos.x, pos.y);
 	}
 
-	void WindowWin32::ProcessResize(const Vector2i& size)
+	void Win32Window::ProcessResize(const Vector2i& size)
 	{
 		_monitor = MonitorFromWindow(_hwnd, MONITOR_DEFAULTTONEAREST);
 
-		windowSize = size;
+        windowRect.width = size.x;
+        windowRect.height = size.y;
 
-		onSizeChanged.Invoke(windowSize);
+		onSizeChanged.Invoke(this, size);
 	}
 
-	void WindowWin32::ProcessMove()
+	void Win32Window::ProcessMove()
 	{
 		_monitor = MonitorFromWindow(_hwnd, MONITOR_DEFAULTTONEAREST);
 	}
 
-	LRESULT CALLBACK WindowWin32::WindProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam)
+	LRESULT CALLBACK Win32Window::WindProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam)
 	{
-
-		WindowWin32* win = reinterpret_cast<Forge::WindowWin32*>(GetWindowLongPtr(handle, GWLP_USERDATA));
+		Win32Window* win = reinterpret_cast<Forge::Win32Window*>(GetWindowLongPtr(handle, GWLP_USERDATA));
 
 		if (!win)
 			return DefWindowProcW(handle, message, wParam, lParam);
@@ -262,14 +252,12 @@ namespace Forge
 				if (wParam)
 				{
 					//resume engine work
-					engine->Resume();
 					
 					win->hasFocus = true;
 				}
 				else
 				{
 					//pause engine work
-					engine->Pause();
 					win->hasFocus = false;
 				}
 				break;
@@ -279,8 +267,7 @@ namespace Forge
 			case WM_UNICHAR:
 			{
 				bool plain = (message != WM_SYSCHAR);
-
-				static_cast<WinInput*>(engine->GetInputSystem())->SetCharacterPressed(static_cast<uint>(wParam));
+                win->getInput()->SetCharacterPressed(static_cast<uint>(wParam));
 				return 0;
 			}
 			case WM_KEYUP:
@@ -310,13 +297,12 @@ namespace Forge
 
 				if (message == WM_KEYDOWN)
 				{
-					static_cast<WinInput*>(engine->GetInputSystem())->SetKeyDownNative(key);
+                    win->getInput()->SetKeyDownNative(key);
 				}
 				else if (message == WM_KEYUP)
 				{
-					static_cast<WinInput*>(engine->GetInputSystem())->SetKeyUpNative(key);
+                    win->getInput()->SetKeyUpNative(key);
 				}
-
 				break;
 			}
 			case WM_LBUTTONDOWN:
@@ -363,13 +349,13 @@ namespace Forge
 
 					if (message == WM_LBUTTONDOWN || message == WM_RBUTTONDOWN || message == WM_MBUTTONDOWN || message == WM_XBUTTONDOWN)
 					{
-						WinInput* t = static_cast<WinInput*>(engine->GetInputSystem());
+						Win32Input* t = win->getInput();
 						t->SetButtonDownNative(button);
 						t->SetMousePositionValue(pos);
 					}
 					else if (message == WM_LBUTTONUP || message == WM_RBUTTONUP || message == WM_MBUTTONUP || message == WM_XBUTTONUP)
 					{
-						WinInput* t = static_cast<WinInput*>(engine->GetInputSystem());
+						Win32Input* t = win->getInput();
 						t->SetButtonUpNative(button);
 						t->SetMousePositionValue(pos);
 					}
@@ -387,7 +373,7 @@ namespace Forge
 					Vector2 pos(static_cast<float>(GET_X_LPARAM(lParam)), static_cast<float>(GET_Y_LPARAM(lParam)));
 
 					//TODO: handle mouse move
-					static_cast<WinInput*>(engine->GetInputSystem())->SetMousePositionValue(pos);
+                    win->getInput()->SetMousePositionValue(pos);
 				}
 				break;
 			}
@@ -399,14 +385,14 @@ namespace Forge
 				if (message == WM_MOUSEWHEEL)
 				{
 					short param = static_cast<short>(HIWORD(wParam));
-					static_cast<WinInput*>(engine->GetInputSystem())->SetScrollNative(
+                    win->getInput()->SetScrollNative(
 						Vector2(0.0f, static_cast<float>(param) / static_cast<float>(WHEEL_DELTA)));
 					//TODO: handle mouse wheel
 				}
 				else if (message == WM_MOUSEHWHEEL)
 				{
 					short param = static_cast<short>(HIWORD(wParam));
-					static_cast<WinInput*>(engine->GetInputSystem())->SetScrollNative(
+                    win->getInput()->SetScrollNative(
 						Vector2(static_cast<float>(param) / static_cast<float>(WHEEL_DELTA), 0.0f));
 					//TODO: handle mouse wheel
 				}
@@ -471,11 +457,11 @@ namespace Forge
 				{
 					case SIZE_MINIMIZED:
 						//Pause engine
-						engine->Pause();
+//						engine->Pause();
 						break;
 					case SIZE_RESTORED:
 						//Resume engine
-						engine->Resume();
+//						engine->Resume();
 						break;
 					case SIZE_MAXIMIZED:
 						win->ProcessResize(Vector2i(static_cast<int>(LOWORD(lParam)), static_cast<int>(HIWORD(lParam))));
@@ -523,4 +509,17 @@ namespace Forge
 		
 		return DefWindowProcW(handle, message, wParam, lParam);
 	}
+
+    void Win32Window::show() {
+
+    }
+
+    void Win32Window::hide() {
+
+    }
+
+    Win32Input* Win32Window::getInput()
+    {
+        return &winInput;
+    }
 }

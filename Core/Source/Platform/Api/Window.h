@@ -42,8 +42,7 @@ namespace Forge
         Event<void(Window*)> onActiveStateChanged;
 
     protected:
-        Input* input;
-        RectI windowSize;
+        RectI windowRect;
         Vector2i resolution;
 
         float contentScale = 1.0f;
@@ -51,7 +50,6 @@ namespace Forge
         bool resizable = false;
         bool highDPI = true;
         String windowTitle;
-        Context* context;
 
         bool hasFocus = true;
         bool minimized = false;
@@ -74,13 +72,13 @@ namespace Forge
             minimized = value;
         }
 
-        const RectI& getSize() const
+        const RectI& getWindowRect() const
         {
-            return windowSize;
+            return windowRect;
         }
-        virtual void setSize(const RectI& newSize)
+        virtual void setWindowRect(const RectI& newSize)
         {
-            windowSize = newSize;
+            windowRect = newSize;
         }
 
         const Vector2i& getResolution() const
@@ -115,9 +113,11 @@ namespace Forge
             windowTitle = newTitle;
         }
 
-        bool isHightDpi() const
+        bool isHighDpi() const
         {
             return highDPI;
         }
+
+        virtual Input* getInput() = 0;
     };
 }

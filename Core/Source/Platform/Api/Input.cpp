@@ -1,11 +1,4 @@
 #include "Input.h"
-#if defined(WIN32)
-#include "Input/Windows/WIN32Input.h"
-#elif defined(OSX)
-#include "Platform/OSX/OSXInput.h"
-#endif
-
-#include "Defines.h"
 
 namespace Forge
 {
@@ -161,16 +154,5 @@ namespace Forge
 	void Input::SetMousePosition(const Vector2& newPosition)
 	{
         cursorPosition = newPosition;
-	}
-
-	Input* Input::Create()
-	{
-#if defined(WIN32)
-		return new WinInput();
-#elif defined(OSX)
-		return new OSXInput();
-#elif defined(ANDROID)
-#elif defined(IOS)
-#endif
 	}
 }

@@ -1340,7 +1340,7 @@ namespace Forge
 		Resize(neededSize);
 
 		offset = 0;
-		wchar_t* dest = w�harBuffer;
+		wchar_t* dest = wcharBuffer;
 		while (offset < str.Length())
 			String::EncodeUTF16(dest, str.NextUTF8Char(offset));
 #else

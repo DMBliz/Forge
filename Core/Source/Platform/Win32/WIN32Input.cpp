@@ -1,7 +1,7 @@
-#include "WIN32Input.h"
+#include "Win32Input.h"
 #include <map>
 #include "Core/Engine.h"
-#include "Platform/Windows/WindowWin32.h"
+#include "Platform/Win32/Win32Window.h"
 
 namespace Forge
 {
@@ -112,14 +112,13 @@ namespace Forge
 		{ VK_SNAPSHOT,	 KeyboardKey::PrtSc}
 	};
 
-	WinInput::WinInput()
+	Win32Input::Win32Input()
 	{}
 
-
-	WinInput::~WinInput()
+	Win32Input::~Win32Input()
 	{}
 
-	void WinInput::SetKeyStateNative(UINT key, InputState state)
+	void Win32Input::SetKeyStateNative(UINT key, InputState state)
 	{
 		KeyboardKey keyboardKey = KeyboardKey::None;
 		auto i = keyMap.find(key);
@@ -130,7 +129,7 @@ namespace Forge
 		}
 	}
 
-	void WinInput::SetKeyUpNative(UINT key)
+	void Win32Input::SetKeyUpNative(UINT key)
 	{
 		KeyboardKey keyboardKey = KeyboardKey::None;
 		auto i = keyMap.find(key);
@@ -141,7 +140,7 @@ namespace Forge
 		}
 	}
 
-	void WinInput::SetKeyDownNative(UINT key)
+	void Win32Input::SetKeyDownNative(UINT key)
 	{
 		KeyboardKey keyboardKey = KeyboardKey::None;
 		auto i = keyMap.find(key);
@@ -152,12 +151,12 @@ namespace Forge
 		}
 	}
 
-	void WinInput::SetScrollNative(const Vector2& scroll)
+	void Win32Input::SetScrollNative(const Vector2& scroll)
 	{
 		SetScroll(scroll);
 	}
 
-	void WinInput::SetButtonStateNative(UINT key, InputState state)
+	void Win32Input::SetButtonStateNative(UINT key, InputState state)
 	{
 		switch(key)
 		{
@@ -169,27 +168,28 @@ namespace Forge
 		}
 	}
 
-	void WinInput::SetButtonUpNative(MouseButton key)
+	void Win32Input::SetButtonUpNative(MouseButton key)
 	{
 		SetButtonState(key, InputState::Up);
 	}
 
-	void WinInput::SetButtonDownNative(MouseButton key)
+	void Win32Input::SetButtonDownNative(MouseButton key)
 	{
 		SetButtonState(key, InputState::Down);
 	}
 
-	void WinInput::SetMousePosition(const Vector2& newPosition)
+	void Win32Input::SetMousePosition(const Vector2& newPosition)
 	{
-		static_cast<WindowWin32*>(engine->GetWindow())->SetCursorPosition(Vector2i(static_cast<int>(newPosition.x), static_cast<int>(newPosition.y)));
+	    setPosition(Vector2i(newPosition.x, newPosition.y));
+//		static_cast<Win32Window*>(engine->GetWindow())->SetCursorPosition(Vector2i(static_cast<int>(newPosition.x), static_cast<int>(newPosition.y)));
 	}
 
-	void WinInput::SetMousePositionValue(const Vector2& newPosition)
+	void Win32Input::SetMousePositionValue(const Vector2& newPosition)
 	{
 		Input::SetMousePositionValue(newPosition);
 	}
 
-	void WinInput::SetCharacterPressed(uint character)
+	void Win32Input::SetCharacterPressed(uint character)
 	{
 		Input::SetCharacterPressed(character);
 	}

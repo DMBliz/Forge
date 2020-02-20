@@ -73,8 +73,8 @@ namespace Forge
 			uint rowSize = _size.x * 4;
 			for(int y = 0; y < _size.y; y++)
 			{
-				byte* left = _pixels.begin().base() + y * rowSize;
-				byte* right = _pixels.begin().base() + (y + 1) * rowSize - 4;
+				byte* left = _pixels.begin()._Ptr + y * rowSize;
+				byte* right = _pixels.begin()._Ptr + (y + 1) * rowSize - 4;
 
 				for (int x = 0; x < _size.x / 2; x++)
 				{
@@ -92,8 +92,8 @@ namespace Forge
 		if (_pixels.size() > 0)
 		{
 			uint rowSize = _size.x * 4;
-			byte* top = _pixels.begin().base();
-			byte* bottom = _pixels.end().base() - rowSize;
+			byte* top = _pixels.begin()._Ptr;
+			byte* bottom = _pixels.end()._Ptr - rowSize;
 
 			for (int y = 0; y < _size.y / 2; y++)
 			{

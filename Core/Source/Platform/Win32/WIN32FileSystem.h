@@ -4,7 +4,7 @@
 
 namespace Forge
 {
-	class WINFileSystem : public FileSystem
+	class Win32FileSystem : public FileSystem
 	{
 		void GetAllFiles(std::vector<String>& files, String path);
 	public:

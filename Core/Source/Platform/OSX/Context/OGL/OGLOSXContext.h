@@ -34,8 +34,6 @@ namespace Forge
 
         void DeleteContext() override;
 
-        void SendMsg(const int *hwnd, int msg, const int wParam, const int lParam) override;
-
         void setActive() override;
 
         void PlatformUpdate() override;

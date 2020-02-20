@@ -1,13 +1,13 @@
 #pragma once
 #include "Platform/Api/Window.h"
-#include "windows.h"
+#include "Windows.h"
+#include "Win32Input.h"
 
 namespace Forge
 {
-
-	class WindowWin32 : public Window
+	class Win32Window : public Window
 	{
-		friend class WinInput;
+		friend class Win32Input;
 	private:
 		HWND _hwnd = nullptr;
 		HMONITOR _monitor = nullptr;
@@ -19,38 +19,41 @@ namespace Forge
 		Vector2i windowedSize;
 		Vector2i windowedPos;
 
+		Win32Input winInput;
+
 		HDC deviceContext;
 		HGLRC renderContext;
 		
 		void ProcessResize(const Vector2i& size);
 		void ProcessMove();
 		static LRESULT CALLBACK WindProc(HWND handle, UINT message, WPARAM wParam, LPARAM lParam);
-	public:
+    public:
+        Win32Window();
+        ~Win32Window();
 
-		WindowWin32();
-		~WindowWin32();
+        void create(const WindowCreationDesc &creationDesc) override;
+        void close() override;
+        void show() override;
+        void hide() override;
 
-		void Create(const Vector2i& size, const String& title, bool Resizable, bool FullScreen, bool ExclusiveFullScreen, bool HighDPI, bool depth) override;
-		void CreateContext() override;
+        void setClipboard(const String &data) override;
+        const String &getClipboard() override;
 
-		void SetSize(const Vector2i& newSize) override;
+		void setWindowRect(const RectI& newSize) override;
+		void setTitle(const String& newTitle) override;
 
-		void SetTitle(const String& newTitle) override;
+        void setWindowState(WindowState windowState) override;
 
-		void SetFullScreen(bool value) override;
-
-		void Close() override;
-
-		HWND GetNativeWindow() const { return _hwnd; }
+        HWND GetNativeWindow() const { return _hwnd; }
 
 		HMONITOR GetMonitor() const { return _monitor; }
 
-		void PlatformUpdate() override;
+		void platformUpdate() override;
 
-		void SetClipboard(const String& data) override;
-		const String& GetClipboard() override;
-	protected:
-		void SetCursorPosition(const Vector2i& newPos) override;
+        Win32Input* getInput() override;
+
+    protected:
+		void setCursorPosition(const Vector2i& newPos) override;
 	};
 
 }

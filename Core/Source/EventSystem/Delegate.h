@@ -6,13 +6,13 @@ namespace Forge
 	template<typename T>
 	class Delegate;
 
-	template<typename R,typename ...Args>
+	template<typename R, typename ...Args>
 	class Delegate<R(Args...)>
 	{
 		using InternalFunction = R(*)(void*, Args...);
 
 		template<R(*Function)(Args...)>
-		static R FunctionStub(void*,Args... args)
+		static R FunctionStub(void*, Args... args)
 		{
 			return (Function)(args...);
 		}
@@ -64,13 +64,13 @@ namespace Forge
 		}
 
 		template<R(*Function)(Args...)>
-		static Delegate Create()
+		static Delegate create()
 		{
 			return Delegate{ nullptr, &FunctionStub<Function> };
 		}
 
 		template<class C, R(C::*Function)(Args...)>
-		static Delegate Create(C* instance)
+		static Delegate create(C* instance)
 		{
 			return Delegate{ instance, &ClassMethodStub<C, Function> };
 		}

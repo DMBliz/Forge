@@ -1,6 +1,7 @@
 #pragma once
 #include "Types.h"
 #include "Math/Vector2.h"
+#include "Math/Vector2i.h"
 #include "EventSystem/Delegate.h"
 #include "EventSystem/Event.h"
 #include "Api.h"
@@ -189,9 +190,9 @@ namespace Forge
 		Event<void(const Vector2&)> onMouseWheelScroll;
 		Event<void(uint)> onCharacterPressed;
 
-		virtual void SetMousePosition(const Vector2& newPosition);
+		Delegate<void(const Vector2i& position)> setPosition;
 
-		static Input* Create();
+		virtual void SetMousePosition(const Vector2& newPosition);
 	};
 
 }

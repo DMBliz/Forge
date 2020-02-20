@@ -83,7 +83,11 @@ if(OSX)
     file(GLOB sources ${sources}
             "${CMAKE_CURRENT_SOURCE_DIR}/Source/Platform/${OS}/*.mm"
             "${CMAKE_CURRENT_SOURCE_DIR}/Source/Platform/${OS}/Context/${GAPI}/*.mm")
+elseif(WIN32)
+    file(GLOB sources ${sources}
+            "${CMAKE_SOURCE_DIR}/Core/Dependecies/src/glad/glad_wgl.c")
 endif()
+
 
 message("source files:")
 
@@ -100,7 +104,7 @@ endforeach()
 assign_source_group(${sources})
 assign_source_group(${headers})
 
-add_library(Core STATIC ${sources} ${headers})
+add_library(Core STATIC ${sources} ${headers} Source/Platform/Win32/Win32DeviceCapabilities.cpp Source/Platform/Win32/Win32ContextApi.cpp Source/Platform/Win32/Win32ContextApi.h)
 
 if(OSX)
     target_link_libraries(Core "-framework Cocoa"
@@ -114,7 +118,7 @@ endif()
 
 if(WIN32)
     target_link_libraries(Core general opengl32.lib)
-    target_link_libraries(Core general assimp-vc140-mt.lib)
+#    target_link_libraries(Core general assimp-vc140-mt.lib)
 endif()
 
 
