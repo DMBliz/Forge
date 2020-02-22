@@ -202,30 +202,28 @@ namespace Forge
 	{
 		Matrix4 res(1.0f);
 
-		res.mels[0][0] = 2.0f / (right - left);
-		res.mels[1][1] = 2.0f / (top - bottom);
-		res.mels[2][2] = 2.0f / (near - far);
-
-		res.mels[3][0] = (left + right) / (left - right);
-		res.mels[3][1] = (bottom + top) / (bottom - top);
-		res.mels[3][2] = (far + near) / (far - near);
+		res.mels[0][0] = 2.f / (right - left);
+		res.mels[1][1] = 2.f / (top - bottom);
+		res.mels[2][2] = 2.f / (far - near);
+		res.mels[0][3] = -(right + left) / (right - left);
+		res.mels[1][3] = -(top + bottom) / (top - bottom);
+		res.mels[2][3] = -(far + near) / (far - near);
 
 		return res;
 	}
 
-	Matrix4 Matrix4::Perspective(float fov, float aspectRetio, float near, float far)
+	Matrix4 Matrix4::Perspective(float fov, float aspectRatio, float near, float far)
 	{
 		Matrix4 res(1.0f);
 
 		float q = 1.0f / static_cast<float>(tan(fov * DEGTORAD_2));
-		float a = q / aspectRetio;
 
-		res.mels[0][0] = a;
+		res.mels[0][0] = q * aspectRatio;
 		res.mels[1][1] = q;
-		res.mels[2][2] = (near + far) / (near - far);
+		res.mels[2][2] = -far / (far - near);
 		res.mels[3][2] = -1.0f;
-		res.mels[2][3] = (2.0f * near * far) / (near - far);
-        res.mels[3][3] = 0.0f;
+		res.mels[2][3] = -(2.0f * near * far) / (far - near);
+        res.mels[3][3] = 0;
 
 		return res;
 	}

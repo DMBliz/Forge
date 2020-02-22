@@ -90,7 +90,7 @@ namespace Forge
         [openGLContext makeCurrentContext];
 
         openGLView = [[OGLView alloc] initWithFrame:window.getWindowFrame()];
-        [openGLView setWantsBestResolutionOpenGLSurface:window.isHightDpi() ? YES : NO];
+        [openGLView setWantsBestResolutionOpenGLSurface:window.isHighDpi() ? YES : NO];
 
         [openGLView setAcceptsTouchEvents:YES];
         [openGLView setWantsRestingTouches:YES];

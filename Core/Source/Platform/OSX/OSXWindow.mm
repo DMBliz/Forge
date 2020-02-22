@@ -186,7 +186,7 @@ namespace Forge
     void OSXWindow::create(const WindowCreationDesc& creationDesc)
     {
         windowTitle = creationDesc.title;
-        windowSize = creationDesc.size;
+        windowRect = creationDesc.size;
         windowState = creationDesc.openState;
         resizable = creationDesc.resizable;
         highDPI = creationDesc.highDPI;
@@ -198,13 +198,13 @@ namespace Forge
 
         if (highDPI)
         {
-            windowSize.width = this->windowSize.x;
-            windowSize.height = this->windowSize.y;
+            windowSize.width = this->windowRect.width;
+            windowSize.height = this->windowRect.height;
         }
         else
         {
-            windowSize.width = round(this->windowSize.x / screen.backingScaleFactor);
-            windowSize.height = round(this->windowSize.y / screen.backingScaleFactor);
+            windowSize.width = round(this->windowRect.width / screen.backingScaleFactor);
+            windowSize.height = round(this->windowRect.height / screen.backingScaleFactor);
         }
 
         if (windowSize.width <= 0.0F)
@@ -240,7 +240,7 @@ namespace Forge
             if (CGDisplayCapture(displayId) != kCGErrorSuccess)
                 throw std::runtime_error("Failed to capture the main display");
 
-            windowRect = frame;
+            nativeWindowRect = frame;
             [window setStyleMask:NSBorderlessWindowMask];
 
             NSRect screenRect = [screen frame];
@@ -272,21 +272,21 @@ namespace Forge
 
         window.contentView = view;
 
-        this->windowSize.x = static_cast<uint32_t>(windowSize.width);
-        this->windowSize.y = static_cast<uint32_t>(windowSize.height);
+        this->windowRect.width = static_cast<uint32_t>(windowSize.width);
+        this->windowRect.height = static_cast<uint32_t>(windowSize.height);
 
         [window makeKeyAndOrderFront:nil];
 
         if (highDPI)
         {
             contentScale = static_cast<float>(screen.backingScaleFactor);
-            resolution = Vector2i(this->windowSize.x * static_cast<int32>(contentScale),
-                                  this->windowSize.y * static_cast<int32>(contentScale));
+            resolution = Vector2i(this->windowRect.width * static_cast<int32>(contentScale),
+                                  this->windowRect.height * static_cast<int32>(contentScale));
         }
         else
         {
             contentScale = 1.0F;
-            resolution = this->windowSize.size();
+            resolution = this->windowRect.size();
         }
 
         [application run];
@@ -445,8 +445,8 @@ namespace Forge
             case WindowState::FULLSCREEN:
                 break;
             case WindowState::MAXIMIZED:
-                windowRect = [screen visibleFrame];
-                [window setFrame:windowRect display:YES];
+                nativeWindowRect = [screen visibleFrame];
+                [window setFrame:nativeWindowRect display:YES];
                 break;
             case WindowState::WINDOWED:
                 break;
@@ -467,5 +467,10 @@ namespace Forge
             [window deminiaturize:nil];
         }
         Window::setMinimized(value);
+    }
+
+    Input* OSXWindow::getInput()
+    {
+        return &input;
     }
 }

@@ -104,7 +104,7 @@ endforeach()
 assign_source_group(${sources})
 assign_source_group(${headers})
 
-add_library(Core STATIC ${sources} ${headers} Source/Platform/Win32/Win32DeviceCapabilities.cpp Source/Platform/Win32/Win32ContextApi.cpp Source/Platform/Win32/Win32ContextApi.h)
+add_library(Core STATIC ${sources} ${headers})
 
 if(OSX)
     target_link_libraries(Core "-framework Cocoa"

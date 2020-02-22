@@ -1,6 +1,7 @@
 #pragma once
 #include "Platform/Api/Window.h"
 #include "Types.h"
+#import "OSXInput.h"
 
 #if defined(__OBJC__)
 #import <Cocoa/Cocoa.h>
@@ -54,6 +55,8 @@ namespace Forge
 
         void setWindowState(WindowState windowState) override;
 
+        Input* getInput() override;
+
         void handleResignKeyChange();
         void handleBecomeKeyChange();
         void handleScreenChange();
@@ -78,13 +81,14 @@ namespace Forge
         void setCursorPosition(const Vector2i &newPos) override;
 
     private:
+        OSXInput input;
         NSWindowPtr window = nil;
         NSViewPtr view = nil;
         NSWindowDelegatePtr windowDelegate = nil;
         NSScreenPtr screen = nil;
         CGDirectDisplayID displayId = 0;
         NSUInteger windowStyleMask = 0;
-        CGRect windowRect;
+        CGRect nativeWindowRect;
         NSRect windowFrame;
 
         NSApplicationPtr application = nullptr;

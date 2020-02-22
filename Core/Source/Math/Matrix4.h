@@ -39,7 +39,7 @@ namespace Forge
 		//Matrix4& Invert();
 
 		static Matrix4 Orthographic(float lhs, float rhs, float bottom, float top, float near, float far);
-		static Matrix4 Perspective(float fov, float aspectRetio, float near, float far);
+		static Matrix4 Perspective(float fov, float aspectRatio, float near, float far);
 
 		static Matrix4 Translate(const Vector3& translation);
 		static Matrix4 Rotate(float angle, const Vector3& axis);
