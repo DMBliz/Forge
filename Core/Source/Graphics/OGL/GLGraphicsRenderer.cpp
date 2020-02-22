@@ -40,6 +40,8 @@ namespace Forge
 
 		
 		SetupScreenPresenter();
+
+		renderSurface->SetClearColor(Color(1.0f, 0.0f, 0.0f, 1.0f));
 	}
 
 	void GLGraphicsRenderer::PreDraw()
@@ -71,6 +73,7 @@ namespace Forge
 	{
 		ClearFrameBuffer(clearColor);
 		SetDepthMask(false);
+		glDisable(GL_DEPTH_TEST);
 		ClearDepthValue(clearDepth);
 		glCheck(glClear(clearMask));
 		if (renderToScreen)

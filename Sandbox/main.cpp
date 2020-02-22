@@ -50,7 +50,7 @@ public:
         mat->SetShader(sh);
         mat->SetShader(sh);
         spr->SetMaterial(mat);
-        Matrix3x4* m = new Matrix3x4(Vector3(0,0, 1), Quaternion(), Vector3(1,1,1));
+        Matrix3x4* m = new Matrix3x4(Vector3(0,0, -5), Quaternion(0, 180, 0), Vector3(1,1,1));
         spr->SetWorldPosition(*m);
         spr->SetTexture(tex);
 
