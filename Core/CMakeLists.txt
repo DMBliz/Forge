@@ -1,11 +1,16 @@
+project(Core)
+cmake_minimum_required(VERSION 3.15)
+set(CMAKE_CXX_STANDARD 14)
+
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/functions.cmake)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Source)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Dependecies)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Dependecies/include)
 
 set(CMAKE_CXX_STANDARD 14)
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/Dependecies/bin)
+
+GET_OS(OS)
 
 if(WIN32)
     set(OS Win32)
@@ -76,7 +81,7 @@ file(GLOB sources "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/Source/Platform/${OS}/*.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/Source/Platform/${OS}/Context/${GAPI}/*.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/Dependecies/include/assimp/*.cpp"
-        "${CMAKE_SOURCE_DIR}/Core/Dependecies/src/glad/glad.c")
+        "${CMAKE_CURRENT_SOURCE_DIR}/Dependecies/src/glad/glad.c")
 
 
 if(OSX)
@@ -85,7 +90,7 @@ if(OSX)
             "${CMAKE_CURRENT_SOURCE_DIR}/Source/Platform/${OS}/Context/${GAPI}/*.mm")
 elseif(WIN32)
     file(GLOB sources ${sources}
-            "${CMAKE_SOURCE_DIR}/Core/Dependecies/src/glad/glad_wgl.c")
+            "${CMAKE_CURRENT_SOURCE_DIR}/Dependecies/src/glad/glad_wgl.c")
 endif()
 
 
@@ -112,8 +117,6 @@ if(OSX)
             "-framework OpenGL"
             "-framework CoreVideo"
             "-framework Metal")
-
-    target_link_libraries(Core general libassimp.a)
 endif()
 
 if(WIN32)

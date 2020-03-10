@@ -1,14 +1,14 @@
-include(${CMAKE_SOURCE_DIR}/Core/cmake/functions.cmake)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Source)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Dependecies)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Dependecies/include)
+project(Sandbox)
+cmake_minimum_required(VERSION 3.15)
+set(CMAKE_CXX_STANDARD 14)
 
-include_directories(${CMAKE_SOURCE_DIR}/Core/Source)
-include_directories(${CMAKE_SOURCE_DIR}/Core/Dependecies)
-include_directories(${CMAKE_SOURCE_DIR}/Core/Dependecies/include)
+set(CORE ${CMAKE_CURRENT_SOURCE_DIR}/../Core)
+include(${CORE}/cmake/functions.cmake)
 
-link_directories(${CMKAE_LIBRARY_OUTPUT_DIRECTORY})
-link_directories(${CMAKE_SOURCE_DIR}/Dependecies/bin)
+include_directories(${CORE}/Source)
+include_directories(${CORE}/Dependecies/include)
+
+link_directories(${CORE}/Dependecies/bin)
 
 
 file(GLOB sources "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
@@ -18,6 +18,7 @@ file(GLOB headers "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
 		
 assign_source_group(${sources})
 assign_source_group(${headers})
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../Core ${CMAKE_CURRENT_BINARY_DIR}/Core)
 
 
 if (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
@@ -39,5 +40,6 @@ endif()
 
 add_executable(Sandbox ${headers} ${sources} ${resources})
 
+target_link_libraries(Sandbox general Core)
 target_link_libraries(Sandbox general Core)
 
