@@ -1,6 +1,6 @@
 #pragma once
 
-#include <include/assimp/material.h>
+#include <assimp/material.h>
 #include "Drawable.h"
 #include "Resources/Resource.h"
 #include "Texture2D.h"
