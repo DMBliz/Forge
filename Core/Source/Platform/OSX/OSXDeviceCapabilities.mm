@@ -4,13 +4,17 @@
 
 #include "Platform/Api/DeviceCapabilities.h"
 #import <Metal/Metal.h>
+#import <Cocoa/Cocoa.h>
 
 namespace Forge
 {
 
     void DeviceCapabilities::init()
     {
-
+        NSRect screenRect = [[NSScreen mainScreen] frame];
+        screenSize.x = static_cast<int>(screenRect.size.width);
+        screenSize.y = static_cast<int>(screenRect.size.height);
+//        [[NSScreen mainScreen] backingScaleFactor]
     }
 
     GraphicsApiType DeviceCapabilities::getSupportedApi()
@@ -29,5 +33,10 @@ namespace Forge
         }
         //If Metal is not supported using OpenGL by default
         return GraphicsApiType::OpenGL;
+    }
+
+    const Vector2i& DeviceCapabilities::getScreenSize() const
+    {
+        return screenSize;
     }
 }

@@ -6,7 +6,9 @@
 #import <Platform/OSX/Context/OGL/OGLView.h>
 #import <AppKit/AppKit.h>
 #import "Cocoa/Cocoa.h"
+#import "OSXView.h"
 #include "OSXWindow.h"
+#import "OSXCursor.h"
 
 
 @interface WindowDelegate: NSObject<NSWindowDelegate>
@@ -38,12 +40,12 @@
 
 -(void)windowDidMiniaturize:(NSNotification *)notification
 {
-    window->handleMinituarize();
+    window->handleMiniaturize();
 }
 
 - (void)windowDidDeminiaturize:(__unused NSNotification*)notification
 {
-    window->handleDeminituarize();
+    window->handleDeminiaturize();
 }
 
 -(void)windowDidEnterFullScreen:(__unused NSNotification*)notification
@@ -235,12 +237,15 @@ namespace Forge
         [window setCollectionBehavior:windowState == WindowState::FULLSCREEN ? NSWindowCollectionBehaviorFullScreenAuxiliary
                                                                              : NSWindowCollectionBehaviorFullScreenPrimary];
 
+        this->windowRect.width = static_cast<uint32_t>(windowSize.width);
+        this->windowRect.height = static_cast<uint32_t>(windowSize.height);
+
         if (windowState == WindowState::FULLSCREEN)
         {
             if (CGDisplayCapture(displayId) != kCGErrorSuccess)
                 throw std::runtime_error("Failed to capture the main display");
 
-            nativeWindowRect = frame;
+            windowFrame = frame;
             [window setStyleMask:NSBorderlessWindowMask];
 
             NSRect screenRect = [screen frame];
@@ -248,9 +253,18 @@ namespace Forge
 
             CGWindowLevel windowLevel = CGShieldingWindowLevel();
             [window setLevel:windowLevel];
+
+            windowRect.set(0, 0, static_cast<int>(screen.frame.size.width),
+                           static_cast<int>(screen.frame.size.height));
         }
-        else if (windowState == WindowState::MAXIMIZED)
-            [window toggleFullScreen:nil];
+        else if (windowState != WindowState::MAXIMIZED)
+        {
+            [window setFrame:screen.visibleFrame display:YES];
+            windowRect.set(static_cast<int>(screen.visibleFrame.origin.x),
+                           static_cast<int>(screen.visibleFrame.origin.y),
+                           static_cast<int>(screen.visibleFrame.size.width),
+                           static_cast<int>(screen.visibleFrame.size.height));
+        }
 
         [window setTitle:static_cast<NSString *_Nonnull>([NSString stringWithUTF8String:windowTitle.CString()])];
 
@@ -268,12 +282,7 @@ namespace Forge
         windowFrame = [NSWindow contentRectForFrameRect:[window frame]
                                               styleMask:[window styleMask]];
 
-
-
         window.contentView = view;
-
-        this->windowRect.width = static_cast<uint32_t>(windowSize.width);
-        this->windowRect.height = static_cast<uint32_t>(windowSize.height);
 
         [window makeKeyAndOrderFront:nil];
 
@@ -317,6 +326,7 @@ namespace Forge
 
     void OSXWindow::platformUpdate()
     {
+        [view beginUpdate];
         @autoreleasepool {
 
             for (;;)
@@ -332,6 +342,7 @@ namespace Forge
             }
 
         }
+        onWindowEventsFinished();
     }
 
     void OSXWindow::setClipboard(const String &data)
@@ -342,11 +353,6 @@ namespace Forge
     const String& OSXWindow::getClipboard()
     {
         return String();
-    }
-
-    void OSXWindow::setCursorPosition(const Vector2i &newPos)
-    {
-
     }
 
     void OSXWindow::handleResignKeyChange()
@@ -366,32 +372,47 @@ namespace Forge
 
     void OSXWindow::handleScaleFactorChange()
     {
+        contentScale = static_cast<float>(window.backingScaleFactor);
+        resolution = windowRect.size() * contentScale;
 
+        onResolutionChanged.Invoke(this, resolution);
     }
 
     void OSXWindow::handleFullscreenChange(bool fullscreen)
     {
-
+        resetWindowState();
+        this->fullscreen = fullscreen;
     }
 
-    void OSXWindow::handleDeminituarize()
+    void OSXWindow::handleDeminiaturize()
     {
-
+        minimized = false;
+        onMinimizeChanged(this, false);
     }
 
-    void OSXWindow::handleMinituarize()
+    void OSXWindow::handleMiniaturize()
     {
-
+        minimized = true;
+        onMinimizeChanged(this, true);
     }
 
     void OSXWindow::handleClose()
     {
-
+        onWindowClose.Invoke(this);
     }
 
     void OSXWindow::handleResize()
     {
+        NSRect frame = [NSWindow contentRectForFrameRect:window.frame
+                                               styleMask:window.styleMask];
 
+        windowRect.set(static_cast<int>(frame.origin.x), static_cast<int>(frame.origin.y),
+                       static_cast<int>(frame.size.width),
+                       static_cast<int>(frame.size.height));
+        resolution = windowRect.size() * contentScale;
+
+        onWindowSizeChanged.Invoke(this, windowRect);
+        onResolutionChanged.Invoke(this, resolution);
     }
 
     NSViewPtr OSXWindow::getNativeView() const
@@ -424,10 +445,11 @@ namespace Forge
         return windowFrame;
     }
 
-    void OSXWindow::setContentView(NSView* view)
+    void OSXWindow::setContentView(OSXView* view)
     {
         this->view = view;
-        window.contentView = view;
+        [window setContentView:view];
+        [window makeFirstResponder:view];
     }
 
     NSView* OSXWindow::getContentView() const
@@ -440,18 +462,70 @@ namespace Forge
         if(windowState == this->windowState)
             return;
 
+        if(this->windowState == WindowState::FULLSCREEN)
+            [window toggleFullScreen:nil];
+
+        if(borderlessFullscreen && windowState != WindowState::FULLSCREEN_BORDERLESS)
+            borderlessFullscreen = false;
+
         switch(windowState)
         {
             case WindowState::FULLSCREEN:
+            {
+                [window setStyleMask:static_cast<NSWindowStyleMask>(windowStyleMask)];
+                [window setFrame:[screen frame] display:YES animate:YES];
+                [window toggleFullScreen:nil];
+                [window setLevel:NSNormalWindowLevel];
+                [window setTitle:static_cast<NSString *_Nonnull>([NSString stringWithUTF8String:windowTitle.CString()])];
+
+                windowRect.set(static_cast<int>(screen.frame.origin.x), static_cast<int>(screen.frame.origin.x),
+                               static_cast<int>(screen.frame.size.width), static_cast<int>(screen.frame.size.height));
+                resolution = windowRect.size() * contentScale;
                 break;
+            }
             case WindowState::MAXIMIZED:
-                nativeWindowRect = [screen visibleFrame];
-                [window setFrame:nativeWindowRect display:YES];
+            {
+                [window setStyleMask:static_cast<NSWindowStyleMask>(windowStyleMask)];
+                [window setFrame:screen.visibleFrame display:YES animate:YES];
+                [window setLevel:NSNormalWindowLevel];
+                [window setTitle:static_cast<NSString *_Nonnull>([NSString stringWithUTF8String:windowTitle.CString()])];
+
+
+                windowRect.set(static_cast<int>(screen.visibleFrame.origin.x),
+                               static_cast<int>(screen.visibleFrame.origin.y),
+                               static_cast<int>(screen.visibleFrame.size.width),
+                               static_cast<int>(screen.visibleFrame.size.height));
+                resolution = windowRect.size() * contentScale;
                 break;
+            }
             case WindowState::WINDOWED:
+            {
+                [window setStyleMask:static_cast<NSWindowStyleMask>(windowStyleMask)];
+                [window setFrame:windowFrame display:YES animate:YES];
+                [window setLevel:NSNormalWindowLevel];
+                [window setTitle:static_cast<NSString *_Nonnull>([NSString stringWithUTF8String:windowTitle.CString()])];
+
+                windowRect.set(static_cast<int>(windowFrame.origin.x), static_cast<int>(windowFrame.origin.y),
+                               static_cast<int>(windowFrame.size.width), static_cast<int>(windowFrame.size.height));
+                resolution = windowRect.size() * contentScale;
                 break;
+            }
+            case WindowState::FULLSCREEN_BORDERLESS:
+            {
+                [window setStyleMask:NSBorderlessWindowMask];
+                [window setFrame:[screen frame] display:YES animate:YES];
+                [window setLevel:CGShieldingWindowLevel()];
+
+                resetWindowState();
+                borderlessFullscreen = true;
+
+                windowRect.set(static_cast<int>(screen.frame.origin.x), static_cast<int>(screen.frame.origin.x),
+                               static_cast<int>(screen.frame.size.width), static_cast<int>(screen.frame.size.height));
+                resolution = windowRect.size() * contentScale;
+                break;
+            }
         }
-        Window::setWindowState(windowState);
+        [window makeFirstResponder:view];
     }
 
     void OSXWindow::setMinimized(bool value)
@@ -469,8 +543,66 @@ namespace Forge
         Window::setMinimized(value);
     }
 
-    Input* OSXWindow::getInput()
+    InputManager* OSXWindow::getInput()
     {
         return &input;
+    }
+
+    void OSXWindow::resetWindowState()
+    {
+        windowed = false;
+        fullscreen = false;
+        borderlessFullscreen = false;
+        maximized = false;
+    }
+
+    void OSXWindow::onWindowEventsFinished()
+    {
+        maximized = window.frame.origin.x <= screen.visibleFrame.origin.x &&
+                    window.frame.origin.y <= screen.visibleFrame.origin.y &&
+                    window.frame.size.width >= screen.visibleFrame.size.width &&
+                    window.frame.size.height >= screen.visibleFrame.size.height && !fullscreen && !borderlessFullscreen;
+
+        windowed = !maximized && !fullscreen && !borderlessFullscreen;
+
+        WindowState newState = windowState;
+
+        if(windowed)
+            newState = WindowState::WINDOWED;
+        else if(maximized)
+            newState = WindowState::MAXIMIZED;
+        else if(fullscreen)
+            newState = WindowState::FULLSCREEN;
+        else if(borderlessFullscreen)
+            newState = WindowState::FULLSCREEN_BORDERLESS;
+
+        if(newState != windowState)
+        {
+            windowState = newState;
+            onWindowStateChanged.Invoke(this, windowState);
+        }
+    }
+
+    void OSXWindow::setCursor(Cursor* cursor)
+    {
+        Window::setCursor(cursor);
+        if(cursor == nullptr)
+        {
+            [NSCursor hide];
+            return;
+        }
+        OSXCursor* cur = static_cast<OSXCursor*>(cursor);
+        NSCursorPtr nativeCursor = cur->getNativeCursor();
+        [nativeCursor set];
+    }
+
+    void OSXWindow::setTitle(const String& newTitle)
+    {
+        Window::setTitle(newTitle);
+    }
+
+    void OSXWindow::setWindowRect(const RectI& newSize)
+    {
+        Window::setWindowRect(newSize);
     }
 }

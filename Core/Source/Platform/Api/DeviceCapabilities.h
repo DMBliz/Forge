@@ -4,11 +4,11 @@
 
 #pragma once
 
+#include <Math/Vector2i.h>
 #include "Api.h"
 
 namespace Forge
 {
-
     enum class GraphicsApiType
     {
         OpenGL,
@@ -20,7 +20,9 @@ namespace Forge
     private:
         //TODO: list of supported gapi
         //sound api etc
+        Vector2i screenSize;
     public:
+        const Vector2i& getScreenSize() const;
 
         void init() override;
         GraphicsApiType getSupportedApi();

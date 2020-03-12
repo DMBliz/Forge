@@ -8,6 +8,7 @@
 #include "Window.h"
 #include "Api.h"
 #include "DeviceCapabilities.h"
+#include "Cursor.h"
 
 namespace Forge
 {
@@ -20,6 +21,9 @@ namespace Forge
         virtual void init();
 
         Window* createWindow(const WindowCreationDesc& desc);
+
+        Cursor* createCursor(SystemCursor cursorType);
+        Cursor* createCursor(const std::vector<byte>& imageData, int width, int height, int xHotSpot, int yHotSpot);
 
     };
 }

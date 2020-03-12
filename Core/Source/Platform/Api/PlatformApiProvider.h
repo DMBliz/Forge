@@ -5,9 +5,7 @@
 #pragma once
 
 #include <map>
-#include "Platform/Api/Input.h"
-#include "FileSystem.h"
-#include "WindowSystem.h"
+#include <Containers/String.h>
 #include "Api.h"
 
 namespace Forge

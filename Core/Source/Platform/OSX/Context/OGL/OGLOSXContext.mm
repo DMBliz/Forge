@@ -89,8 +89,9 @@ namespace Forge
         openGLContext = [[NSOpenGLContext alloc] initWithFormat:pixelFormat shareContext:nil];
         [openGLContext makeCurrentContext];
 
-        openGLView = [[OGLView alloc] initWithFrame:window.getWindowFrame()];
-        [openGLView setWantsBestResolutionOpenGLSurface:window.isHighDpi() ? YES : NO];
+        openGLView = [[OGLView alloc] initWithWindow:&window];
+
+        [openGLView setWantsBestResolutionOpenGLSurface:window.isHighDpi()];
 
         [openGLView setAcceptsTouchEvents:YES];
         [openGLView setWantsRestingTouches:YES];

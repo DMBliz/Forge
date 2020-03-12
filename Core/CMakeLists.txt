@@ -13,10 +13,8 @@ link_directories(${CMAKE_CURRENT_SOURCE_DIR}/Dependecies/bin)
 GET_OS(OS)
 
 if(WIN32)
-    set(OS Win32)
     add_definitions(-DWIN32)
 elseif(OSX)
-    set(OS OSX)
     set(CMAKE_C_FLAGS "-x objective-c")
     set(CMAKE_CXX_FLAGS "-x objective-c++")
     add_definitions(-DOSX)
@@ -24,7 +22,6 @@ elseif(LINUX)
     #Linux is not supported for now
     #because there is a fucking hell of window managers and distributes
     #but of course we can have abbreviation for it
-    set(OS LNX)
 endif()
 
 set(GAPI OGL)

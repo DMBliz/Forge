@@ -1,13 +1,13 @@
 #pragma once
-#include "Math/Vector2i.h"
 #include "Containers/String.h"
-#include <mutex>
-#include <Math/RectI.h>
+#include "Math/Vector2i.h"
+#include "Math/Vector2.h"
+#include "Math/RectI.h"
 #include "Defines.h"
 #include "EventSystem/Event.h"
 #include "Context.h"
-#include "Math/Vector2.h"
-#include "Input.h"
+#include "InputManager.h"
+#include "Cursor.h"
 
 namespace Forge
 {
@@ -15,6 +15,7 @@ namespace Forge
     {
         WINDOWED,
         MAXIMIZED,
+        FULLSCREEN_BORDERLESS,
         FULLSCREEN
     };
 
@@ -28,33 +29,35 @@ namespace Forge
 
         WindowCreationDesc(const String& title, const RectI& size,
                            WindowState state = WindowState::FULLSCREEN, bool resizable= true, bool highDPI = true)
-                : title(title), size(size), openState(openState), resizable(resizable), highDPI(highDPI)
+                : title(title), size(size), openState(state), resizable(resizable), highDPI(highDPI)
         { }
     };
 
     class Window
     {
-        friend class Input;
     public:
-        Event<void(Window*, const Vector2i&)> onSizeChanged;
-        Event<void(Window*)> onBecameFullScreen;
-        Event<void(Window*)> onWindowed;
+        Event<void(Window*, const RectI&)> onWindowSizeChanged;
+        Event<void(Window*, const Vector2i&)> onResolutionChanged;
+        Event<void(Window*, WindowState)> onWindowStateChanged;
+        Event<void(Window*, bool)> onMinimizeChanged;
+        Event<void(Window*)> onWindowClose;
+        Event<void(Window*)> onScreenChange;
         Event<void(Window*)> onActiveStateChanged;
 
     protected:
-        RectI windowRect;
-        Vector2i resolution;
-
-        float contentScale = 1.0f;
-        WindowState windowState;
-        bool resizable = false;
-        bool highDPI = true;
         String windowTitle;
 
+        RectI windowRect;
+        Vector2i resolution;
+        float contentScale = 1.0f;
+        bool highDPI = true;
+
+        WindowState windowState;
+        bool resizable = false;
         bool hasFocus = true;
         bool minimized = false;
 
-        virtual void setCursorPosition(const Vector2i& newPos) = 0;
+        Cursor* currentCursor;
     public:
         virtual void create(const WindowCreationDesc& creationDesc) = 0;
         virtual void close() = 0;
@@ -66,6 +69,16 @@ namespace Forge
 
         virtual void setClipboard(const String& data) = 0;
         virtual const String& getClipboard() = 0;
+
+        virtual void setCursor(Cursor* cursor)
+        {
+            currentCursor = cursor;
+        }
+
+        virtual Cursor* getActiveCursor()
+        {
+            return currentCursor;
+        }
 
         virtual void setMinimized(bool value)
         {
@@ -118,6 +131,6 @@ namespace Forge
             return highDPI;
         }
 
-        virtual Input* getInput() = 0;
+        virtual InputManager* getInput() = 0;
     };
 }

@@ -56,9 +56,6 @@ namespace Forge
 
 		void operator()(Args... args)
 		{
-
-		    LOG_INFO(delegates.size());
-
 			for (auto& delegate : delegates)
 			{
 				delegate(args...);

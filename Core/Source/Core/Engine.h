@@ -4,7 +4,6 @@
 #include "Platform/Api/Window.h"
 #include "Graphics/Renderer.h"
 #include "Platform/Api/FileSystem.h"
-#include "Platform/Api/Input.h"
 #include "Scene/Scene.h"
 #include "Resources/Resources.h"
 #include "Platform/Application.h"
@@ -20,7 +19,6 @@ namespace Forge
 		Renderer* renderer;
         WindowSystem* windowSystem;
 		FileSystem* fileSystem;
-		Input* input;
 		Scene* scene;
 		Resources* resources;
 	public:
@@ -31,7 +29,6 @@ namespace Forge
 		Application* getApplication() const;
 		Resources* GetResources() const { return resources; }
 		FileSystem* GetFileSystem() const { return fileSystem; }
-		Input* GetInputSystem() const { return input; }
 		WindowSystem* GetWindow() const { return windowSystem; }
 		Renderer* GetRenderer() const { return renderer; }
 		Scene* GetScene() const { return scene; }
