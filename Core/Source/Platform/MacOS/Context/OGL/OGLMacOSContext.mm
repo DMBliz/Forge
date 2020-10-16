@@ -1,6 +1,6 @@
-#import <Platform/OSX/OSXView.h>
-#include "Platform/OSX/OSXWindow.h"
-#include "OGLOSXContext.h"
+#import <Platform/OSX/MacOSView.h>
+#include "Platform/OSX/MacOSWindow.h"
+#include "OGLMacOSContext.h"
 #include "OGLView.h"
 #import "OGLView.h"
 
@@ -15,7 +15,7 @@ static CVReturn renderCallback(CVDisplayLinkRef,
 
     try
     {
-        Forge::OGLOSXContext* renderDevice = static_cast<Forge::OGLOSXContext*>(userInfo);
+        Forge::OGLMacOSContext* renderDevice = static_cast<Forge::OGLMacOSContext*>(userInfo);
         renderDevice->RenderCallback();
     }
     catch (const std::exception& e)
@@ -31,9 +31,9 @@ static CVReturn renderCallback(CVDisplayLinkRef,
 namespace Forge
 {
 
-    void OGLOSXContext::CreateContext(Window &win, unsigned int sampleCount)
+    void OGLMacOSContext::CreateContext(Window &win, unsigned int sampleCount)
     {
-        OSXWindow& window = static_cast<OSXWindow&>(win);
+        MacOSWindow& window = static_cast<MacOSWindow&>(win);
 
         for (NSOpenGLPixelFormatAttribute openGLVersion : {NSOpenGLProfileVersion4_1Core, NSOpenGLProfileVersion3_2Core, NSOpenGLProfileVersionLegacy})
         {
@@ -119,23 +119,23 @@ namespace Forge
             throw std::runtime_error("Failed to start display link");
     }
 
-    void OGLOSXContext::DeleteContext()
+    void OGLMacOSContext::DeleteContext()
     {
         
     }
 
-    void OGLOSXContext::PlatformUpdate()
+    void OGLMacOSContext::PlatformUpdate()
     {
         [openGLContext flushBuffer];
     }
 
-    void OGLOSXContext::RenderCallback()
+    void OGLMacOSContext::RenderCallback()
     {
         if ([NSOpenGLContext currentContext] != openGLContext)
             [openGLContext makeCurrentContext];
     }
 
-    void OGLOSXContext::setActive()
+    void OGLMacOSContext::setActive()
     {
         [openGLContext makeCurrentContext];
     }

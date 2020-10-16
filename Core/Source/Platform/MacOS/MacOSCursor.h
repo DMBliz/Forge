@@ -1,5 +1,5 @@
 //
-// Created by Дмитрий Метелица on 3/11/20.
+// Created by Dmitry Metelitsa on 3/11/20.
 //
 
 #pragma once
@@ -14,13 +14,13 @@ typedef id NSCursorPtr;
 
 namespace Forge
 {
-    class OSXCursor : public Cursor
+    class MacOSCursor : public Cursor
     {
     private:
         NSCursorPtr cursor;
     public:
-        OSXCursor(SystemCursor cursor);
-        OSXCursor(const std::vector<byte>& imageData, int width, int height, int xHotSpot, int yHotSpot);
+        MacOSCursor(SystemCursor cursor);
+        MacOSCursor(const std::vector<byte>& imageData, int width, int height, int xHotSpot, int yHotSpot);
 
         NSCursorPtr getNativeCursor();
     };

@@ -1,14 +1,14 @@
 //
-// Created by Дмитрий Метелица on 2019-07-01.
+// Created by Dmitry Metelitsa on 2019-07-01.
 //
 
 //#include "Platform/OSX/Context/OGL/OGLView.h"
 #import <Platform/OSX/Context/OGL/OGLView.h>
 #import <AppKit/AppKit.h>
 #import "Cocoa/Cocoa.h"
-#import "OSXView.h"
-#include "OSXWindow.h"
-#import "OSXCursor.h"
+#import "MacOSView.h"
+#include "MacOSWindow.h"
+#import "MacOSCursor.h"
 
 
 @interface WindowDelegate: NSObject<NSWindowDelegate>
@@ -17,10 +17,10 @@
 
 @implementation WindowDelegate
 {
-    Forge::OSXWindow* window;
+    Forge::MacOSWindow* window;
 }
 
--(id)initWithWindow:(Forge::OSXWindow*)initWindow
+-(id)initWithWindow:(Forge::MacOSWindow*)initWindow
 {
     if(self = [super init])
         window = initWindow;
@@ -85,10 +85,10 @@
 
 @implementation AppDelegate
 {
-    Forge::OSXWindow* application;
+    Forge::MacOSWindow* application;
 }
 
--(id)InitApplication:(Forge::OSXWindow*)initApplication
+-(id)InitApplication:(Forge::MacOSWindow*)initApplication
 {
     if(self == [super init])
         application = initApplication;
@@ -105,7 +105,7 @@
 {
     //start
     [NSApp stop:nil];
-    
+
     @autoreleasepool {
 
     NSEvent* event = [NSEvent otherEventWithType:NSEventTypeApplicationDefined
@@ -139,12 +139,12 @@
 
 -(void)applicationDidBecomeActive:(__unused NSNotification*)notification
 {
-
+    LOG_INFO("application active");
 }
 
 -(void)applicationDidResignActive:(__unused NSNotification*)notification
 {
-
+    LOG_INFO("application inactive");
 }
 
 -(void)handleQuit:(__unused id)sender
@@ -155,7 +155,7 @@
 
 namespace Forge
 {
-    OSXWindow::OSXWindow()
+    MacOSWindow::MacOSWindow()
     {
         pool = [[NSAutoreleasePool alloc] init];
 
@@ -179,13 +179,13 @@ namespace Forge
         application.mainMenu = mainMenu;
     }
 
-    OSXWindow::~OSXWindow()
+    MacOSWindow::~MacOSWindow()
     {
         if(pool)
             [pool release];
     }
 
-    void OSXWindow::create(const WindowCreationDesc& creationDesc)
+    void MacOSWindow::create(const WindowCreationDesc& creationDesc)
     {
         windowTitle = creationDesc.title;
         windowRect = creationDesc.size;
@@ -214,9 +214,7 @@ namespace Forge
         if (windowSize.height <= 0.0F)
             windowSize.height = round(screen.frame.size.height * 0.8);
 
-        NSRect frame = NSMakeRect(round(screen.frame.size.width / 2.0F - windowSize.width / 2.0F),
-                                  round(screen.frame.size.height / 2.0F - windowSize.height / 2.0F),
-                                  windowSize.width, windowSize.height);
+        NSRect frame = NSMakeRect(windowRect.x, windowRect.y, windowSize.width, windowSize.height);
 
         windowStyleMask = NSTitledWindowMask | NSClosableWindowMask | NSMiniaturizableWindowMask;
 
@@ -234,13 +232,12 @@ namespace Forge
         windowDelegate = [[WindowDelegate alloc] initWithWindow:this];
         window.delegate = windowDelegate;
 
-        [window setCollectionBehavior:windowState == WindowState::FULLSCREEN ? NSWindowCollectionBehaviorFullScreenAuxiliary
-                                                                             : NSWindowCollectionBehaviorFullScreenPrimary];
+        [window setCollectionBehavior:NSWindowCollectionBehaviorFullScreenPrimary];
 
         this->windowRect.width = static_cast<uint32_t>(windowSize.width);
         this->windowRect.height = static_cast<uint32_t>(windowSize.height);
 
-        if (windowState == WindowState::FULLSCREEN)
+        if (windowState == WindowState::FULLSCREEN_BORDERLESS)
         {
             if (CGDisplayCapture(displayId) != kCGErrorSuccess)
                 throw std::runtime_error("Failed to capture the main display");
@@ -257,7 +254,15 @@ namespace Forge
             windowRect.set(0, 0, static_cast<int>(screen.frame.size.width),
                            static_cast<int>(screen.frame.size.height));
         }
-        else if (windowState != WindowState::MAXIMIZED)
+        else if (windowState == WindowState::FULLSCREEN)
+        {
+            [window setFrame:[screen frame] display:YES animate:YES];
+            [window toggleFullScreen:nil];
+
+            windowRect.set(static_cast<int>(screen.frame.origin.x), static_cast<int>(screen.frame.origin.x),
+                           static_cast<int>(screen.frame.size.width), static_cast<int>(screen.frame.size.height));
+        }
+        else if (windowState == WindowState::MAXIMIZED)
         {
             [window setFrame:screen.visibleFrame display:YES];
             windowRect.set(static_cast<int>(screen.visibleFrame.origin.x),
@@ -301,7 +306,7 @@ namespace Forge
         [application run];
     }
 
-    void OSXWindow::close()
+    void MacOSWindow::close()
     {
         if (view)
         {
@@ -324,7 +329,7 @@ namespace Forge
         }
     }
 
-    void OSXWindow::platformUpdate()
+    void MacOSWindow::platformUpdate()
     {
         [view beginUpdate];
         @autoreleasepool {
@@ -345,32 +350,22 @@ namespace Forge
         onWindowEventsFinished();
     }
 
-    void OSXWindow::setClipboard(const String &data)
+    void MacOSWindow::handleResignKeyChange()
     {
-
+        onActiveStateChanged.Invoke(this, false);
     }
 
-    const String& OSXWindow::getClipboard()
+    void MacOSWindow::handleBecomeKeyChange()
     {
-        return String();
+        onActiveStateChanged.Invoke(this, true);
     }
 
-    void OSXWindow::handleResignKeyChange()
+    void MacOSWindow::handleScreenChange()
     {
-
+        onScreenChange.Invoke(this);
     }
 
-    void OSXWindow::handleBecomeKeyChange()
-    {
-
-    }
-
-    void OSXWindow::handleScreenChange()
-    {
-
-    }
-
-    void OSXWindow::handleScaleFactorChange()
+    void MacOSWindow::handleScaleFactorChange()
     {
         contentScale = static_cast<float>(window.backingScaleFactor);
         resolution = windowRect.size() * contentScale;
@@ -378,30 +373,30 @@ namespace Forge
         onResolutionChanged.Invoke(this, resolution);
     }
 
-    void OSXWindow::handleFullscreenChange(bool fullscreen)
+    void MacOSWindow::handleFullscreenChange(bool fullscreen)
     {
         resetWindowState();
         this->fullscreen = fullscreen;
     }
 
-    void OSXWindow::handleDeminiaturize()
+    void MacOSWindow::handleDeminiaturize()
     {
         minimized = false;
         onMinimizeChanged(this, false);
     }
 
-    void OSXWindow::handleMiniaturize()
+    void MacOSWindow::handleMiniaturize()
     {
         minimized = true;
         onMinimizeChanged(this, true);
     }
 
-    void OSXWindow::handleClose()
+    void MacOSWindow::handleClose()
     {
         onWindowClose.Invoke(this);
     }
 
-    void OSXWindow::handleResize()
+    void MacOSWindow::handleResize()
     {
         NSRect frame = [NSWindow contentRectForFrameRect:window.frame
                                                styleMask:window.styleMask];
@@ -415,49 +410,49 @@ namespace Forge
         onResolutionChanged.Invoke(this, resolution);
     }
 
-    NSViewPtr OSXWindow::getNativeView() const
+    NSViewPtr MacOSWindow::getNativeView() const
     {
         return view;
     }
 
-    CGDirectDisplayID OSXWindow::getDisplayID() const
+    CGDirectDisplayID MacOSWindow::getDisplayID() const
     {
         return displayId;
     }
 
-    void OSXWindow::bringToFront()
+    void MacOSWindow::bringToFront()
     {
         [window orderFront:nil];
     }
 
-    void OSXWindow::show()
+    void MacOSWindow::show()
     {
         [window orderFront:nil];
     }
 
-    void OSXWindow::hide()
+    void MacOSWindow::hide()
     {
         [window orderOut:nil];
     }
 
-    const NSRect& OSXWindow::getWindowFrame() const
+    const NSRect& MacOSWindow::getWindowFrame() const
     {
         return windowFrame;
     }
 
-    void OSXWindow::setContentView(OSXView* view)
+    void MacOSWindow::setContentView(MacOSView* view)
     {
         this->view = view;
         [window setContentView:view];
         [window makeFirstResponder:view];
     }
 
-    NSView* OSXWindow::getContentView() const
+    NSView* MacOSWindow::getContentView() const
     {
         return view;
     }
 
-    void OSXWindow::setWindowState(WindowState windowState)
+    void MacOSWindow::setWindowState(WindowState windowState)
     {
         if(windowState == this->windowState)
             return;
@@ -528,7 +523,7 @@ namespace Forge
         [window makeFirstResponder:view];
     }
 
-    void OSXWindow::setMinimized(bool value)
+    void MacOSWindow::setMinimized(bool value)
     {
         if(value == minimized)
             return;
@@ -543,12 +538,12 @@ namespace Forge
         Window::setMinimized(value);
     }
 
-    InputManager* OSXWindow::getInput()
+    InputManager* MacOSWindow::getInput()
     {
         return &input;
     }
 
-    void OSXWindow::resetWindowState()
+    void MacOSWindow::resetWindowState()
     {
         windowed = false;
         fullscreen = false;
@@ -556,7 +551,7 @@ namespace Forge
         maximized = false;
     }
 
-    void OSXWindow::onWindowEventsFinished()
+    void MacOSWindow::onWindowEventsFinished()
     {
         maximized = window.frame.origin.x <= screen.visibleFrame.origin.x &&
                     window.frame.origin.y <= screen.visibleFrame.origin.y &&
@@ -583,7 +578,7 @@ namespace Forge
         }
     }
 
-    void OSXWindow::setCursor(Cursor* cursor)
+    void MacOSWindow::setCursor(Cursor* cursor)
     {
         Window::setCursor(cursor);
         if(cursor == nullptr)
@@ -591,17 +586,19 @@ namespace Forge
             [NSCursor hide];
             return;
         }
-        OSXCursor* cur = static_cast<OSXCursor*>(cursor);
+        MacOSCursor* cur = static_cast<MacOSCursor*>(cursor);
         NSCursorPtr nativeCursor = cur->getNativeCursor();
         [nativeCursor set];
     }
 
-    void OSXWindow::setTitle(const String& newTitle)
+    void MacOSWindow::setTitle(const String& newTitle)
     {
         Window::setTitle(newTitle);
+
+        [window setTitle:static_cast<NSString *_Nonnull>([NSString stringWithUTF8String:windowTitle.CString()])];
     }
 
-    void OSXWindow::setWindowRect(const RectI& newSize)
+    void MacOSWindow::setWindowRect(const RectI& newSize)
     {
         Window::setWindowRect(newSize);
     }

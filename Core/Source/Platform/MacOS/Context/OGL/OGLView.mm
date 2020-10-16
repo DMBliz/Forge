@@ -1,5 +1,5 @@
 //
-// Created by Дмитрий Метелица on 2019-07-06.
+// Created by Dmitry Metelitsa on 2019-07-06.
 //
 
 #include "OGLView.h"

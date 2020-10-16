@@ -7,9 +7,9 @@
 #import <CoreGraphics/CoreGraphics.h>
 #import <Platform/Api/Cursor.h>
 
-@class OSXView;
+@class MacOSView;
 typedef NSWindow* NSWindowPtr;
-typedef OSXView* NSViewPtr;
+typedef MacOSView* NSViewPtr;
 typedef id<NSWindowDelegate> NSWindowDelegatePtr;
 typedef NSScreen* NSScreenPtr;
 #else
@@ -21,34 +21,18 @@ typedef id NSScreenPtr;
 typedef uint32 CGDirectDisplayID;
 #endif
 
-
-#if defined(__OBJC__)
-@class NSAutoreleasePool;
-@class NSApplication;
-
-typedef NSApplication* NSApplicationPtr;
-typedef NSAutoreleasePool* NSAutoreleasePoolPtr;
-#else
-#include <objc/NSObjCRuntime.h>
-typedef id NSApplicationPtr;
-typedef id NSAutoreleasePoolPtr;
-#endif
-
 namespace Forge
 {
 
-    class OSXWindow : public Window
+    class MacOSWindow : public Window
     {
     public:
-        OSXWindow();
+        MacOSWindow();
 
         void create(const WindowCreationDesc& creationDesc) override;
         void close() override;
 
         void platformUpdate() override;
-
-        void setClipboard(const String& data) override;
-        const String& getClipboard() override;
 
         void bringToFront();
         void show() override;
@@ -77,13 +61,13 @@ namespace Forge
 
         const NSRect& getWindowFrame() const;
 
-        void setContentView(OSXView* view);
+        void setContentView(MacOSView* view);
         NSView* getContentView() const;
 
         NSViewPtr getNativeView() const;
         CGDirectDisplayID getDisplayID() const;
 
-        virtual ~OSXWindow();
+        virtual ~MacOSWindow();
 
     private:
         void resetWindowState();

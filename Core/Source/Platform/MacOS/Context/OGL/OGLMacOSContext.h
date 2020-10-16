@@ -22,12 +22,12 @@ typedef id NSOpenGLPixelFormatPtr;
 #include "Platform/Api/Context.h"
 
 @class OGLView;
-@class OSXView;
+@class MacOSView;
 
 namespace Forge
 {
 
-    class OGLOSXContext : public Context
+    class OGLMacOSContext : public Context
     {
     public:
         void CreateContext(Window &win, unsigned int sampleCount) override;
@@ -39,7 +39,7 @@ namespace Forge
         void PlatformUpdate() override;
         void RenderCallback();
     private:
-        OSXView* openGLView;
+        MacOSView* openGLView;
         NSOpenGLContextPtr openGLContext = nil;
         NSOpenGLPixelFormatPtr pixelFormat = nil;
 

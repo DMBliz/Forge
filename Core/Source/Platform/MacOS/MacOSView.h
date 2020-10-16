@@ -1,5 +1,5 @@
 //
-// Created by Дмитрий Метелица on 2019-07-06.
+// Created by Dmitry Metelitsa on 2019-07-06.
 //
 
 #pragma once
@@ -7,16 +7,16 @@
 #import <Platform/Api/MouseInputDevice.h>
 #import <Platform/Api/KeyboardInputDevice.h>
 #import "AppKit/AppKit.h"
-#import "OSXWindow.h"
+#import "MacOSWindow.h"
 
-@interface OSXView: NSView
+@interface MacOSView: NSView
 {
     Forge::Window* window;
     Forge::MouseInputDevice* mouseInput;
     Forge::KeyboardInputDevice* keyboardInput;
 }
 
--(instancetype)initWithWindow:(Forge::OSXWindow*)initWindow;
+-(instancetype)initWithWindow:(Forge::MacOSWindow*)initWindow;
 -(void)beginUpdate;
 
 @end

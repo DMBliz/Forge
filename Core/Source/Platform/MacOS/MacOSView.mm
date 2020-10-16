@@ -1,16 +1,16 @@
 //
-// Created by Дмитрий Метелица on 2019-07-06.
+// Created by Dmitry Metelitsa on 2019-07-06.
 //
 
-#import "OSXView.h"
+#import "MacOSView.h"
 #include "Platform/Api/KeyboardInputDevice.h"
 #include "Platform/Api/MouseInputDevice.h"
 #import <Carbon/Carbon.h>
 #import <Cocoa/Cocoa.h>
 
-@implementation OSXView
+@implementation MacOSView
 
--(instancetype)initWithWindow:(Forge::OSXWindow*)initWindow
+-(instancetype)initWithWindow:(Forge::MacOSWindow*)initWindow
 {
     if(self = [super initWithFrame:initWindow->getWindowFrame()])
         window = initWindow;

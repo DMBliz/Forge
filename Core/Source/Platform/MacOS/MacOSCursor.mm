@@ -1,13 +1,13 @@
 //
-// Created by Дмитрий Метелица on 3/11/20.
+// Created by Dmitry Metelitsa on 3/11/20.
 //
 
-#include "OSXCursor.h"
+#include "MacOSCursor.h"
 
 namespace Forge
 {
 
-    OSXCursor::OSXCursor(const std::vector<byte>& imageData, int width, int height, int xHotSpot, int yHotSpot)
+    MacOSCursor::MacOSCursor(const std::vector<byte>& imageData, int width, int height, int xHotSpot, int yHotSpot)
             : Cursor(imageData, width, height, xHotSpot, yHotSpot)
     {
         @autoreleasepool {
@@ -41,7 +41,7 @@ namespace Forge
         }
     }
 
-    OSXCursor::OSXCursor(SystemCursor cursor)
+    MacOSCursor::MacOSCursor(SystemCursor cursor)
             : Cursor(cursor)
     {
         switch (systemCursor)
@@ -68,10 +68,10 @@ namespace Forge
         }
 
         if(this->cursor)
-            [this->cursor retain];
+            [[this->cursor retain] autorelease];
     }
 
-    NSCursorPtr OSXCursor::getNativeCursor()
+    NSCursorPtr MacOSCursor::getNativeCursor()
     {
         return cursor;
     }

@@ -1,10 +1,11 @@
 //
-// Created by Дмитрий Метелица on 2/11/20.
+// Created by Dmitry Metelitsa on 2/11/20.
 //
 
-#include "OSXContextApi.h"
+#include <Platform/Api/DeviceCapabilities.h>
+#include "Platform/Api/ContextApi.h"
 #if defined(OGL)
-#include "Platform/OSX/Context/OGL/OGLOSXContext.h"
+#include "Platform/OSX/Context/OGL/OGLMacOSContext.h"
 #endif
 #if defined(VK)
 //TODO: include vulkan context
@@ -12,7 +13,7 @@
 
 namespace Forge
 {
-    Context* OSXContextApi::createContext(GraphicsApiType gapi)
+    Context* ContextApi::createContext(GraphicsApiType gapi)
     {
         Context* ret;
         switch(gapi)
@@ -24,7 +25,7 @@ namespace Forge
     //For even if Vulkan is supported we use OpenGL because we don't have Metal Render
             case GraphicsApiType::OpenGL:
 #if defined(OGL)
-                ret = new OGLOSXContext();
+                ret = new OGLMacOSContext();
 #endif
                 break;
         }

@@ -1,5 +1,5 @@
 //
-// Created by Дмитрий Метелица on 2019-07-28.
+// Created by Dmitry Metelitsa on 2019-07-28.
 //
 
 #pragma once
@@ -8,7 +8,7 @@
 namespace Forge
 {
 
-    class OSXFileSystem : public FileSystem
+    class MacOSFileSystem : public FileSystem
     {
     public:
 
