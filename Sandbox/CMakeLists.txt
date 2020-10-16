@@ -15,7 +15,7 @@ file(GLOB sources "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
         "${CMAKE_SOURCE_DIR}/Core/Dependecies/src/glad/glad.c")
 file(GLOB headers "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
         "${CMAKE_SOURCE_DIR}/Core/Dependecies/include/glad/*.h")
-		
+
 assign_source_group(${sources})
 assign_source_group(${headers})
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../Core ${CMAKE_CURRENT_BINARY_DIR}/Core)

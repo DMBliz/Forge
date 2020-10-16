@@ -6,7 +6,7 @@
 
 
 #import <AppKit/AppKit.h>
-#import "Platform/OSX/MacOSView.h"
+#import "Platform/MacOS/MacOSView.h"
 
 @interface OGLView: MacOSView
 

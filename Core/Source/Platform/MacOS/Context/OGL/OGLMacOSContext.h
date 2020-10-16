@@ -30,14 +30,14 @@ namespace Forge
     class OGLMacOSContext : public Context
     {
     public:
-        void CreateContext(Window &win, unsigned int sampleCount) override;
+        void init(Window& win, unsigned int sampleCount) override;
 
-        void DeleteContext() override;
+        void deleteContext() override;
 
         void setActive() override;
 
-        void PlatformUpdate() override;
-        void RenderCallback();
+        void platformUpdate() override;
+        void renderCallback();
     private:
         MacOSView* openGLView;
         NSOpenGLContextPtr openGLContext = nil;

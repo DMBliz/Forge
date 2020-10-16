@@ -144,7 +144,7 @@ bool ImGui_Init(Forge::Window* window, bool install_callbacks)
 	io.KeyMap[ImGuiKey_Home] = static_cast<int>(Forge::KeyboardKey::Home);
 	io.KeyMap[ImGuiKey_End] = static_cast<int>(Forge::KeyboardKey::End);
 	io.KeyMap[ImGuiKey_Delete] = static_cast<int>(Forge::KeyboardKey::Delete);
-	io.KeyMap[ImGuiKey_Backspace] = static_cast<int>(Forge::KeyboardKey::BackSpace);
+	io.KeyMap[ImGuiKey_Backspace] = static_cast<int>(Forge::KeyboardKey::Backspace);
 	io.KeyMap[ImGuiKey_Enter] = static_cast<int>(Forge::KeyboardKey::Return);
 	io.KeyMap[ImGuiKey_Escape] = static_cast<int>(Forge::KeyboardKey::Escape);
 	io.KeyMap[ImGuiKey_A] = static_cast<int>(Forge::KeyboardKey::A);
@@ -386,10 +386,10 @@ void ImGui_KeyCallback(Forge::KeyboardKey key, Forge::InputState state)
 	if (state == Forge::InputState::Up)
 		io.KeysDown[static_cast<int>(key)] = false;
 
-	io.KeyCtrl = io.KeysDown[static_cast<int>(Forge::KeyboardKey::LControl)] || io.KeysDown[static_cast<int>(Forge::KeyboardKey::RControl)];
-	io.KeyShift = io.KeysDown[static_cast<int>(Forge::KeyboardKey::LShift)] || io.KeysDown[static_cast<int>(Forge::KeyboardKey::RShift)];
-	io.KeyAlt = io.KeysDown[static_cast<int>(Forge::KeyboardKey::LAlt)] || io.KeysDown[static_cast<int>(Forge::KeyboardKey::RAlt)];
-	io.KeySuper = io.KeysDown[static_cast<int>(Forge::KeyboardKey::LSystem)] || io.KeysDown[static_cast<int>(Forge::KeyboardKey::RSystem)];
+	io.KeyCtrl = io.KeysDown[static_cast<int>(Forge::KeyboardKey::LeftControl)] || io.KeysDown[static_cast<int>(Forge::KeyboardKey::RightControl)];
+	io.KeyShift = io.KeysDown[static_cast<int>(Forge::KeyboardKey::LeftShift)] || io.KeysDown[static_cast<int>(Forge::KeyboardKey::RightShift)];
+	io.KeyAlt = io.KeysDown[static_cast<int>(Forge::KeyboardKey::LeftAlt)] || io.KeysDown[static_cast<int>(Forge::KeyboardKey::RightAlt)];
+	io.KeySuper = io.KeysDown[static_cast<int>(Forge::KeyboardKey::LeftSystem)] || io.KeysDown[static_cast<int>(Forge::KeyboardKey::RightSystem)];
 }
 
 void ImGui_CharCallback(uint c)

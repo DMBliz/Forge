@@ -1,5 +1,5 @@
 //
-// Created by Дмитрий Метелица on 2/29/20.
+// Created by Dmitry Metelitsa on 2/29/20.
 //
 
 #pragma once
@@ -35,6 +35,11 @@ namespace Forge
         Cursor(const std::vector<byte>& imageData, int width, int height, int xHotSpot, int yHotSpot)
             : imageData(imageData), width(width), height(height), xHotSpot(xHotSpot), yHotSpot(yHotSpot)
         {
+        }
+
+        ~Cursor()
+        {
+
         }
 
     };

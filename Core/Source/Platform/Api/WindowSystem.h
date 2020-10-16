@@ -1,5 +1,5 @@
 //
-// Created by Дмитрий Метелица on 2019-11-19.
+// Created by Dmitry Metelitsa on 2019-11-19.
 //
 
 #pragma once
@@ -15,15 +15,19 @@ namespace Forge
 
     class WindowSystem : public Api
     {
+    protected:
+        String clipboardData;
     public:
-        virtual ~WindowSystem();
+        virtual void init() = 0;
 
-        virtual void init();
+        virtual void update() = 0;
 
-        Window* createWindow(const WindowCreationDesc& desc);
+        virtual Window* createWindow(const WindowCreationDesc& desc) = 0;
 
-        Cursor* createCursor(SystemCursor cursorType);
-        Cursor* createCursor(const std::vector<byte>& imageData, int width, int height, int xHotSpot, int yHotSpot);
+        virtual Cursor* createCursor(SystemCursor cursorType) = 0;
+        virtual Cursor* createCursor(const std::vector<byte>& imageData, int width, int height, int xHotSpot, int yHotSpot) = 0;
 
+        virtual const String& getClipboardString() = 0;
+        virtual void setClipboardString(const String& data) = 0;
     };
 }

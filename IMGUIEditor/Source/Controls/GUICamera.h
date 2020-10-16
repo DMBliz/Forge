@@ -56,11 +56,11 @@ namespace ForgeEditor
 	inline void UpdateCamera()
 	{
         bool changed = false;
-        if(Forge::engine->GetInputSystem()->GetKeyState(Forge::KeyboardKey::LShift) == Forge::InputState::Hold)
+        if(Forge::engine->GetInputSystem()->GetKeyState(Forge::KeyboardKey::LeftShift) == Forge::InputState::Hold)
         {
             cameraSpeedModificator = 2.0f;
         }
-	    else  if(Forge::engine->GetInputSystem()->GetKeyState(Forge::KeyboardKey::LShift) == Forge::InputState::None)
+	    else  if(Forge::engine->GetInputSystem()->GetKeyState(Forge::KeyboardKey::LeftShift) == Forge::InputState::None)
         {
             cameraSpeedModificator = 1.0f;
         }

@@ -34,6 +34,8 @@ namespace Forge
 
         void platformUpdate() override;
 
+        void setContext(Context* context) override;
+
         void bringToFront();
         void show() override;
         void hide() override;
@@ -86,9 +88,6 @@ namespace Forge
         bool borderlessFullscreen = false;
         bool maximized = false;
         bool windowed = false;
-
-        NSApplicationPtr application = nullptr;
-        NSAutoreleasePoolPtr pool = nullptr;
     };
 
 }

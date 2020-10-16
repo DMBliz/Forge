@@ -1,5 +1,5 @@
 //
-// Created by Дмитрий Метелица on 1/29/20.
+// Created by Dmitry Metelitsa on 1/29/20.
 //
 
 #pragma once
@@ -11,7 +11,7 @@ namespace Forge
     class Application
     {
     protected:
-        virtual PlatformApiProvider* createPlatformApiProvider() = 0;
+        virtual PlatformApiProvider* createPlatformApiProvider();
     public:
         virtual void start() = 0;
         virtual void update() = 0;

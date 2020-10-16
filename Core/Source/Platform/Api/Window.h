@@ -42,7 +42,7 @@ namespace Forge
         Event<void(Window*, bool)> onMinimizeChanged;
         Event<void(Window*)> onWindowClose;
         Event<void(Window*)> onScreenChange;
-        Event<void(Window*)> onActiveStateChanged;
+        Event<void(Window*, bool)> onActiveStateChanged;
 
     protected:
         String windowTitle;
@@ -58,6 +58,7 @@ namespace Forge
         bool minimized = false;
 
         Cursor* currentCursor;
+        Context* context;
     public:
         virtual void create(const WindowCreationDesc& creationDesc) = 0;
         virtual void close() = 0;
@@ -67,8 +68,10 @@ namespace Forge
 
         virtual void platformUpdate() = 0;
 
-        virtual void setClipboard(const String& data) = 0;
-        virtual const String& getClipboard() = 0;
+        virtual void setContext(Context* context)
+        {
+            this->context = context;
+        }
 
         virtual void setCursor(Cursor* cursor)
         {

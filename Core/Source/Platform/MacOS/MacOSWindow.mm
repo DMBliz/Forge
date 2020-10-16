@@ -2,8 +2,8 @@
 // Created by Dmitry Metelitsa on 2019-07-01.
 //
 
-//#include "Platform/OSX/Context/OGL/OGLView.h"
-#import <Platform/OSX/Context/OGL/OGLView.h>
+//#include "Platform/MacOS/Context/OGL/OGLView.h"
+#import "Platform/MacOS/Context/OGL/OGLView.h"
 #import <AppKit/AppKit.h>
 #import "Cocoa/Cocoa.h"
 #import "MacOSView.h"
@@ -80,109 +80,14 @@
 @end
 
 
-@interface AppDelegate: NSObject<NSApplicationDelegate>
-@end
-
-@implementation AppDelegate
-{
-    Forge::MacOSWindow* application;
-}
-
--(id)InitApplication:(Forge::MacOSWindow*)initApplication
-{
-    if(self == [super init])
-        application = initApplication;
-
-    return self;
-}
-
--(void)applicationWillFinishLaunching:(__unused NSNotification*)notification
-{
-    //init
-}
-
--(void)applicationDidFinishLaunching:(__unused NSNotification*)notification
-{
-    //start
-    [NSApp stop:nil];
-
-    @autoreleasepool {
-
-    NSEvent* event = [NSEvent otherEventWithType:NSEventTypeApplicationDefined
-                                        location:NSMakePoint(0, 0)
-                                   modifierFlags:0
-                                       timestamp:0
-                                    windowNumber:0
-                                         context:nil
-                                         subtype:0
-                                           data1:0
-                                           data2:0];
-    [NSApp postEvent:event atStart:YES];
-
-    } // autoreleasepool
-}
-
--(void)applicationWillTerminate:(__unused NSNotification*)notification
-{
-    //terminate
-}
-
--(BOOL)applicationShouldTerminateAfterLastWindowClosed:(__unused NSApplication*)sender
-{
-    return YES;
-}
-
--(BOOL)application:(__unused NSApplication*)sender openFile:(NSString*)filename
-{
-    return false;
-}
-
--(void)applicationDidBecomeActive:(__unused NSNotification*)notification
-{
-    LOG_INFO("application active");
-}
-
--(void)applicationDidResignActive:(__unused NSNotification*)notification
-{
-    LOG_INFO("application inactive");
-}
-
--(void)handleQuit:(__unused id)sender
-{
-    [[NSApplication sharedApplication] terminate:nil];
-}
-@end
-
 namespace Forge
 {
     MacOSWindow::MacOSWindow()
     {
-        pool = [[NSAutoreleasePool alloc] init];
-
-        application = [NSApplication sharedApplication];
-        [application activateIgnoringOtherApps:YES];
-        [application setDelegate:[[[AppDelegate alloc] init] autorelease]];
-        application.activationPolicy = NSApplicationActivationPolicyRegular;
-
-        NSMenu* mainMenu = [[[NSMenu alloc] initWithTitle:@"Main Menu"] autorelease];
-
-        NSMenuItem* mainMenuItem = [[[NSMenuItem alloc] init] autorelease];
-        [mainMenu addItem:mainMenuItem];
-
-        NSMenu* subMenu = [[[NSMenu alloc] init] autorelease];
-        [mainMenuItem setSubmenu:subMenu];
-
-        NSMenuItem* quitItem = [[[NSMenuItem alloc] initWithTitle:@"Quit" action:@selector(handleQuit:) keyEquivalent:@"q"] autorelease];
-        [quitItem setTarget:[application delegate]];
-        [subMenu addItem:quitItem];
-
-        application.mainMenu = mainMenu;
     }
 
     MacOSWindow::~MacOSWindow()
     {
-        if(pool)
-            [pool release];
     }
 
     void MacOSWindow::create(const WindowCreationDesc& creationDesc)
@@ -302,8 +207,6 @@ namespace Forge
             contentScale = 1.0F;
             resolution = this->windowRect.size();
         }
-
-        [application run];
     }
 
     void MacOSWindow::close()
@@ -332,22 +235,8 @@ namespace Forge
     void MacOSWindow::platformUpdate()
     {
         [view beginUpdate];
-        @autoreleasepool {
-
-            for (;;)
-            {
-                NSEvent* event = [NSApp nextEventMatchingMask:NSEventMaskAny
-                                                    untilDate:[NSDate distantPast]
-                                                       inMode:NSDefaultRunLoopMode
-                                                      dequeue:YES];
-                if (event == nil)
-                    break;
-
-                [NSApp sendEvent:event];
-            }
-
-        }
         onWindowEventsFinished();
+        context->platformUpdate();
     }
 
     void MacOSWindow::handleResignKeyChange()
@@ -601,5 +490,12 @@ namespace Forge
     void MacOSWindow::setWindowRect(const RectI& newSize)
     {
         Window::setWindowRect(newSize);
+    }
+
+    void MacOSWindow::setContext(Context* context)
+    {
+        Window::setContext(context);
+
+        context->init(*this, 1);
     }
 }

@@ -1,5 +1,5 @@
 //
-// Created by Дмитрий Метелица on 2/25/20.
+// Created by Dmitry Metelitsa on 2/25/20.
 //
 #pragma once
 

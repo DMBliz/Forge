@@ -14,10 +14,10 @@ GET_OS(OS)
 
 if(WIN32)
     add_definitions(-DWIN32)
-elseif(OSX)
+elseif(MacOS)
     set(CMAKE_C_FLAGS "-x objective-c")
     set(CMAKE_CXX_FLAGS "-x objective-c++")
-    add_definitions(-DOSX)
+    add_definitions(-DMAC)
 elseif(LINUX)
     #Linux is not supported for now
     #because there is a fucking hell of window managers and distributes
@@ -81,7 +81,7 @@ file(GLOB sources "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/Dependecies/src/glad/glad.c")
 
 
-if(OSX)
+if(MacOS)
     file(GLOB sources ${sources}
             "${CMAKE_CURRENT_SOURCE_DIR}/Source/Platform/${OS}/*.mm"
             "${CMAKE_CURRENT_SOURCE_DIR}/Source/Platform/${OS}/Context/${GAPI}/*.mm")
@@ -108,7 +108,7 @@ assign_source_group(${headers})
 
 add_library(Core STATIC ${sources} ${headers})
 
-if(OSX)
+if(MacOS)
     target_link_libraries(Core "-framework Cocoa"
             "-framework IOKit"
             "-framework OpenGL"

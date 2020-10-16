@@ -5,7 +5,7 @@
 #include <Platform/Api/DeviceCapabilities.h>
 #include "Platform/Api/ContextApi.h"
 #if defined(OGL)
-#include "Platform/OSX/Context/OGL/OGLMacOSContext.h"
+#include "Platform/MacOS/Context/OGL/OGLMacOSContext.h"
 #endif
 #if defined(VK)
 //TODO: include vulkan context

@@ -30,9 +30,10 @@ namespace Forge
 		Resources* GetResources() const { return resources; }
 		FileSystem* GetFileSystem() const { return fileSystem; }
 		WindowSystem* GetWindow() const { return windowSystem; }
-		Renderer* GetRenderer() const { return renderer; }
-		Scene* GetScene() const { return scene; }
-		void setRender(Renderer* render)
+        Scene* GetScene() const { return scene; }
+
+        Renderer* GetRenderer() const { return renderer; }
+        void setRender(Renderer* render)
 		{
 			renderer = render;
 		}

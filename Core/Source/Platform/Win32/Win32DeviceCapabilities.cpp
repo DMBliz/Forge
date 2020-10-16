@@ -1,5 +1,5 @@
 //
-// Created by Дмитрий Метелица on 2/15/2020.
+// Created by Dmitry Metelitsa on 2/15/2020.
 //
 
 #include "Platform/Api/DeviceCapabilities.h"

@@ -1,5 +1,5 @@
 //
-// Created by Дмитрий Метелица on 2/10/20.
+// Created by Dmitry Metelitsa on 2/10/20.
 //
 
 #pragma once
@@ -13,6 +13,6 @@ namespace Forge
     class ContextApi : public Api
     {
     public:
-        virtual Context* createContext(GraphicsApiType gapi) = 0;
+        virtual Context* createContext(GraphicsApiType gapi);
     };
 }

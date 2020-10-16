@@ -2,42 +2,166 @@
 // Created by Dmitry Metelitsa on 2019-11-23.
 //
 
-#include "Platform/Api/WindowSystem.h"
+#include "MacOSWindowSystem.h"
 #include "MacOSWindow.h"
 #include "MacOSCursor.h"
+
+
+@interface AppDelegate: NSObject<NSApplicationDelegate>
+@end
+
+@implementation AppDelegate
+{
+    Forge::MacOSWindow* application;
+}
+
+-(id)InitApplication:(Forge::MacOSWindow*)initApplication
+{
+    if(self == [super init])
+        application = initApplication;
+
+    return self;
+}
+
+-(void)applicationWillFinishLaunching:(__unused NSNotification*)notification
+{
+    //init
+}
+
+-(void)applicationDidFinishLaunching:(__unused NSNotification*)notification
+{
+    //start
+    [NSApp stop:nil];
+
+    @autoreleasepool {
+
+        NSEvent* event = [NSEvent otherEventWithType:NSEventTypeApplicationDefined
+                                            location:NSMakePoint(0, 0)
+                                       modifierFlags:0
+                                           timestamp:0
+                                        windowNumber:0
+                                             context:nil
+                                             subtype:0
+                                               data1:0
+                                               data2:0];
+        [NSApp postEvent:event atStart:YES];
+
+    } // autoreleasepool
+}
+
+-(void)applicationWillTerminate:(__unused NSNotification*)notification
+{
+    //terminate
+}
+
+-(BOOL)applicationShouldTerminateAfterLastWindowClosed:(__unused NSApplication*)sender
+{
+    return YES;
+}
+
+-(BOOL)application:(__unused NSApplication*)sender openFile:(NSString*)filename
+{
+    return false;
+}
+
+-(void)applicationDidBecomeActive:(__unused NSNotification*)notification
+{
+    LOG_INFO("application active");
+}
+
+-(void)applicationDidResignActive:(__unused NSNotification*)notification
+{
+    LOG_INFO("application inactive");
+}
+
+-(void)handleQuit:(__unused id)sender
+{
+    [[NSApplication sharedApplication] terminate:nil];
+}
+@end
+
 
 namespace Forge
 {
 
-    void WindowSystem::init()
+    void MacOSWindowSystem::init()
     {
+        if (isInitialized)
+            return;
+        pool = [[NSAutoreleasePool alloc] init];
 
+        application = [NSApplication sharedApplication];
+        [application activateIgnoringOtherApps:YES];
+        [application setDelegate:[[[AppDelegate alloc] init] autorelease]];
+        application.activationPolicy = NSApplicationActivationPolicyRegular;
+
+        NSMenu* mainMenu = [[[NSMenu alloc] initWithTitle:@"Main Menu"] autorelease];
+
+        NSMenuItem* mainMenuItem = [[[NSMenuItem alloc] init] autorelease];
+        [mainMenu addItem:mainMenuItem];
+
+        NSMenu* subMenu = [[[NSMenu alloc] init] autorelease];
+        [mainMenuItem setSubmenu:subMenu];
+
+        NSMenuItem* quitItem = [[[NSMenuItem alloc] initWithTitle:@"Quit" action:@selector(handleQuit:) keyEquivalent:@"q"] autorelease];
+        [quitItem setTarget:[application delegate]];
+        [subMenu addItem:quitItem];
+
+        application.mainMenu = mainMenu;
+
+        [application run];
+        isInitialized = true;
     }
 
-    Window* WindowSystem::createWindow(const WindowCreationDesc& desc)
+    void MacOSWindowSystem::update()
+    {
+        @autoreleasepool {
+
+            for (;;)
+            {
+                NSEvent* event = [NSApp nextEventMatchingMask:NSEventMaskAny
+                                                    untilDate:[NSDate distantPast]
+                                                       inMode:NSDefaultRunLoopMode
+                                                      dequeue:YES];
+                if (event == nil)
+                    break;
+
+                [NSApp sendEvent:event];
+            }
+        }
+
+        for(int i = 0; i < windows.size(); i++)
+        {
+            windows[i]->platformUpdate();
+        }
+    }
+
+    Window* MacOSWindowSystem::createWindow(const WindowCreationDesc& desc)
     {
         MacOSWindow* window;
         window = new MacOSWindow();
         window->create(desc);
+        windows.push_back(window);
         return window;
     }
 
-    WindowSystem::~WindowSystem()
+    MacOSWindowSystem::~MacOSWindowSystem()
     {
-
+        if(pool)
+            [pool release];
     }
 
-    Cursor* WindowSystem::createCursor(SystemCursor cursorType)
+    Cursor* MacOSWindowSystem::createCursor(SystemCursor cursorType)
     {
         return new MacOSCursor(cursorType);
     }
 
-    Cursor* WindowSystem::createCursor(const std::vector<byte>& imageData, int width, int height, int xHotSpot, int yHotSpot)
+    Cursor* MacOSWindowSystem::createCursor(const std::vector<byte>& imageData, int width, int height, int xHotSpot, int yHotSpot)
     {
         return new MacOSCursor(imageData, width, height, xHotSpot, yHotSpot);
     }
 
-    const String& WindowSystem::getClipboardString()
+    const String& MacOSWindowSystem::getClipboardString()
     {
         @autoreleasepool
         {
@@ -63,7 +187,7 @@ namespace Forge
         }
     }
 
-    void WindowSystem::setClipboardString(const String& data)
+    void MacOSWindowSystem::setClipboardString(const String& data)
     {
         @autoreleasepool
         {

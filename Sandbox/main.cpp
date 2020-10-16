@@ -14,9 +14,12 @@ class SandboxApp : public Forge::DefaultApplication
 {
 private:
     Window* win;
+    Window* win2;
     Context* ctx;
+    Context* ctx2;
     Sprite* spr;
     InputManager* manager;
+    WindowSystem* ws;
 
     Cursor* arrowCursor;
     Cursor* handCursor;
@@ -30,18 +33,25 @@ public:
     void start() override
     {
         PlatformApiProvider* api = getPlatformApiProvider();
-        api->init();
 
         DeviceCapabilities* deviceInfo = api->getApi<DeviceCapabilities>("DeviceCapabilities");
         GraphicsApiType gapi = deviceInfo->getSupportedApi();
 
-        WindowSystem* windowSystem = api->getApi<WindowSystem>("WindowSystem");
-        win = windowSystem->createWindow(WindowCreationDesc("Test window",
+        ws = api->getApi<WindowSystem>("WindowSystem");
+        win = ws->createWindow(WindowCreationDesc("Test window",
                 RectI(0, 0, 800, 600), Forge::WindowState::WINDOWED));
 
         ContextApi* contextApi = api->getApi<ContextApi>("ContextApi");
         ctx = contextApi->createContext(gapi);
-        ctx->CreateContext(*win, 1);
+        win->setContext(ctx);
+        ctx->setActive();
+
+        win2 = ws->createWindow(WindowCreationDesc("window 2",
+                RectI(50, 50, 200, 300), WindowState::WINDOWED));
+        ctx2 = contextApi->createContext(gapi);
+        win2->setContext(ctx2);
+        ctx2->setActive();
+
         ctx->setActive();
 
         Resources* res = engine->GetResources();
@@ -72,12 +82,15 @@ public:
         win->onWindowStateChanged.Add<SandboxApp, &SandboxApp::windowStateChanged>(this);
         win->onMinimizeChanged.Add<SandboxApp, &SandboxApp::minimizeChanged>(this);
 
-        arrowCursor = windowSystem->createCursor(SystemCursor::Arrow);
-        handCursor = windowSystem->createCursor(SystemCursor::Hand);
-        verticalCursor = windowSystem->createCursor(SystemCursor::VerticalResize);
-        horizontalCursor = windowSystem->createCursor(SystemCursor::HorizontalResize);
-        crossCursor = windowSystem->createCursor(SystemCursor::Cross);
-        ibeamCursor = windowSystem->createCursor(SystemCursor::IBeam);
+        win->onActiveStateChanged.Add<SandboxApp, &SandboxApp::windowActiveStateChanged>(this);
+//        win2->onActiveStateChanged.Add<SandboxApp, &SandboxApp::windowActiveStateChanged>(this);
+
+        arrowCursor = ws->createCursor(SystemCursor::Arrow);
+        handCursor = ws->createCursor(SystemCursor::Hand);
+        verticalCursor = ws->createCursor(SystemCursor::VerticalResize);
+        horizontalCursor = ws->createCursor(SystemCursor::HorizontalResize);
+        crossCursor = ws->createCursor(SystemCursor::Cross);
+        ibeamCursor = ws->createCursor(SystemCursor::IBeam);
 
         switch (gapi)
         {
@@ -95,16 +108,16 @@ public:
         switch (state)
         {
             case WindowState::MAXIMIZED:
-                std::cout << "Maximized" << std::endl;
+                LOG_INFO("Maximized");
                 break;
             case WindowState::FULLSCREEN:
-                std::cout << "FULLSCREEN" << std::endl;
+                LOG_INFO("FULLSCREEN");
                 break;
             case WindowState::WINDOWED:
-                std::cout << "WINDOWED" << std::endl;
+                LOG_INFO("WINDOWED");
                 break;
             case WindowState::FULLSCREEN_BORDERLESS:
-                std::cout << "FULLSCREEN_BORDERLESS" << std::endl;
+                LOG_INFO("FULLSCREEN_BORDERLESS");
                 break;
         }
     }
@@ -113,31 +126,36 @@ public:
     {
         if(minimized)
         {
-            std::cout << "minimized" << std::endl;
+            LOG_INFO("minimized");
         }
         else
         {
-            std::cout << "deminimized" << std::endl;
+            LOG_INFO("deminimized");
         }
     }
 
     void windowSizeChanged(Window* window, const RectI& size)
     {
-//        std::cout << "size:" << size.toString() << std::endl;
+        std::cout << "size:" << size.toString() << std::endl;
     }
 
     void windowResolutionChanged(Window* window, const Vector2i& resolution)
     {
-//        std::cout << "resolution:" << resolution.ToString() << std::endl;
+        std::cout << "resolution:" << resolution.ToString() << std::endl;
     }
+
+    void windowActiveStateChanged(Window* window, bool active)
+    {
+        std::cout << "window " << window->getTitle() << " is now " << (active ? "active" : "inactive") << std::endl;
+    }
+
 
     void update() override
     {
-        win->platformUpdate();
+        ctx->setActive();
         manager->update();
         spr->Draw();
         engine->GetRenderer()->Draw();
-        ctx->PlatformUpdate();
 
         if(win->getInput()->getDevice<KeyboardInputDevice>(InputDeviceType::Keyborad)->getKeyState(KeyboardKey::A) == KeyState::Down)
         {
@@ -180,6 +198,12 @@ public:
         {
             win->setCursor(ibeamCursor);
         }
+
+        ctx2->setActive();
+        spr->Draw();
+        engine->GetRenderer()->Draw();
+
+        ws->update();
     }
 
     void stop() override
