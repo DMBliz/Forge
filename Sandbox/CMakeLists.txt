@@ -1,6 +1,6 @@
 project(Sandbox)
 cmake_minimum_required(VERSION 3.15)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 set(CORE ${CMAKE_CURRENT_SOURCE_DIR}/../Core)
 include(${CORE}/cmake/functions.cmake)

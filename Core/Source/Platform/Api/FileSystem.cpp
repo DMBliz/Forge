@@ -13,12 +13,12 @@ namespace Forge
 	FileSystem::~FileSystem()
 	{}
 
-	File FileSystem::ReadFile(const String& filename)
+	File FileSystem::readFile(const String& filename)
 	{
-		if (!FileExists(filename))
+		if (!fileExists(filename))
 			LOG("File don't exist " + filename);
 
-		std::ifstream file(filename.CString(), std::ios::binary);
+		std::ifstream file(filename.cString(), std::ios::binary);
 		std::stringstream ss;
 
 		ss << file.rdbuf();
@@ -30,19 +30,19 @@ namespace Forge
 	}
 
 
-	void FileSystem::WriteFile(const String& filename, const String& str)
+	void FileSystem::writeFile(const String& filename, const String& str)
 	{
-        std::ofstream file(filename.CString(), std::ios::binary);
-        file.open(filename.CString());
+        std::ofstream file(filename.cString(), std::ios::binary);
+        file.open(filename.cString());
         
-        file << str.CString();
+        file << str.cString();
         
         file.close();
 	}
 
-	bool FileSystem::FileExists(const String& filename)
+	bool FileSystem::fileExists(const String& filename)
 	{
-		std::ifstream file(filename.CString());
+		std::ifstream file(filename.cString());
         
 		bool exist = static_cast<bool>(file);
 		file.close();

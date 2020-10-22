@@ -25,11 +25,11 @@ namespace Forge
 
 	void Resource::Load(const String& filename)
 	{
-		if (filename.IsEmpty())
+		if (filename.isEmpty())
 			LOG("filename cannot be empty");
 
 		referenceCount = 0;
-		resourceName = filename.Trimmed().ToLower();
+		resourceName = filename.trimmed().trimmed();
 	}
 
 	void Resource::UnLoad()

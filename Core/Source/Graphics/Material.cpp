@@ -66,9 +66,9 @@ namespace Forge
         dirty = true;
         if(shader != nullptr)
         {
-            if(uniforms[uniformName.CString()] != nullptr)
+            if(uniforms[uniformName.cString()] != nullptr)
             {
-                return uniforms[uniformName.CString()];
+                return uniforms[uniformName.cString()];
             }
 
             int location = shader->ResolveUniformLocation(uniformName);
@@ -78,21 +78,21 @@ namespace Forge
                 desc->name = uniformName;
                 desc->location = location;
                 desc->locationResolved = true;
-                uniforms[uniformName.CString()] = desc;
+                uniforms[uniformName.cString()] = desc;
                 return desc;
             }else
             {
                 LOG("Uniform with name: " + uniformName + " dosen't exist");
                 UniformDescription* desc = new UniformDescription();
                 desc->name = uniformName;
-                uniforms[uniformName.CString()] = desc;
+                uniforms[uniformName.cString()] = desc;
                 return desc;
             }
         }
 
         UniformDescription* desc = new UniformDescription();
         desc->name = uniformName;
-        uniforms[uniformName.CString()] = desc;
+        uniforms[uniformName.cString()] = desc;
         return desc;
     }
 

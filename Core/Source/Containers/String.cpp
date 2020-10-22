@@ -32,26 +32,26 @@ namespace Forge
 	String::String(const char* str, unsigned length)
 		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
-		Resize(length);
-		CopyChars(charBuffer, str, length);
+        resize(length);
+        copyChars(charBuffer, str, length);
 	}
 
 	String::String(const wchar_t* str)
 		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
-		SetUTF8FromWChar(str);
+        setUTF8FromWChar(str);
 	}
 
 	String::String(wchar_t* str)
 		: length_(0), capacity_(0), charBuffer(nullptr)
 	{
-		SetUTF8FromWChar(str);
+        setUTF8FromWChar(str);
 	}
 
 	String::String(const WString& str)
 		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
-		SetUTF8FromWChar(str.CString());
+        setUTF8FromWChar(str.cString());
 	}
 
 	String::String(int value)
@@ -146,14 +146,14 @@ namespace Forge
 	String::String(char value)
 		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
-		Resize(1);
+        resize(1);
 		charBuffer[0] = value;
 	}
 
 	String::String(char value, int length)
 		: charBuffer(nullptr), length_(0), capacity_(0)
 	{
-		Resize(1);
+        resize(1);
 		for (unsigned i = 0; i < length_; i++)
 		{
 			charBuffer[i] = value;
@@ -169,17 +169,17 @@ namespace Forge
 
 	String& String::operator=(const String& rhs)
 	{
-		Resize(rhs.length_);
-		CopyChars(charBuffer, rhs.charBuffer, rhs.length_);
+        resize(rhs.length_);
+        copyChars(charBuffer, rhs.charBuffer, rhs.length_);
 
 		return *this;
 	}
 
 	String& String::operator=(const char* rhs)
 	{
-		unsigned len = CStringLength(rhs);
-		Resize(len);
-		CopyChars(charBuffer, rhs, len);
+		unsigned len = cStringLength(rhs);
+        resize(len);
+        copyChars(charBuffer, rhs, len);
 
 		return *this;
 	}
@@ -187,8 +187,8 @@ namespace Forge
 	String& String::operator+=(const String& rhs)
 	{
 		unsigned oldLength = length_;
-		Resize(length_ + rhs.length_);
-		CopyChars(charBuffer + oldLength, rhs.charBuffer, rhs.length_);
+        resize(length_ + rhs.length_);
+        copyChars(charBuffer + oldLength, rhs.charBuffer, rhs.length_);
 
 		return *this;
 	}
@@ -197,16 +197,16 @@ namespace Forge
 	String& String::operator+=(const char* rhs)
 	{
 		unsigned oldLength = length_;
-		unsigned rhsLength = CStringLength(rhs);
-		Resize(length_ + rhsLength);
-		CopyChars(charBuffer + oldLength, rhs, rhsLength);
+		unsigned rhsLength = cStringLength(rhs);
+        resize(length_ + rhsLength);
+        copyChars(charBuffer + oldLength, rhs, rhsLength);
 
 		return *this;
 	}
 
 	String& String::operator+=(char rhs)
 	{
-		Resize(length_ + 1);
+        resize(length_ + 1);
 		charBuffer[length_ - 1] = rhs;
 
 		return  *this;
@@ -277,9 +277,9 @@ namespace Forge
 	String String::operator+(const String& rhs) const
 	{
 		String ret;
-		ret.Resize(length_ + rhs.length_);
-		CopyChars(ret.charBuffer, charBuffer, length_);
-		CopyChars(ret.charBuffer + length_, rhs.charBuffer, rhs.length_);
+        ret.resize(length_ + rhs.length_);
+        copyChars(ret.charBuffer, charBuffer, length_);
+        copyChars(ret.charBuffer + length_, rhs.charBuffer, rhs.length_);
 
 		return ret;
 	}
@@ -287,11 +287,11 @@ namespace Forge
 	String String::operator+(const char* rhs) const
 	{
 		String ret;
-		unsigned rhsLength = CStringLength(rhs);
+		unsigned rhsLength = cStringLength(rhs);
 
-		ret.Resize(length_ + rhsLength);
-		CopyChars(ret.charBuffer, charBuffer, length_);
-		CopyChars(ret.charBuffer + length_, rhs, rhsLength);
+        ret.resize(length_ + rhsLength);
+        copyChars(ret.charBuffer, charBuffer, length_);
+        copyChars(ret.charBuffer + length_, rhs, rhsLength);
 
 		return ret;
 	}
@@ -317,7 +317,7 @@ namespace Forge
 		else if (rhs.charBuffer == nullptr || charBuffer == nullptr)
 			return false;
 
-		return strcmp(CString(), rhs.CString()) == 0;
+		return strcmp(cString(), rhs.cString()) == 0;
 	}
 
 	bool String::operator!=(const String& rhs) const
@@ -327,7 +327,7 @@ namespace Forge
 		else if (rhs.charBuffer == nullptr || charBuffer == nullptr)
 			return true;
 
-		return strcmp(CString(), rhs.CString()) != 0;
+		return strcmp(cString(), rhs.cString()) != 0;
 	}
 
 	bool String::operator<(const String& rhs) const
@@ -337,7 +337,7 @@ namespace Forge
 		else if (rhs.charBuffer == nullptr || charBuffer == nullptr)
 			return false;
 
-		return strcmp(CString(), rhs.CString()) < 0;
+		return strcmp(cString(), rhs.cString()) < 0;
 	}
 	
 	bool String::operator>(const String& rhs) const
@@ -347,7 +347,7 @@ namespace Forge
 		else if (rhs.charBuffer == nullptr || charBuffer == nullptr)
 			return false;
 
-		return strcmp(CString(), rhs.CString()) > 0;
+		return strcmp(cString(), rhs.cString()) > 0;
 	}
 
 	bool String::operator==(const char* rhs) const
@@ -357,7 +357,7 @@ namespace Forge
 		else if (rhs == nullptr || charBuffer == nullptr)
 			return false;
 
-		return strcmp(CString(), rhs) == 0;
+		return strcmp(cString(), rhs) == 0;
 	}
 
 	bool String::operator!=(const char* rhs) const
@@ -367,7 +367,7 @@ namespace Forge
 		else if (rhs == nullptr || charBuffer == nullptr)
 			return true;
 
-		return strcmp(CString(), rhs) != 0;
+		return strcmp(cString(), rhs) != 0;
 	}
 
 	bool String::operator<(const char* rhs) const
@@ -377,7 +377,7 @@ namespace Forge
 		else if (rhs == nullptr || charBuffer == nullptr)
 			return false;
 
-		return strcmp(CString(), rhs) < 0;
+		return strcmp(cString(), rhs) < 0;
 	}
 
 	bool String::operator>(const char* rhs) const
@@ -387,7 +387,7 @@ namespace Forge
 		else if (rhs == nullptr || charBuffer == nullptr)
 			return false;
 
-		return strcmp(CString(), rhs) > 0;
+		return strcmp(cString(), rhs) > 0;
 	}
 
 	char& String::operator[](unsigned index)
@@ -402,19 +402,19 @@ namespace Forge
 		return charBuffer[index];
 	}
 
-	char& String::At(unsigned index)
+	char& String::at(unsigned index)
 	{
 		assert(index < length_);
 		return charBuffer[index];
 	}
 
-	const char& String::At(unsigned index) const
+	const char& String::at(unsigned index) const
 	{
 		assert(index < length_);
 		return charBuffer[index];
 	}
 
-	void String::Replace(char oldChar, char newChar, bool caseSensetive /*= true*/)
+	void String::replace(char oldChar, char newChar, bool caseSensetive /*= true*/)
 	{
 		if (caseSensetive)
 		{
@@ -435,77 +435,77 @@ namespace Forge
 		}
 	}
 
-	void String::Replace(const String& oldValue, const String& newValue, bool caseSensetive /*= true*/)
+	void String::replace(const String& oldValue, const String& newValue, bool caseSensetive /*= true*/)
 	{
 		unsigned next = 0;
 
 		while (next < length_)
 		{
-			unsigned pos = Find(oldValue, next, caseSensetive);
+			unsigned pos = find(oldValue, next, caseSensetive);
 			if (pos == NOTFOUND)
 				break;
-			Replace(pos, oldValue.length_, newValue);
+            replace(pos, oldValue.length_, newValue);
 			next = pos + newValue.length_;
 		}
 	}
 
-	void String::Replace(unsigned pos, unsigned length, const String& newValue)
+	void String::replace(unsigned pos, unsigned length, const String& newValue)
 	{
 		if (pos + length > length_)
 			return;
 
-		Replace(pos, length, newValue.charBuffer, newValue.length_);
+        replace(pos, length, newValue.charBuffer, newValue.length_);
 	}
 
-	void String::Replace(unsigned pos, unsigned length, const char* newValue)
+	void String::replace(unsigned pos, unsigned length, const char* newValue)
 	{
 		if (pos + length > length_)
 			return;
 
-		Replace(pos, length, newValue, CStringLength(newValue));
+        replace(pos, length, newValue, cStringLength(newValue));
 	}
 
-	String String::Replaced(char oldChar, char newChar, bool caseSensetive /*= true*/)
+	String String::replaced(char oldChar, char newChar, bool caseSensetive /*= true*/)
 	{
 		String ret(*this);
-		ret.Replace(oldChar, newChar, caseSensetive);
+        ret.replace(oldChar, newChar, caseSensetive);
 		return ret;
 	}
 
-	String String::Replaced(const String& oldValue, const String& newValue, bool caseSensetive /*= true*/)
+	String String::replaced(const String& oldValue, const String& newValue, bool caseSensetive /*= true*/)
 	{
 		String ret(*this);
-		ret.Replace(oldValue, newValue, caseSensetive);
+        ret.replace(oldValue, newValue, caseSensetive);
 		return ret;
 	}
 
-	String& String::Append(const String& str)
+	String& String::append(const String& str)
 	{
 		return *this += str;
 	}
 
-	String& String::Append(const char* str)
+	String& String::append(const char* str)
 	{
 		return *this += str;
 	}
 
-	String& String::Append(char c)
+	String& String::append(char c)
 	{
 		return *this += c;
 	}
 
-	String& String::Append(const char* str, unsigned length)
+	String& String::append(const char* str, unsigned length)
 	{
 		if (str)
 		{
 			unsigned oldLength = length_;
-			Resize(oldLength + length);
-			CopyChars(&charBuffer[oldLength], str, length);
+            resize(oldLength + length);
+            copyChars(&charBuffer[oldLength], str, length);
 		}
 		return *this;
 	}
 
-	void String::Insert(unsigned pos, const String& str)
+	void String::insert(unsigned pos, const String& str)
 	{
 		if (pos > length_)
 			pos = length_;
@@ -513,10 +513,10 @@ namespace Forge
 		if (pos == length_)
 			*this += str;
 		else
-			Replace(pos, 0, str);
+            replace(pos, 0, str);
 	}
 
-	void String::Insert(unsigned pos, char c)
+	void String::insert(unsigned pos, char c)
 	{
 		if (pos > length_)
 			pos = length_;
@@ -526,18 +526,18 @@ namespace Forge
 		else
 		{
 			unsigned oldLength = length_;
-			Resize(length_ + 1);
-			MoveRange(pos + 1, pos, oldLength - pos);
+            resize(length_ + 1);
+            moveRange(pos + 1, pos, oldLength - pos);
 			charBuffer[pos] = c;
 		}
 	}
 
-	void String::Erase(unsigned pos, unsigned length /*= 1*/)
+	void String::erase(unsigned pos, unsigned length /*= 1*/)
 	{
-		Replace(pos, length, String::Empty);
+        replace(pos, length, String::Empty);
 	}
 
-	void String::Resize(unsigned newLength)
+	void String::resize(unsigned newLength)
 	{
 		if (!capacity_)
 		{
@@ -561,7 +561,7 @@ namespace Forge
 				char* newBuffer = new char[capacity_];
 
 				if (length_)
-					CopyChars(newBuffer, charBuffer, length_);
+                    copyChars(newBuffer, charBuffer, length_);
 				delete[] charBuffer;
 
 				charBuffer = newBuffer;
@@ -572,7 +572,7 @@ namespace Forge
 		length_ = newLength;
 	}
 
-	void String::Reserve(unsigned newCapacity)
+	void String::reserve(unsigned newCapacity)
 	{
 		if (newCapacity < length_ + 1)
 			newCapacity = length_ + 1;
@@ -581,7 +581,7 @@ namespace Forge
 
 		char* newBuffer = new char[newCapacity];
 
-		CopyChars(newBuffer, charBuffer, length_ + 1);
+        copyChars(newBuffer, charBuffer, length_ + 1);
 		if (capacity_)
 			delete[] charBuffer;
 
@@ -589,31 +589,31 @@ namespace Forge
 		charBuffer = newBuffer;
 	}
 
-	void String::Compact()
+	void String::compact()
 	{
 		if (capacity_)
-			Reserve(length_ + 1);
+            reserve(length_ + 1);
 	}
 
-	void String::Clear()
+	void String::clear()
 	{
-		Resize(0);
+        resize(0);
 	}
 
-	void String::Swap(String& str)
+	void String::swap(String& str)
 	{
 		Forge::Swap(length_, str.length_);
 		Forge::Swap(capacity_, str.capacity_);
 		Forge::Swap(charBuffer, str.charBuffer);
 	}
 
-	String String::SubString(unsigned pos) const
+	String String::subString(unsigned pos) const
 	{
 		if (pos < length_)
 		{
 			String ret;
-			ret.Resize(length_ - pos);
-			CopyChars(ret.charBuffer, charBuffer + pos, ret.length_);
+            ret.resize(length_ - pos);
+            copyChars(ret.charBuffer, charBuffer + pos, ret.length_);
 
 			return ret;
 		}
@@ -621,7 +621,7 @@ namespace Forge
 			return String();
 	}
 
-	String String::SubString(unsigned pos, unsigned length) const
+	String String::subString(unsigned pos, unsigned length) const
 	{
 		if (pos < length_)
 		{
@@ -630,8 +630,8 @@ namespace Forge
 			if (pos + length > length_)
 				length = length_ - pos;
 
-			ret.Resize(length);
-			CopyChars(ret.charBuffer, charBuffer + pos, ret.length_);
+            ret.resize(length);
+            copyChars(ret.charBuffer, charBuffer + pos, ret.length_);
 
 			return ret;
 		}
@@ -639,7 +639,7 @@ namespace Forge
 			return String();
 	}
 
-	String String::Trimmed() const
+	String String::trimmed() const
 	{
 		unsigned start = 0;
 		unsigned end = length_;
@@ -660,10 +660,10 @@ namespace Forge
 			--end;
 		}
 
-		return SubString(start, end);
+		return subString(start, end);
 	}
 
-	String String::ToUpper() const
+	String String::toUpper() const
 	{
 		String ret(*this);
 
@@ -673,7 +673,7 @@ namespace Forge
 		return ret;
 	}
 
-	String String::ToLower() const
+	String String::toLower() const
 	{
 		String ret(*this);
 
@@ -683,17 +683,17 @@ namespace Forge
 		return ret;
 	}
 
-	std::vector<String> String::Split(char separator, bool keepEmptyStrings /*= false*/) const
+	std::vector<String> String::split(char separator, bool keepEmptyStrings /*= false*/) const
 	{
-		return Split(CString(), separator, keepEmptyStrings);
+		return split(cString(), separator, keepEmptyStrings);
 	}
 
-	void String::Join(const std::vector<String>& subStrings, const String& glue)
+	void String::join(const std::vector<String>& subStrings, const String& glue)
 	{
-		*this = Joined(subStrings, glue);
+		*this = joined(subStrings, glue);
 	}
 
-	unsigned String::Find(char c, unsigned startInd /*= 0*/, bool caseSensetive /*= true*/) const
+	unsigned String::find(char c, unsigned startInd /*= 0*/, bool caseSensetive /*= true*/) const
 	{
 		if (caseSensetive)
 		{
@@ -716,7 +716,7 @@ namespace Forge
 		return NOTFOUND;
 	}
 
-	unsigned String::Find(const String& str, unsigned startInd /*= 0*/, bool caseSensetive /*= true*/) const
+	unsigned String::find(const String& str, unsigned startInd /*= 0*/, bool caseSensetive /*= true*/) const
 	{
 		if (!str.length_ || str.length_ > length_)
 			return NOTFOUND;
@@ -766,7 +766,7 @@ namespace Forge
 		return NOTFOUND;
 	}
 
-	unsigned String::FindLast(char c, unsigned startInd, bool caseSensetive /*= true*/) const
+	unsigned String::findLast(char c, unsigned startInd, bool caseSensetive /*= true*/) const
 	{
 		if (startInd >= length_)
 			startInd = length_ - 1;
@@ -792,7 +792,7 @@ namespace Forge
 		return NOTFOUND;
 	}
 
-	unsigned String::FindLast(const String& str, unsigned startInd, bool caseSensetive /*= true*/) const
+	unsigned String::findLast(const String& str, unsigned startInd, bool caseSensetive /*= true*/) const
 	{
 		if (!str.length_ || str.length_ > length_)
 			return NOTFOUND;
@@ -838,42 +838,42 @@ namespace Forge
 		return NOTFOUND;
 	}
 
-	bool String::StartsWith(const String& str, bool caseSensetive /*= true*/) const
+	bool String::startsWith(const String& str, bool caseSensetive /*= true*/) const
 	{
-		return Find(str, 0, caseSensetive) == 0;
+		return find(str, 0, caseSensetive) == 0;
 	}
 
-	bool String::EndsWith(const String& str, bool caseSensetive /*= true*/) const
+	bool String::endsWith(const String& str, bool caseSensetive /*= true*/) const
 	{
-		unsigned pos = FindLast(str, length_ - 1, caseSensetive);
+		unsigned pos = findLast(str, length_ - 1, caseSensetive);
 		return pos != NOTFOUND && pos == length_ - str.length_;
 	}
 
-	int String::Compare(const String& str, bool caseSensetive /*= true*/) const
+	int String::compare(const String& str, bool caseSensetive /*= true*/) const
 	{
-		return Compare(CString(), str.CString(), caseSensetive);
+		return compare(cString(), str.cString(), caseSensetive);
 	}
 
-	int String::Compare(const char* str, bool caseSensetive /*= true*/) const
+	int String::compare(const char* str, bool caseSensetive /*= true*/) const
 	{
-		return Compare(CString(), str, caseSensetive);
+		return compare(cString(), str, caseSensetive);
 	}
 
-	bool String::Contains(const String& str, bool caseSensetive /*= true*/) const
+	bool String::contains(const String& str, bool caseSensetive /*= true*/) const
 	{
-		return Find(str, 0, caseSensetive) != NOTFOUND;
+		return find(str, 0, caseSensetive) != NOTFOUND;
 	}
 
-	bool String::Contains(char c, bool caseSensetive /*= true*/) const
+	bool String::contains(char c, bool caseSensetive /*= true*/) const
 	{
-		return Find(c, 0, caseSensetive) != NOTFOUND;
+		return find(c, 0, caseSensetive) != NOTFOUND;
 	}
 
-	void String::SetUTF8FromChar(const char* str)
+	void String::setUTF8FromChar(const char* str)
 	{
 		char temp[7];
 
-		Clear();
+        clear();
 
 		if (!str)
 			return;
@@ -882,17 +882,17 @@ namespace Forge
 		{
 			char* dest = temp;
 
-			EncodeUTF8(dest, static_cast<unsigned>(*str++));
+            encodeUTF8(dest, static_cast<unsigned>(*str++));
 			*dest = 0;
-			Append(temp);
+            append(temp);
 		}
 	}
 
-	void String::SetUTF8FromWChar(const wchar_t* str)
+	void String::setUTF8FromWChar(const wchar_t* str)
 	{
 		char temp[7];
 
-		Clear();
+        clear();
 
 		if (!str)
 			return;
@@ -910,14 +910,14 @@ namespace Forge
 		while (*str)
 		{
 			char* dest = temp;
-			EncodeUTF8(dest, (unsigned)*str++);
+            encodeUTF8(dest, (unsigned)*str++);
 			*dest = 0;
-			Append(temp);
+            append(temp);
 		}
 #endif // WIN32
 	}
 
-	unsigned String::LengthUTF8() const
+	unsigned String::lengthUTF8() const
 	{
 		unsigned ret = 0;
 
@@ -929,53 +929,53 @@ namespace Forge
 
 		while (src < end)
 		{
-			DecodeUTF8(src);
+            decodeUTF8(src);
 			++ret;
 		}
 
 		return ret;
 	}
 
-	unsigned String::ByteOffsetUTF8(unsigned index) const
+	unsigned String::byteOffsetUTF8(unsigned index) const
 	{
 		unsigned offset = 0;
 		unsigned utfPos = 0;
 
 		while (utfPos < index && offset < length_)
 		{
-			NextUTF8Char(offset);
+            nextUTF8Char(offset);
 			++utfPos;
 		}
 
 		return offset;
 	}
 
-	unsigned String::NextUTF8Char(unsigned& byteOffset) const
+	unsigned String::nextUTF8Char(unsigned& byteOffset) const
 	{
 		if (!charBuffer)
 			return 0;
 
 		const char* src = charBuffer + byteOffset;
-		unsigned ret = DecodeUTF8(src);
+		unsigned ret = decodeUTF8(src);
 		byteOffset = static_cast<unsigned>(src - charBuffer);
 
 		return ret;
 	}
 
-	unsigned String::AtUTF8(unsigned index) const
+	unsigned String::atUTF8(unsigned index) const
 	{
-		unsigned byteOffset = ByteOffsetUTF8(index);
-		return NextUTF8Char(byteOffset);
+		unsigned byteOffset = byteOffsetUTF8(index);
+		return nextUTF8Char(byteOffset);
 	}
 
-	void String::ReplaceUTF8(unsigned index, unsigned uniChar)
+	void String::replaceUTF8(unsigned index, unsigned uniChar)
 	{
 		unsigned utfPos = 0;
 		unsigned offset = 0;
 
 		while (utfPos < index && offset < length_)
 		{
-			NextUTF8Char(offset);
+            nextUTF8Char(offset);
 			++utfPos;
 		}
 
@@ -983,64 +983,64 @@ namespace Forge
 			return;
 
 		unsigned begin = offset;
-		NextUTF8Char(offset);
+        nextUTF8Char(offset);
 
 		char temp[7];
 		char* dest = temp;
-		EncodeUTF8(dest, uniChar);
+        encodeUTF8(dest, uniChar);
 		*dest = 0;
 
-		Replace(begin, offset - begin, temp, static_cast<unsigned>(dest - temp));
+        replace(begin, offset - begin, temp, static_cast<unsigned>(dest - temp));
 	}
 
-	String& String::AppendUTF8(unsigned uniChar)
+	String& String::appendUTF8(unsigned uniChar)
 	{
 		char temp[7];
 		char* dest = temp;
-		EncodeUTF8(dest, uniChar);
+        encodeUTF8(dest, uniChar);
 		*dest = 0;
 
-		return Append(temp);
+		return append(temp);
 	}
 
-	String String::SubStringUTF8(unsigned pos) const
+	String String::subStringUTF8(unsigned pos) const
 	{
-		unsigned utfLength = LengthUTF8();
-		unsigned offset = ByteOffsetUTF8(pos);
+		unsigned utfLength = lengthUTF8();
+		unsigned offset = byteOffsetUTF8(pos);
 		String ret;
 
 		while (pos < utfLength)
 		{
-			ret.AppendUTF8(NextUTF8Char(offset));
+            ret.appendUTF8(nextUTF8Char(offset));
 			++pos;
 		}
 
 		return ret;
 	}
 
-	String String::SubStringUTF8(unsigned pos, unsigned length) const
+	String String::subStringUTF8(unsigned pos, unsigned length) const
 	{
-		unsigned utfLength = LengthUTF8();
-		unsigned offset = ByteOffsetUTF8(pos);
+		unsigned utfLength = lengthUTF8();
+		unsigned offset = byteOffsetUTF8(pos);
 		unsigned end = pos + length;
 		String ret;
 
 		while (pos < end && pos < utfLength)
 		{
-			ret.AppendUTF8(NextUTF8Char(offset));
+            ret.appendUTF8(nextUTF8Char(offset));
 			++pos;
 		}
 
 		return ret;
 	}
 
-	unsigned String::ToHash() const
+	unsigned String::hash() const
 	{
 		unsigned hash = 0;
 		const char* ptr = charBuffer;
-		while (ptr)
+		while (*ptr)
 		{
-			hash = *ptr + (hash << 6) + (hash << 16) - hash;
+			hash = *ptr + (hash << 6u) + (hash << 16u) - hash;
 			++ptr;
 		}
 
@@ -1049,13 +1049,13 @@ namespace Forge
 
 
 
-	void String::MoveRange(unsigned dest, unsigned src, unsigned count)
+	void String::moveRange(unsigned dest, unsigned src, unsigned count)
 	{
 		if (count)
 			memmove(charBuffer + dest, charBuffer + src, count);
 	}
 
-	void String::CopyChars(char* dest, const char* src, unsigned count)
+	void String::copyChars(char* dest, const char* src, unsigned count)
 	{
 		char* end = dest + count;
 		while (dest != end)
@@ -1066,7 +1066,7 @@ namespace Forge
 		}
 	}
 
-	void String::Replace(unsigned pos, unsigned length, const char* src, unsigned srcLength)
+	void String::replace(unsigned pos, unsigned length, const char* src, unsigned srcLength)
 	{
 		int delta = static_cast<int>(srcLength) - static_cast<int>(length);
 
@@ -1074,27 +1074,27 @@ namespace Forge
 		{
 			if (delta < 0)
 			{
-				MoveRange(pos + srcLength, pos + length, length_ - pos - length);
-				Resize(length_ + delta);
+                moveRange(pos + srcLength, pos + length, length_ - pos - length);
+                resize(length_ + delta);
 			}
 			else if (delta > 0)
 			{
-				Resize(length_ + delta);
-				MoveRange(pos + srcLength, pos + length, length_ - pos - length - delta);
+                resize(length_ + delta);
+                moveRange(pos + srcLength, pos + length, length_ - pos - length - delta);
 			}
 		}
 		else
 		{
-			Resize(length_ + delta);
+            resize(length_ + delta);
 		}
 
-		CopyChars(charBuffer + pos, src, srcLength);
+        copyChars(charBuffer + pos, src, srcLength);
 	}
 
-	std::vector<String> String::Split(const char* str, char separator, bool keepEmptyStrings /*= false*/)
+	std::vector<String> String::split(const char* str, char separator, bool keepEmptyStrings /*= false*/)
 	{
 		std::vector<String> ret;
-		const char* strEnd = str + String::CStringLength(str);
+		const char* strEnd = str + String::cStringLength(str);
 
 		for (const char* splitEnd = str; splitEnd != strEnd; ++splitEnd)
 		{
@@ -1114,24 +1114,24 @@ namespace Forge
 		return ret;
 	}
 
-	std::vector<String> String::Split(const String& str, char separator, bool keepEmptyStrings /*= false*/)
+	std::vector<String> String::split(const String& str, char separator, bool keepEmptyStrings /*= false*/)
 	{
-		return Split(str.CString(), separator, keepEmptyStrings);
+		return split(str.cString(), separator, keepEmptyStrings);
 	}
 
-	String String::Joined(const std::vector<String>& subStrings, const String& glue)
+	String String::joined(const std::vector<String>& subStrings, const String& glue)
 	{
 		if (subStrings.empty())
 			return String();
 
 		String joined(subStrings[0]);
 		for (unsigned i = 1; i < subStrings.size(); ++i)
-			joined.Append(glue).Append(subStrings[i]);
+            joined.append(glue).append(subStrings[i]);
 
 		return joined;
 	}
 
-	void String::EncodeUTF8(char*& dest, unsigned uniChar)
+	void String::encodeUTF8(char*& dest, unsigned uniChar)
 	{
 		if (uniChar < 0x80)
 			*dest++ = uniChar;
@@ -1178,7 +1178,7 @@ namespace Forge
 		}
 	}
 
-	unsigned String::DecodeUTF8(const char*& src)
+	unsigned String::decodeUTF8(const char*& src)
 	{
 		if (src == nullptr)
 			return 0;
@@ -1281,12 +1281,12 @@ namespace Forge
 	}
 #endif
 
-	unsigned String::CStringLength(const char* str)
+	unsigned String::cStringLength(const char* str)
 	{
 		return str ? static_cast<unsigned>(strlen(str)) : 0;
 	}
 
-	int String::Compare(const char* str1, const char* str2, bool caseSensetive /*= true*/)
+	int String::compare(const char* str1, const char* str2, bool caseSensetive /*= true*/)
 	{
 		if (!str1 || !str2)
 			return str1 ? 1 : (str2 ? -1 : 0);
@@ -1312,9 +1312,9 @@ namespace Forge
 		}
 	}
 
-	int String::Compare(const String& str1, const String& str2, bool caseSensetive /*= true*/)
+	int String::compare(const String& str1, const String& str2, bool caseSensetive /*= true*/)
 	{
-		return Compare(str1.CString(), str2.CString(), caseSensetive);
+		return compare(str1.cString(), str2.cString(), caseSensetive);
 	}
 
 	WString::WString()
@@ -1344,12 +1344,12 @@ namespace Forge
 		while (offset < str.Length())
 			String::EncodeUTF16(dest, str.NextUTF8Char(offset));
 #else
-		Resize(str.LengthUTF8());
+        resize(str.lengthUTF8());
 
 		unsigned offset = 0;
 		wchar_t* dest = wcharBuffer;
-		while (offset < str.Length())
-			*dest++ = (wchar_t)str.NextUTF8Char(offset);
+		while (offset < str.length())
+			*dest++ = (wchar_t)str.nextUTF8Char(offset);
 #endif
 	}
 
@@ -1370,19 +1370,19 @@ namespace Forge
 		return wcharBuffer[index];
 	}
 
-	wchar_t& WString::At(unsigned index)
+	wchar_t& WString::at(unsigned index)
 	{
 		assert(index < length_);
 		return wcharBuffer[index];
 	}
 
-	const wchar_t& WString::At(unsigned index) const
+	const wchar_t& WString::at(unsigned index) const
 	{
 		assert(index < length_);
 		return wcharBuffer[index];
 	}
 
-	void WString::Resize(unsigned newLength)
+	void WString::resize(unsigned newLength)
 	{
 		if (!newLength)
 		{

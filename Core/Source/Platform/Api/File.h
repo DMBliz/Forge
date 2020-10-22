@@ -33,8 +33,8 @@ namespace Forge
 		File(const File& newData)
 		{
 			delete[] fileData;
-			fileSize = newData.GetSize();
-			memcpy(fileData, newData.GetData(), fileSize);
+			fileSize = newData.getSize();
+			memcpy(fileData, newData.getData(), fileSize);
 		}
 
 		~File()
@@ -42,7 +42,7 @@ namespace Forge
 			//delete[] fileData;
 		}
 
-		String GetString() const
+		String getString() const
 		{
 			return String(reinterpret_cast<char*>(fileData), fileSize);
 		}
@@ -50,22 +50,22 @@ namespace Forge
 		File& operator=(const File& newData)
 		{
 			delete[] fileData;
-			fileSize = newData.GetSize();
+			fileSize = newData.getSize();
 			fileData = new byte[fileSize];
-			memcpy(fileData, newData.GetData(), fileSize);
+			memcpy(fileData, newData.getData(), fileSize);
 			return *this;
 		}
 
 		File& operator=(File&& newData) noexcept
 		{
 			delete[] fileData;
-			fileSize = newData.GetSize();
+			fileSize = newData.getSize();
 			fileData = new byte[fileSize];
-			memmove(fileData, newData.GetData(), fileSize);
+			memmove(fileData, newData.getData(), fileSize);
 			return *this;
 		}
 
-		void SetData(byte* data, uint size)
+		void setData(byte* data, uint size)
 		{
 			fileSize = size;
 
@@ -75,7 +75,7 @@ namespace Forge
 			memcpy(fileData, data, size);
 		}
 
-		void SetData(const char* data, uint size)
+		void setData(const char* data, uint size)
 		{
 			fileSize = size;
 
@@ -85,7 +85,7 @@ namespace Forge
 			memcpy(fileData, reinterpret_cast<const unsigned char*>(data), size);
 		}
 
-		void Resize(uint size)
+		void resize(uint size)
 		{
 			byte* temp = new byte[size];
 			memcpy(temp, fileData, fileSize);
@@ -95,14 +95,19 @@ namespace Forge
 			fileData = temp;
 		}
 
-		byte* GetData() const
+		byte* getData() const
 		{
 			return fileData;
 		}
 
-		uint GetSize() const
+		uint getSize() const
 		{
 			return fileSize;
+		}
+
+		std::vector<byte> toVector()
+		{
+			return {fileData, fileData + fileSize};
 		}
 	};
 

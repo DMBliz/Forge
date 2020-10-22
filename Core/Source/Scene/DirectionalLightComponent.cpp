@@ -35,18 +35,18 @@ namespace Forge
 
     void DirectionalLightComponent::OnEnable()
     {
-        engine->GetRenderer()->AddLight(directionalLight);
+        engine->getRenderer()->AddLight(directionalLight);
     }
 
     void DirectionalLightComponent::OnDisable()
     {
-        engine->GetRenderer()->RemoveLight(directionalLight);
+        engine->getRenderer()->RemoveLight(directionalLight);
     }
 
     void DirectionalLightComponent::OnCreate()
     {
         directionalLight->SetActive(true);
-        img->SetTexture(engine->GetResources()->LoadNowResource<Texture2D>("Resources/light2.png"));
+        img->SetTexture(engine->getResources()->LoadNowResource<Texture2D>("Resources/light2.png"));
         img->SetActive(true);
         TransformComponent* trn = GetOwner()->GetComponent<TransformComponent>();
         if (trn != nullptr)

@@ -52,7 +52,7 @@ namespace Forge
         retDrawable->GetMesh().GetBufferLayout()->Add<Vector2>("textureCoords", 1, BufferElementType::UV);
         retDrawable->GetMesh().GetBufferLayout()->Add<Vector3>("normals", 2, BufferElementType::Normal);
 
-        retDrawable->GetMaterial().SetShader(engine->GetResources()->GetResource<Shader>("Resources/Shaders/Model.glsl"));
+        retDrawable->GetMaterial().SetShader(engine->getResources()->GetResource<Shader>("Resources/Shaders/Model.glsl"));
 
 		if(mesh->mMaterialIndex >= 0)
 		{
@@ -72,7 +72,7 @@ namespace Forge
         mat->GetTexture(type, 0, &name);
         if (name.length <= 0)
             return;
-        Texture2D* tex = engine->GetResources()->LoadNowResource<Texture2D>(directory + name.C_Str());
+        Texture2D* tex = engine->getResources()->LoadNowResource<Texture2D>(directory + name.C_Str());
 
         if (tex != nullptr)
             drawable->GetMaterial().GetUniform(uniformName)->SetTexture(*tex);
@@ -101,7 +101,7 @@ namespace Forge
     void Model::Load(const String& filename)
 	{
 		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(filename.CString(), aiProcess_Triangulate | aiProcess_FlipUVs);
+		const aiScene* scene = importer.ReadFile(filename.cString(), aiProcess_Triangulate | aiProcess_FlipUVs);
 
 		if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
@@ -110,7 +110,7 @@ namespace Forge
 		}
 
 		resourceName = filename;
-		directory = filename.SubString(0, filename.FindLast('/', filename.Length()) + 1);
+		directory = filename.subString(0, filename.findLast('/', filename.length()) + 1);
 
 		ProcessNode(scene->mRootNode, scene);
 	}
@@ -118,7 +118,7 @@ namespace Forge
     //setting values to uniform and queing for rendering
     void Model::Draw()
     {
-        Renderer* renderer = engine->GetRenderer();
+        Renderer* renderer = engine->getRenderer();
         for (int i = 0; i < _drawables.size(); i++)
         {
 

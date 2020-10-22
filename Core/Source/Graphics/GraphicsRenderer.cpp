@@ -11,7 +11,7 @@ namespace Forge
 		renderSurface = RenderSurface::Create();
 		renderSurface->SetFramebufferSize(size);
 		renderSurface->Generate();
-		screenMaterial.SetShader(engine->GetResources()->LoadNowResource<Shader>("Resources/Shaders/ScreenShader.glsl"));
+		screenMaterial.SetShader(engine->getResources()->LoadNowResource<Shader>("Resources/Shaders/ScreenShader.glsl"));
 		screenMaterial.GetShader()->Compile();
         screenMaterial.GetUniform("ScreenTexture")->SetTexture(*renderSurface->GetColorTexture());
 

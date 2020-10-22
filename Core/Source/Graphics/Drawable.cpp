@@ -41,7 +41,7 @@ namespace Forge
             command._material = _material;
             command.transparent = _transparent;
             command.worldTransform = _worldTransform->ToMatrix4();
-            engine->GetRenderer()->PushCommand(command);
+            engine->getRenderer()->PushCommand(command);
         }
     }
 

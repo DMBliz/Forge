@@ -2,6 +2,7 @@
 // Created by Dmitry Metelitsa on 2019-11-23.
 //
 
+#import <AppKit/AppKit.h>
 #include "MacOSWindowSystem.h"
 #include "MacOSWindow.h"
 #include "MacOSCursor.h"
@@ -130,9 +131,9 @@ namespace Forge
             }
         }
 
-        for(int i = 0; i < windows.size(); i++)
+        for (auto& window : windows)
         {
-            windows[i]->platformUpdate();
+            window.second->platformUpdate();
         }
     }
 
@@ -141,7 +142,14 @@ namespace Forge
         MacOSWindow* window;
         window = new MacOSWindow();
         window->create(desc);
-        windows.push_back(window);
+        if (!desc.title.isEmpty())
+        {
+            windows[desc.title.hash()] = window;
+        }
+        else
+        {
+            windows[lastID++] = window;
+        }
         return window;
     }
 
@@ -193,7 +201,38 @@ namespace Forge
         {
             NSPasteboard* pasteboard = [NSPasteboard generalPasteboard];
             [pasteboard declareTypes:@[ NSPasteboardTypeString ] owner:nil];
-            [pasteboard setString:@(data.CString()) forType:NSPasteboardTypeString];
+            [pasteboard setString:@(data.cString()) forType:NSPasteboardTypeString];
+        }
+    }
+
+    Window* MacOSWindowSystem::getWindowByName(const String& name)
+    {
+        auto res = windows.find(name.hash());
+        if (res != windows.end())
+        {
+            return res->second;
+        }
+        return nullptr;
+    }
+
+    Window* MacOSWindowSystem::getWindowByID(int ID)
+    {
+        auto res = windows.find(ID);
+        if (res != windows.end())
+        {
+            return res->second;
+        }
+        return nullptr;
+    }
+
+    void MacOSWindowSystem::destroyWindow(Window* window)
+    {
+        auto res = std::find_if(windows.begin(), windows.end(), [window](const auto& pair) { return pair.second == window; });
+        if (res != windows.end())
+        {
+            windows.erase(res);
+            window->close();
+            delete window;
         }
     }
 }

@@ -25,26 +25,26 @@ namespace Forge
 
 		Engine();
 
-		void Init(Application* application);
+		void init(Application* application);
 		Application* getApplication() const;
-		Resources* GetResources() const { return resources; }
-		FileSystem* GetFileSystem() const { return fileSystem; }
-		WindowSystem* GetWindow() const { return windowSystem; }
-        Scene* GetScene() const { return scene; }
+		Resources* getResources() const { return resources; }
+		FileSystem* getFileSystem() const { return fileSystem; }
+		WindowSystem* getWindow() const { return windowSystem; }
+        Scene* getScene() const { return scene; }
 
-        Renderer* GetRenderer() const { return renderer; }
+        Renderer* getRenderer() const { return renderer; }
         void setRender(Renderer* render)
 		{
 			renderer = render;
 		}
 
-		void Start();
-		void ShutDown();
+		void start();
+		void shutDown();
 
-		void MainLoop();
-		void Update();
+		void mainLoop();
+		void update();
 
-		bool IsActive();
+		bool isActive();
 	};
 
 	extern Engine* engine;

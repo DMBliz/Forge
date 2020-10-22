@@ -21,9 +21,9 @@ namespace Forge
 		unsigned length_;
 		unsigned capacity_;
 
-		void MoveRange(unsigned dest, unsigned src, unsigned count);
-		void Replace(unsigned pos, unsigned length, const char* src, unsigned srcLength);
-		static void CopyChars(char* dest, const char* src, unsigned count);
+		void moveRange(unsigned dest, unsigned src, unsigned count);
+		void replace(unsigned pos, unsigned length, const char* src, unsigned srcLength);
+		static void copyChars(char* dest, const char* src, unsigned count);
 
 	public:
 		String();
@@ -92,78 +92,78 @@ namespace Forge
 		char& operator[](unsigned index);
 		const char& operator[](unsigned index) const;
 
-		char& At(unsigned index);
-		const char& At(unsigned index) const;
+		char& at(unsigned index);
+		const char& at(unsigned index) const;
 
-		void Replace(char oldChar, char newChar, bool caseSensetive = true);
-		void Replace(const String& oldValue, const String& newValue, bool caseSensetive = true);
-		void Replace(unsigned pos, unsigned length, const String& newValue);
-		void Replace(unsigned pos, unsigned length, const char* newValue);
-		String Replaced(char oldChar, char newChar, bool caseSensetive = true);
-		String Replaced(const String& oldValue, const String& newValue, bool caseSensetive = true);
+		void replace(char oldChar, char newChar, bool caseSensetive = true);
+		void replace(const String& oldValue, const String& newValue, bool caseSensetive = true);
+		void replace(unsigned pos, unsigned length, const String& newValue);
+		void replace(unsigned pos, unsigned length, const char* newValue);
+		String replaced(char oldChar, char newChar, bool caseSensetive = true);
+		String replaced(const String& oldValue, const String& newValue, bool caseSensetive = true);
 
-		String& Append(const String& str);
-		String& Append(const char* str);
-		String& Append(char c);
-		String& Append(const char* str, unsigned length);
+		String& append(const String& str);
+		String& append(const char* str);
+		String& append(char c);
+		String& append(const char* str, unsigned length);
 
-		void Insert(unsigned pos, const String& str);
-		void Insert(unsigned pos, char c);
+		void insert(unsigned pos, const String& str);
+		void insert(unsigned pos, char c);
 
-		void Erase(unsigned pos, unsigned length = 1);
+		void erase(unsigned pos, unsigned length = 1);
 
-		void Resize(unsigned newLength);
-		void Reserve(unsigned newCapacity);
-		void Compact();
-		void Clear();
-		void Swap(String& str);
+		void resize(unsigned newLength);
+		void reserve(unsigned newCapacity);
+		void compact();
+		void clear();
+		void swap(String& str);
 
-		char First() const { return charBuffer[0]; }
-		char Last() const { return length_ ? charBuffer[length_ - 1] : charBuffer[0]; }
+		char first() const { return charBuffer[0]; }
+		char last() const { return length_ ? charBuffer[length_ - 1] : charBuffer[0]; }
 
-		String SubString(unsigned pos) const;
-		String SubString(unsigned pos, unsigned length) const;
-		String Trimmed() const;
-		String ToUpper() const;
-		String ToLower() const;
+		String subString(unsigned pos) const;
+		String subString(unsigned pos, unsigned length) const;
+		String trimmed() const;
+		String toUpper() const;
+		String toLower() const;
 
-		std::vector<String> Split(char separator, bool keepEmptyStrings = false) const;
-		void Join(const std::vector<String>& subStrings, const String& glue);
+		std::vector<String> split(char separator, bool keepEmptyStrings = false) const;
+		void join(const std::vector<String>& subStrings, const String& glue);
 		
-		unsigned Find(const String& str, unsigned startInd = 0, bool caseSensetive = true) const;
-		unsigned Find(char c, unsigned startInd = 0, bool caseSensetive = true) const;
-		unsigned FindLast(const String& str, unsigned startInd, bool caseSensetive = true) const;
-		unsigned FindLast(char c, unsigned startInd, bool caseSensetive = true) const;
+		unsigned find(const String& str, unsigned startInd = 0, bool caseSensetive = true) const;
+		unsigned find(char c, unsigned startInd = 0, bool caseSensetive = true) const;
+		unsigned findLast(const String& str, unsigned startInd, bool caseSensetive = true) const;
+		unsigned findLast(char c, unsigned startInd, bool caseSensetive = true) const;
 
-		bool StartsWith(const String& str, bool caseSensetive = true) const;
-		bool EndsWith(const String& str, bool caseSensetive = true) const;
+		bool startsWith(const String& str, bool caseSensetive = true) const;
+		bool endsWith(const String& str, bool caseSensetive = true) const;
 
-		int Compare(const String& str, bool caseSensetive = true) const;
-		int Compare(const char* str, bool caseSensetive = true) const;
+		int compare(const String& str, bool caseSensetive = true) const;
+		int compare(const char* str, bool caseSensetive = true) const;
 
-		bool Contains(const String& str, bool caseSensetive = true) const;
-		bool Contains(char c, bool caseSensetive = true) const;
+		bool contains(const String& str, bool caseSensetive = true) const;
+		bool contains(char c, bool caseSensetive = true) const;
 		
-		bool IsEmpty() const { return length_ == 0; }
+		bool isEmpty() const { return length_ == 0; }
 
-		const char* CString() const { return charBuffer; }
-		char* CString() { return charBuffer; }
-		unsigned Length() const { return length_; }
-		unsigned Capacity() const { return capacity_; }
+		const char* cString() const { return charBuffer; }
+		char* cString() { return charBuffer; }
+		unsigned length() const { return length_; }
+		unsigned capacity() const { return capacity_; }
 
 
-		void SetUTF8FromChar(const char* str);
-		void SetUTF8FromWChar(const wchar_t* str);
-		unsigned LengthUTF8() const;
-		unsigned ByteOffsetUTF8(unsigned index) const;
-		unsigned NextUTF8Char(unsigned& byteOffset) const;
-		unsigned AtUTF8(unsigned index) const;
-		void ReplaceUTF8(unsigned index, unsigned uniChar);
-		String& AppendUTF8(unsigned uniChar);
-		String SubStringUTF8(unsigned pos) const;
-		String SubStringUTF8(unsigned pos, unsigned length) const;
+		void setUTF8FromChar(const char* str);
+		void setUTF8FromWChar(const wchar_t* str);
+		unsigned lengthUTF8() const;
+		unsigned byteOffsetUTF8(unsigned index) const;
+		unsigned nextUTF8Char(unsigned& byteOffset) const;
+		unsigned atUTF8(unsigned index) const;
+		void replaceUTF8(unsigned index, unsigned uniChar);
+		String& appendUTF8(unsigned uniChar);
+		String subStringUTF8(unsigned pos) const;
+		String subStringUTF8(unsigned pos, unsigned length) const;
 
-		unsigned ToHash() const;
+		unsigned hash() const;
 
 
 		friend std::ostream& operator<<(std::ostream& os, const String& obj)
@@ -173,22 +173,22 @@ namespace Forge
 
 		static const String Empty;
 
-		static std::vector<String> Split(const char* str, char separator, bool keepEmptyStrings = false);
-		static std::vector<String> Split(const String& str, char separator, bool keepEmptyStrings = false);
-		static String Joined(const std::vector<String>& subStrings, const String& glue);
+		static std::vector<String> split(const char* str, char separator, bool keepEmptyStrings = false);
+		static std::vector<String> split(const String& str, char separator, bool keepEmptyStrings = false);
+		static String joined(const std::vector<String>& subStrings, const String& glue);
 
-		static void EncodeUTF8(char*& dest, unsigned uniChar);
-		static unsigned DecodeUTF8(const char*& src);
+		static void encodeUTF8(char*& dest, unsigned uniChar);
+		static unsigned decodeUTF8(const char*& src);
 
 #ifdef _WIN32
 		static void EncodeUTF16(wchar_t*& dest, unsigned unicodeChar);
 		static unsigned DecodeUTF16(const wchar_t*& src);
 #endif
 
-		static unsigned CStringLength(const char* str);
+		static unsigned cStringLength(const char* str);
 
-		static int Compare(const char* str1, const char* str2, bool caseSensetive = true);
-		static int Compare(const String& str1, const String& str2, bool caseSensetive = true);
+		static int compare(const char* str1, const char* str2, bool caseSensetive = true);
+		static int compare(const String& str1, const String& str2, bool caseSensetive = true);
 	};
 
 
@@ -205,16 +205,16 @@ namespace Forge
 		wchar_t& operator[](unsigned index);
 		const wchar_t& operator[](unsigned index) const;
 
-		wchar_t& At(unsigned index);
-		const wchar_t& At(unsigned index) const;
+		wchar_t& at(unsigned index);
+		const wchar_t& at(unsigned index) const;
 
-		void Resize(unsigned newLength);
+		void resize(unsigned newLength);
 
-		bool Empty() const { return length_ == 0; };
+		bool empty() const { return length_ == 0; };
 
-		unsigned Length() const { return length_; }
+		unsigned length() const { return length_; }
 
-		const wchar_t* CString() const { return wcharBuffer; }
+		const wchar_t* cString() const { return wcharBuffer; }
 
 	};
 

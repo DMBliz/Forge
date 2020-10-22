@@ -12,7 +12,7 @@ namespace Forge
 		engine = this;
 	}
 
-	void Engine::Init(Application* application)
+	void Engine::init(Application* application)
 	{
 	    this->application = application;
         application->getPlatformApiProvider()->init();
@@ -23,36 +23,37 @@ namespace Forge
 		Timer::StartTime();
 	}
 
-	void Engine::Start()
+	void Engine::start()
 	{
 		application->start();
-		MainLoop();
+        mainLoop();
 	}
 
-	void Engine::MainLoop()
+	void Engine::mainLoop()
 	{
 		while (active)
 		{
-			Update();
+            update();
 		}
 	}
 
-	void Engine::Update()
+	void Engine::update()
 	{
 		if (active)
 		{
 			Timer::BeginFrame();
 			application->update();
+            application->draw();
 			Timer::EndFrame();
 		}
 	}
 
-	bool Engine::IsActive()
+	bool Engine::isActive()
 	{
 		return active;
 	}
 
-    void Engine::ShutDown()
+    void Engine::shutDown()
     {
         active = false;
         application->stop();

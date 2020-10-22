@@ -27,7 +27,9 @@ namespace Forge
         NSAutoreleasePoolPtr pool = nullptr;
         bool isInitialized = false;
 
-        std::vector<Window*> windows;
+        std::map<int, Window*> windows;
+
+        int lastID = 0;
 
     public:
         MacOSWindowSystem() = default;
@@ -38,6 +40,11 @@ namespace Forge
         void update() override;
 
         Window* createWindow(const WindowCreationDesc& desc) override;
+
+        Window* getWindowByName(const String& name) override;
+        Window* getWindowByID(int ID) override;
+
+        void destroyWindow(Window* window) override;
 
         Cursor* createCursor(SystemCursor cursorType) override;
 

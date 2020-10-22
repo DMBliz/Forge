@@ -34,7 +34,7 @@ namespace Forge
 
     void Image::Save(String filename)
 	{
-		stbi_write_png(filename.CString(), _size.x, _size.y, 4, _pixels.data(), 0);
+		stbi_write_png(filename.cString(), _size.x, _size.y, 4, _pixels.data(), 0);
 	}
 
 	const Vector2i& Image::GetSize() const
@@ -108,8 +108,8 @@ namespace Forge
 	void Image::Load(const String& filename)
 	{
 		resourceName = filename;
-		File file = engine->GetFileSystem()->ReadFile(filename);
-		byte* pixels = stbi_load_from_memory(file.GetData(), file.GetSize(), &_size.x, &_size.y, &fileChannels, 4);
+		File file = engine->getFileSystem()->readFile(filename);
+		byte* pixels = stbi_load_from_memory(file.getData(), file.getSize(), &_size.x, &_size.y, &fileChannels, 4);
 		_pixels.resize(_size.x * _size.y * 4);
 
 		memcpy(_pixels.data(), pixels, _pixels.size() * sizeof(byte));

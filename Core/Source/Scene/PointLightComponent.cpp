@@ -25,12 +25,12 @@ namespace Forge
 
     void PointLightComponent::OnEnable()
     {
-        engine->GetRenderer()->AddLight(light);
+        engine->getRenderer()->AddLight(light);
     }
 
     void PointLightComponent::OnDisable()
     {
-        engine->GetRenderer()->RemoveLight(light);
+        engine->getRenderer()->RemoveLight(light);
     }
 
     void PointLightComponent::Update()
@@ -44,7 +44,7 @@ namespace Forge
     void PointLightComponent::OnCreate()
     {
         light->SetActive(true);
-        img->SetTexture(engine->GetResources()->LoadNowResource<Texture2D>("Resources/light2.png"));
+        img->SetTexture(engine->getResources()->LoadNowResource<Texture2D>("Resources/light2.png"));
         img->SetActive(true);
         TransformComponent* trn = GetOwner()->GetComponent<TransformComponent>();
         if (trn != nullptr)

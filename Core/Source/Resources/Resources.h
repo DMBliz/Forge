@@ -34,15 +34,15 @@ namespace Forge
 
 		void LoadFile(const String& filepath)
 		{
-			if (filepath.Contains(".glsl"))
+			if (filepath.contains(".glsl"))
 			{
 				LoadResource<Shader>(filepath);
 			}
-			if (filepath.Contains(".jpg"))
+			if (filepath.contains(".jpg"))
 			{
 				LoadResource<Image>(filepath);
 			}
-			if (filepath.Contains(".png"))
+			if (filepath.contains(".png"))
 			{
 				LoadResource<Image>(filepath);
 			}

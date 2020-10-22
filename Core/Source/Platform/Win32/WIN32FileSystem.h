@@ -6,8 +6,8 @@ namespace Forge
 {
 	class Win32FileSystem : public FileSystem
 	{
-		void GetAllFiles(std::vector<String>& files, String path);
+		void getAllFiles(std::vector<String>& files, String path);
 	public:
-		std::vector<String> GetFilesFromDirectory(String path) override;
+		std::vector<String> getFilesFromDirectory(String path) override;
 	};
 }

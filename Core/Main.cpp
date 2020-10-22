@@ -5,9 +5,9 @@ int main()
     Forge::Engine eng;
     Forge::Application* app = Forge::getApplication();
 
-	eng.Init(app);
+	eng.init(app);
 
-	eng.Start();
+	eng.start();
 
 	return 0;
 }

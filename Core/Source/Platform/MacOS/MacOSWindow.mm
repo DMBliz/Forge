@@ -176,7 +176,7 @@ namespace Forge
                            static_cast<int>(screen.visibleFrame.size.height));
         }
 
-        [window setTitle:static_cast<NSString *_Nonnull>([NSString stringWithUTF8String:windowTitle.CString()])];
+        [window setTitle:static_cast<NSString *_Nonnull>([NSString stringWithUTF8String:windowTitle.cString()])];
 
         if ([NSWindow respondsToSelector:@selector(setAllowsAutomaticWindowTabbing:)])
         {
@@ -236,7 +236,8 @@ namespace Forge
     {
         [view beginUpdate];
         onWindowEventsFinished();
-        context->platformUpdate();
+        if (context != nullptr)
+            context->platformUpdate();
     }
 
     void MacOSWindow::handleResignKeyChange()
@@ -360,7 +361,7 @@ namespace Forge
                 [window setFrame:[screen frame] display:YES animate:YES];
                 [window toggleFullScreen:nil];
                 [window setLevel:NSNormalWindowLevel];
-                [window setTitle:static_cast<NSString *_Nonnull>([NSString stringWithUTF8String:windowTitle.CString()])];
+                [window setTitle:static_cast<NSString *_Nonnull>([NSString stringWithUTF8String:windowTitle.cString()])];
 
                 windowRect.set(static_cast<int>(screen.frame.origin.x), static_cast<int>(screen.frame.origin.x),
                                static_cast<int>(screen.frame.size.width), static_cast<int>(screen.frame.size.height));
@@ -372,7 +373,7 @@ namespace Forge
                 [window setStyleMask:static_cast<NSWindowStyleMask>(windowStyleMask)];
                 [window setFrame:screen.visibleFrame display:YES animate:YES];
                 [window setLevel:NSNormalWindowLevel];
-                [window setTitle:static_cast<NSString *_Nonnull>([NSString stringWithUTF8String:windowTitle.CString()])];
+                [window setTitle:static_cast<NSString *_Nonnull>([NSString stringWithUTF8String:windowTitle.cString()])];
 
 
                 windowRect.set(static_cast<int>(screen.visibleFrame.origin.x),
@@ -387,7 +388,7 @@ namespace Forge
                 [window setStyleMask:static_cast<NSWindowStyleMask>(windowStyleMask)];
                 [window setFrame:windowFrame display:YES animate:YES];
                 [window setLevel:NSNormalWindowLevel];
-                [window setTitle:static_cast<NSString *_Nonnull>([NSString stringWithUTF8String:windowTitle.CString()])];
+                [window setTitle:static_cast<NSString *_Nonnull>([NSString stringWithUTF8String:windowTitle.cString()])];
 
                 windowRect.set(static_cast<int>(windowFrame.origin.x), static_cast<int>(windowFrame.origin.y),
                                static_cast<int>(windowFrame.size.width), static_cast<int>(windowFrame.size.height));
@@ -484,7 +485,7 @@ namespace Forge
     {
         Window::setTitle(newTitle);
 
-        [window setTitle:static_cast<NSString *_Nonnull>([NSString stringWithUTF8String:windowTitle.CString()])];
+        [window setTitle:static_cast<NSString *_Nonnull>([NSString stringWithUTF8String:windowTitle.cString()])];
     }
 
     void MacOSWindow::setWindowRect(const RectI& newSize)

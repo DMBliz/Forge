@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <Platform/Api/PlatformApiProvider.h>
+#include "Platform/Api/PlatformApiProvider.h"
 
 namespace Forge
 {
@@ -15,6 +15,7 @@ namespace Forge
     public:
         virtual void start() = 0;
         virtual void update() = 0;
+        virtual void draw() = 0;
         virtual void stop() = 0;
 
         PlatformApiProvider* getPlatformApiProvider()

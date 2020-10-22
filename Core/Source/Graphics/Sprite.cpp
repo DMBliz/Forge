@@ -14,7 +14,7 @@ namespace Forge
 		_material = new Material();
 
 		
-		Shader* sh = engine->GetResources()->LoadNowResource<Shader>("Resources/Shaders/SpriteShader.glsl");
+		Shader* sh = engine->getResources()->LoadNowResource<Shader>("Resources/Shaders/SpriteShader.glsl");
 
 		_material->SetShader(sh);
 		
@@ -78,7 +78,7 @@ namespace Forge
         if (_texture == nullptr)
             return;
 
-        Image* img = engine->GetResources()->GetResource<Image>(_texture->GetResourceName());
+        Image* img = engine->getResources()->GetResource<Image>(_texture->GetResourceName());
         img->FlipX();
         _texture->SetTexture(*img);
     }
@@ -88,14 +88,14 @@ namespace Forge
         if (_texture == nullptr)
             return;
 
-        Image* img = engine->GetResources()->GetResource<Image>(_texture->GetResourceName());
+        Image* img = engine->getResources()->GetResource<Image>(_texture->GetResourceName());
         img->FlipY();
         _texture->SetTexture(*img);
     }
 
     void Sprite::Draw() const 
     {
-        Renderer* renderer = engine->GetRenderer();
+        Renderer* renderer = engine->getRenderer();
         _material->GetUniform("projection")->SetValue<Matrix4>(renderer->GetFrustum().GetMatrix());
         _material->GetUniform("view")->SetValue<Matrix4>(renderer->GetCamera().GetViewMatrix());
         _material->GetUniform("model")->SetValue<Matrix4>(_worldTransform->ToMatrix4());

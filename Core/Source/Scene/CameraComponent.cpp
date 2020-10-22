@@ -14,7 +14,7 @@ namespace Forge
 
 	void CameraComponent::Update()
 	{
-		engine->GetRenderer()->SetViewMatrix(ViewMatrix());
+        engine->getRenderer()->SetViewMatrix(ViewMatrix());
 	}
 
 	Matrix4 CameraComponent::ViewMatrix()

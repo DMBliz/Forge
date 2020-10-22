@@ -12,7 +12,7 @@ namespace Forge
     {
     public:
 
-        std::vector<String> GetFilesFromDirectory(String path) override;
+        std::vector<String> getFilesFromDirectory(String path) override;
         
         
     };

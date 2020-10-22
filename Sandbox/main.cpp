@@ -10,7 +10,7 @@
 
 using namespace Forge;
 
-class SandboxApp : public Forge::DefaultApplication
+class SandboxApp : public Forge::Application
 {
 private:
     Window* win;
@@ -54,7 +54,7 @@ public:
 
         ctx->setActive();
 
-        Resources* res = engine->GetResources();
+        Resources* res = engine->getResources();
 
         Renderer* render = new Renderer(gapi);
         render->Init(win->getResolution());
@@ -83,7 +83,6 @@ public:
         win->onMinimizeChanged.Add<SandboxApp, &SandboxApp::minimizeChanged>(this);
 
         win->onActiveStateChanged.Add<SandboxApp, &SandboxApp::windowActiveStateChanged>(this);
-//        win2->onActiveStateChanged.Add<SandboxApp, &SandboxApp::windowActiveStateChanged>(this);
 
         arrowCursor = ws->createCursor(SystemCursor::Arrow);
         handCursor = ws->createCursor(SystemCursor::Hand);
@@ -152,11 +151,6 @@ public:
 
     void update() override
     {
-        ctx->setActive();
-        manager->update();
-        spr->Draw();
-        engine->GetRenderer()->Draw();
-
         if(win->getInput()->getDevice<KeyboardInputDevice>(InputDeviceType::Keyborad)->getKeyState(KeyboardKey::A) == KeyState::Down)
         {
             win->setWindowState(WindowState::WINDOWED);
@@ -198,10 +192,19 @@ public:
         {
             win->setCursor(ibeamCursor);
         }
+        manager->update();
+    }
+
+
+    void draw() override
+    {
+        ctx->setActive();
+        spr->Draw();
+        engine->getRenderer()->Draw();
 
         ctx2->setActive();
         spr->Draw();
-        engine->GetRenderer()->Draw();
+        engine->getRenderer()->Draw();
 
         ws->update();
     }

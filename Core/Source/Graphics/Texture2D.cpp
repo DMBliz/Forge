@@ -37,7 +37,7 @@ namespace Forge
     void Texture2D::Load(const String& filename)
 	{
 		resourceName = filename;
-		Image* img = engine->GetResources()->LoadNowResource<Image>(filename);
+		Image* img = engine->getResources()->LoadNowResource<Image>(filename);
 		textureResource = Texture2DResource::Create(*img, TextureParametrs(TextureFilter::Nearest));
 	}
 

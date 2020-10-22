@@ -35,18 +35,18 @@ namespace Forge
 
     void SpotLightComponent::OnEnable()
     {
-        engine->GetRenderer()->AddLight(spotLight);
+        engine->getRenderer()->AddLight(spotLight);
     }
 
     void SpotLightComponent::OnDisable()
     {
-        engine->GetRenderer()->RemoveLight(spotLight);
+        engine->getRenderer()->RemoveLight(spotLight);
     }
 
     void SpotLightComponent::OnCreate()
     {
         spotLight->SetActive(true);
-        img->SetTexture(engine->GetResources()->LoadNowResource<Texture2D>("Resources/light2.png"));
+        img->SetTexture(engine->getResources()->LoadNowResource<Texture2D>("Resources/light2.png"));
         img->SetActive(true);
         TransformComponent* trn = GetOwner()->GetComponent<TransformComponent>();
         if (trn != nullptr)

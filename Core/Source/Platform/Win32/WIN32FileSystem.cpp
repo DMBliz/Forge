@@ -3,7 +3,7 @@
 
 namespace Forge
 {
-	void Win32FileSystem::GetAllFiles(std::vector<String>& files, String path)
+	void Win32FileSystem::getAllFiles(std::vector<String>& files, String path)
 	{
 		String fpath = path + "*";
 		WIN32_FIND_DATA data;
@@ -26,7 +26,7 @@ namespace Forge
 		}
 	}
 
-	std::vector<String> Win32FileSystem::GetFilesFromDirectory(String path)
+	std::vector<String> Win32FileSystem::getFilesFromDirectory(String path)
 	{
 		std::vector<String> files;
 		

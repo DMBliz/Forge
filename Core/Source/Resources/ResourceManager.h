@@ -36,16 +36,16 @@ namespace Forge
 
 		T* Load(String filename)
 		{
-			String name = filename.Trimmed().ToLower();
+			String name = filename.trimmed().trimmed();
 
-			auto it = resources.find(name.CString());
+			auto it = resources.find(name.cString());
 			
 			if (it != resources.end())
 			{
 				
-				resources[name.CString()]->IncReferences();
+				resources[name.cString()]->IncReferences();
 
-				return resources[name.CString()];
+				return resources[name.cString()];
 			}
 
 			T* res = new T();
@@ -68,7 +68,7 @@ namespace Forge
 			{
 				auto& add = addQueue.front();
 				
-				resources.insert(std::make_pair(add.first->GetResourceName().CString(), add.first));
+				resources.insert(std::make_pair(add.first->GetResourceName().cString(), add.first));
 				if (add.second != nullptr)
 					(*add.second)(add.first);
 				addQueue.pop();
@@ -82,10 +82,10 @@ namespace Forge
 
 		T* GetLoaded(String filename)
 		{
-			auto it = resources.find(filename.CString());
+			auto it = resources.find(filename.cString());
 			if(it != resources.end())
 			{
-				return resources[filename.CString()];
+				return resources[filename.cString()];
 			}
 
 			return nullptr;
@@ -110,11 +110,11 @@ namespace Forge
 
 		T* LoadResource(String filename)
 		{
-			auto* fn = resources[filename.CString()];
+			auto* fn = resources[filename.cString()];
 			if (fn == nullptr)
 			{
 				T* res = Load(filename);
-				resources[filename.CString()] = res;
+				resources[filename.cString()] = res;
 				return res;
 			}
 			else
@@ -125,7 +125,7 @@ namespace Forge
 
 		bool Unload(String filename)
 		{
-			std::string name = filename.Trimmed().ToLower().CString();
+			std::string name = filename.trimmed().trimmed().cString();
 
 			auto it = resources.find(name);
 

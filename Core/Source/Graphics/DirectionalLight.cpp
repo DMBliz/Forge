@@ -14,12 +14,12 @@ namespace Forge
 
     void DirectionalLight::OnEnable()
     {
-        engine->GetRenderer()->AddLight(this);
+        engine->getRenderer()->AddLight(this);
     }
 
     void DirectionalLight::OnDisable()
     {
-        engine->GetRenderer()->RemoveLight(this);
+        engine->getRenderer()->RemoveLight(this);
     }
 
     const Color& DirectionalLight::GetColor() const

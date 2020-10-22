@@ -17,7 +17,7 @@ namespace Forge
 
 	void GLShaderResource::LoadShader(const String& filename)
 	{
-		shaderSource = engine->GetFileSystem()->ReadFile(filename).GetString();
+		shaderSource = engine->getFileSystem()->readFile(filename).getString();
 
 		vertexShader = GetBlock("vertex =");
 		fragmentShader = GetBlock("pixel =");
@@ -25,7 +25,7 @@ namespace Forge
 
 	String GLShaderResource::GetBlock(const String& blockName)
 	{
-		unsigned blockStart = shaderSource.Find(blockName);
+		unsigned blockStart = shaderSource.find(blockName);
 		if (blockStart == String::NOTFOUND)
 			return String();
 
@@ -34,16 +34,16 @@ namespace Forge
 		unsigned startInd = 0;
 		unsigned endInd = 0;
 
-		for (unsigned int i = blockStart; i < shaderSource.Length(); i++)
+		for (unsigned int i = blockStart; i < shaderSource.length(); i++)
 		{
-			if(shaderSource.At(i) == '{')
+			if(shaderSource.at(i) == '{')
 			{
 				if (openCount == 0)
 					startInd = i + 1;
 				openCount++;
 			}
 
-			if (shaderSource.At(i) == '}')
+			if (shaderSource.at(i) == '}')
 			{
 				openCount--;
 				if (openCount == 0)
@@ -54,7 +54,7 @@ namespace Forge
 			}
 		}
 
-		return shaderSource.SubString(startInd, endInd - startInd);
+		return shaderSource.subString(startInd, endInd - startInd);
 	}
 
 	void GLShaderResource::Compile()
@@ -62,7 +62,7 @@ namespace Forge
 		unsigned vs;
 		glCheck(vs = glCreateShader(GL_VERTEX_SHADER));
 		{
-			const char* tmp = vertexShader.CString();
+			const char* tmp = vertexShader.cString();
 			glCheck(glShaderSource(vs, 1, &tmp, nullptr));
 			glCheck(glCompileShader(vs));
 		}
@@ -75,7 +75,7 @@ namespace Forge
 			if (!success)
 			{
 				glCheck(glGetShaderInfoLog(vs, 512, nullptr, infoLog));
-				LOG(("Shader compile error: " + String(infoLog)).CString());
+				LOG(("Shader compile error: " + String(infoLog)).cString());
 				return;
 			}
 
@@ -84,7 +84,7 @@ namespace Forge
 		unsigned fs;
 		glCheck(fs = glCreateShader(GL_FRAGMENT_SHADER));
 		{
-			const char* tmp = fragmentShader.CString();
+			const char* tmp = fragmentShader.cString();
 			glCheck(glShaderSource(fs, 1, &tmp, nullptr));
 			glCheck(glCompileShader(fs));
 		}
@@ -97,7 +97,7 @@ namespace Forge
 			if (!success)
 			{
 				glCheck(glGetShaderInfoLog(fs, 512, nullptr, infoLog));
-				LOG(("Shader compile error: " + String(infoLog)).CString());
+				LOG(("Shader compile error: " + String(infoLog)).cString());
 				return;
 			}
 		}
@@ -117,7 +117,7 @@ namespace Forge
 			if (!success)
 			{
 				glCheck(glGetProgramInfoLog(programID, 512, nullptr, infoLog));
-				LOG(("Program link error: " + String(infoLog)).CString());
+				LOG(("Program link error: " + String(infoLog)).cString());
 			}
 		}
 
@@ -132,7 +132,7 @@ namespace Forge
 
     int GLShaderResource::ResolveUniformLocation(const String& uniformName)
     {
-        return glGetUniformLocation(programID, uniformName.CString());
+        return glGetUniformLocation(programID, uniformName.cString());
     }
 
 	void GLShaderResource::SetValueToUniform(const UniformDescription& desc)
@@ -294,7 +294,7 @@ namespace Forge
 	{
 		if(!desc.locationResolved)
 		{
-			glCheck(desc.location = glGetUniformLocation(programID, desc.name.CString()));
+			glCheck(desc.location = glGetUniformLocation(programID, desc.name.cString()));
 			desc.locationResolved = true;
 		}
 		SetValueToUniform(desc);

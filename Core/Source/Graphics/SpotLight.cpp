@@ -14,12 +14,12 @@ namespace Forge
 
     void SpotLight::OnEnable()
     {
-        engine->GetRenderer()->AddLight(this);
+        engine->getRenderer()->AddLight(this);
     }
 
     void SpotLight::OnDisable()
     {
-        engine->GetRenderer()->RemoveLight(this);
+        engine->getRenderer()->RemoveLight(this);
     }
 
     const Matrix3x4* SpotLight::Transform() const

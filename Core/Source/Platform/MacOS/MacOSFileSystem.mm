@@ -8,7 +8,7 @@ namespace Forge
 {
 
     //TODO: finish this
-    std::vector<String> MacOSFileSystem::GetFilesFromDirectory(String path)
+    std::vector<String> MacOSFileSystem::getFilesFromDirectory(String path)
     {
         return std::vector<String>();
     }

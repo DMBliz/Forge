@@ -23,6 +23,9 @@ namespace Forge
         virtual void update() = 0;
 
         virtual Window* createWindow(const WindowCreationDesc& desc) = 0;
+        virtual Window* getWindowByName(const String& name) = 0;
+        virtual Window* getWindowByID(int id) = 0;
+        virtual void destroyWindow(Window* window) = 0;
 
         virtual Cursor* createCursor(SystemCursor cursorType) = 0;
         virtual Cursor* createCursor(const std::vector<byte>& imageData, int width, int height, int xHotSpot, int yHotSpot) = 0;

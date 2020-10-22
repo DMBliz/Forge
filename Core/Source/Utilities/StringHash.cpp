@@ -12,7 +12,7 @@ namespace Forge
 	{}
 
 	StringHash::StringHash(const String& rhs)
-		: value(Calculate(rhs.CString()))
+		: value(Calculate(rhs.cString()))
 	{}
 
 	StringHash::StringHash(unsigned value)

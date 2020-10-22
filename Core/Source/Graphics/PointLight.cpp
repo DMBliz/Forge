@@ -13,12 +13,12 @@ namespace Forge
 
     void PointLight::OnEnable()
     {
-        engine->GetRenderer()->AddLight(this);
+        engine->getRenderer()->AddLight(this);
     }
 
     void PointLight::OnDisable()
     {
-        engine->GetRenderer()->RemoveLight(this);
+        engine->getRenderer()->RemoveLight(this);
     }
 
     const Color& PointLight::GetColor() const
